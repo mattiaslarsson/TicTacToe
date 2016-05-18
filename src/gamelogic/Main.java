@@ -21,8 +21,6 @@ import java.util.List;
  * Created by Mattias on 2016-05-17.
  */
 
-package gamelogic;
-
 public class Main extends Application {
     private BooleanProperty player1 = new SimpleBooleanProperty(true);
     private GridPane grid = new GridPane();
