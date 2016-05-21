@@ -1,3 +1,5 @@
+package gamelogic;
+
 import javafx.application.Application;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -9,6 +11,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+import logic.Controller;
 
 import java.awt.Toolkit;
 import java.util.ArrayList;
@@ -19,7 +22,8 @@ import java.util.List;
  */
 
 
-public class Main extends Application {
+public class MainWindow {
+
     private List<Circle> playerMarkers = new ArrayList<>();
     private List<Pair<Circle, Point2D>> circleList = new ArrayList<>();
     private Stage stage;
@@ -29,8 +33,8 @@ public class Main extends Application {
     private int numInRow1 = 0, numInRow2 = 0, numInCol1 = 0, numInCol2 = 0;
     private int numInDiagF1 = 0, numInDiagF2 = 0, numInDiagB1 = 0, numInDiagB2 = 0;
 
-    public void start(Stage stage) {
-        // Get the user's screensize
+
+    public MainWindow(Stage stage, Controller controller) {
         screenWidth = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
         screenHeight = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
         this.stage = stage;
@@ -39,9 +43,6 @@ public class Main extends Application {
         this.stage.show();
     }
 
-    public static void main(String[] args) {
-        launch(args);
-    }
 
     /**
      * Initiates the Gameboard and sets up the eventlistener
