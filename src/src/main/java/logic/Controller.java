@@ -28,4 +28,8 @@ public class Controller {
 		this.connection = connection;
 	}
 
+	// METHODS THAT CORRESPONDS TO COMMANDS FROM COMMANDHANDLER
+
+	public void registerPlayer(Player currPlayer)
+
 }
