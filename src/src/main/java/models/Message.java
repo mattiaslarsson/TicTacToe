@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Message bean. Takes any data and adds it to commanddata.
+ *
  * Created by Johan Lindström (jolindse@hotmail.com) on 2016-05-21.
  */
 public class Message<T> {

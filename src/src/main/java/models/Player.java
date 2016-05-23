@@ -1,6 +1,8 @@
 package models;
 
 /**
+ * Handles player connections.
+ *
  * Created by Johan Lindström (jolindse@hotmail.com) on 2016-05-21.
  */
 public class Player {

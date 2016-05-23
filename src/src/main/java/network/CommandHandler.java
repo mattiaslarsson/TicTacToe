@@ -1,7 +1,9 @@
 package network;
 
 import com.google.gson.Gson;
+import logic.Controller;
 import models.Message;
+import models.Player;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -16,6 +18,7 @@ import java.util.Scanner;
  */
 public class CommandHandler implements Runnable {
 
+	private Controller controller;
 	private Socket connection;
 	private PrintWriter out;
 	private boolean disconnect = false;
@@ -24,10 +27,11 @@ public class CommandHandler implements Runnable {
 	 * Constructor that takes a socket as argument and opens a output writer in order to
 	 * send and receive messages from connected client.
 	 *
-	 * @param connection
+	 * @param connection Socket
 	 */
-	public CommandHandler(Socket connection) {
+	public CommandHandler(Socket connection, Controller controller) {
 		gson = new Gson();
+		this.controller = controller;
 		this.connection = connection;
 		try {
 			out = new PrintWriter(connection.getOutputStream(), true);
@@ -78,17 +82,20 @@ public class CommandHandler implements Runnable {
 	 * Method to send a command + data to client. Translates to json and sends through
 	 * the printwriter.
 	 *
-	 * @param command
-	 * @param commandData
-	 * @param <T>
+	 * @param currMessage Message
 	 */
-	public <T> void sendMessage (String command, T commandData) {
-		Message currMessage = new Message(command, commandData);
+	public void sendMessage (Message currMessage) {
 		String jsonData = gson.toJson(currMessage);
 		out.println(jsonData);
 	}
 
-	public void parse(String input) {
+	/**
+	 * Handles the incoming json strings and parses it for commands and command data.
+	 *
+	 * @param input String
+	 */
+	private void parse(String input) {
+		String currData;
 		// Parses json to Message-object
 		Message currMessage = gson.fromJson(input, Message.class);
 		// Gets data from command
@@ -96,7 +103,21 @@ public class CommandHandler implements Runnable {
 
 		switch (currMessage.getCommand()) {
 			case "connect":
-
+				Player currPlayer = gson.fromJson(cmdData.get(0),Player.class);
+				controller.connectPlayer(currPlayer);
+				break;
+			case "chat":
+				String chatMessage = gson.fromJson(cmdData.get(0), String.class);
+				controller.remoteChatMessage(chatMessage);
+				break;
+			case "move":
+				int xMove = gson.fromJson(cmdData.get(0), Integer.class);
+				int yMove = gson.fromJson(cmdData.get(1), Integer.class);
+				controller.remoteMakeMove(xMove, yMove);
+				break;
+			case "disconnect":
+				controller.remoteDisconnect();
+				break;
 		}
 	}
 }

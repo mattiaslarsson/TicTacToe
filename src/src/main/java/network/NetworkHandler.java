@@ -24,7 +24,7 @@ public class NetworkHandler implements Runnable {
 	/**
 	 * Constructor that initializes the serversocket for incomming connections.
 	 *
-	 * @param controller
+	 * @param controller Controller
 	 */
 	public NetworkHandler(Controller controller){
 		connected = false;
