@@ -70,7 +70,7 @@ public class Main extends Application {
 
             // If the click was made in an empty cell
             // place a marker in that cell with a color
-            // that corresponds to which player is curretly playing
+            // that corresponds to which player is currently playing
             // and add that marker to a list
             if (!checkDoubles(clickCol, clickRow)) {
                 if (player1Turn.getValue()) {
@@ -131,6 +131,7 @@ public class Main extends Application {
      * Check if there is a player with 3 markers in a row
      */
     private void checkWinner() {
+        System.out.println("---------------");
         Circle lastMarker = playerMarkers.get(playerMarkers.size()-1);
         int column = GridPane.getColumnIndex(lastMarker);
         int row = GridPane.getRowIndex(lastMarker);
@@ -141,16 +142,6 @@ public class Main extends Application {
                 (int) GridPane.getColumnIndex(marker),
                 (int) GridPane.getRowIndex(marker))));
         });
-        System.out.println("---------------");
-        circleList.forEach(circle -> {
-            System.out.println("X: " + circle.getValue().getX() + " Y: " + circle.getValue().getY());
-        });
-
-
-
-        // Check row
-        numInRow = 0;
-
 
         // Inserts all the markers with the same color on a single row in a new list
         checks = circleList.stream().filter(c -> c.getValue().getY() == row)
@@ -165,6 +156,10 @@ public class Main extends Application {
                 return 0;
             }
         });
+
+
+        // Check row
+        numInRow = 0;
 
         // Check if 3 adjacent markers have the same color
         if(checks.size() > 2) {
@@ -188,20 +183,6 @@ public class Main extends Application {
         // Check column
         numInRow = 0;
 
-        // Inserts all the markers with the same color in a single column in a new list
-        checks = circleList.stream().filter(c -> c.getValue().getX() == column)
-                .filter(c -> c.getKey().getFill() == color).collect(Collectors.toList());
-
-        // Sort the new list according to the element's x-coordinate
-        Collections.sort(checks, new Comparator<Pair<Circle, Point2D>>() {
-            @Override
-            public int compare(Pair<Circle, Point2D> c1, Pair<Circle, Point2D> c2) {
-                if(c1.getValue().getY() < c2.getValue().getY()) return -1;
-                if(c1.getValue().getY() > c2.getValue().getY()) return 1;
-                return 0;
-            }
-        });
-
         // Check if 3 adjacent markers have the same color
         if(checks.size() > 2) {
             for (int i = 0; i<checks.size()-1; i++) {
@@ -221,21 +202,6 @@ public class Main extends Application {
 
         // Check diag (forward slash)
         numInRow = 0;
-
-        // Inserts all the markers with the same color
-        checks = circleList.stream().filter(c -> c.getKey().getFill() == color)
-                .collect(Collectors.toList());
-
-        // Sort the new list according to the element's x-coordinate
-        Collections.sort(checks, new Comparator<Pair<Circle, Point2D>>() {
-            @Override
-            public int compare(Pair<Circle, Point2D> c1, Pair<Circle, Point2D> c2) {
-                if(c1.getValue().getX() < c2.getValue().getX()) return -1;
-                if(c1.getValue().getX() > c2.getValue().getX()) return 1;
-                return 0;
-            }
-        });
-
 
         // Check if 3 adjacent markers have the same color
         if(checks.size() > 2) {
@@ -259,39 +225,33 @@ public class Main extends Application {
         // Check diag (backslash)
         numInRow = 0;
 
-        // Inserts all the markers with the same color
-        checks = circleList.stream().filter(c -> c.getKey().getFill() == color)
-                .collect(Collectors.toList());
-
-        // Sort the new list according to the element's x-coordinate
-        Collections.sort(checks, new Comparator<Pair<Circle, Point2D>>() {
-            @Override
-            public int compare(Pair<Circle, Point2D> c1, Pair<Circle, Point2D> c2) {
-                if(c1.getValue().getX() < c2.getValue().getX()) return -1;
-                if(c1.getValue().getX() > c2.getValue().getX()) return 1;
-                return 0;
-            }
-        });
-
-
         // Check if 3 adjacent markers have the same color
         if(checks.size() > 2) {
             for (int i = 0; i<checks.size()-1; i++) {
+                System.out.println(checks.get(i+1).getValue().getY() - checks.get(i).getValue().getY());
+                System.out.println(checks.get(i+1).getValue().getX() - checks.get(i).getValue().getX());
                 if (checks.get(i+1).getValue().getY() - checks.get(i).getValue().getY() == 1
                         && checks.get(i+1).getValue().getX() - checks.get(i).getValue().getX() == 1) {
-                    System.out.println("\\");
                     numInRow++;
+                    System.out.println(numInRow);
                 } else {numInRow = 0;}
             }
             for (int i = checks.size()-1; i>0; i--) {
-                if (checks.get(i).getValue().getY() - checks.get(i-1).getValue().getY() == -1
-                        && checks.get(i).getValue().getX() - checks.get(i-1).getValue().getX() == -1) {
+                System.out.println(checks.get(i).getValue().getY() - checks.get(i-1).getValue().getY());
+                System.out.println(checks.get(i).getValue().getX() - checks.get(i-1).getValue().getX());
+                if (checks.get(i).getValue().getY() - checks.get(i-1).getValue().getY() == 1
+                        && checks.get(i).getValue().getX() - checks.get(i-1).getValue().getX() == 1) {
                     numInRow++;
+                    System.out.println(numInRow);
                 } else {numInRow = 0;}
             }
+            if (numInRow >= 2) {
+                System.out.println("Vinner \\");
+            }
         }
-        if (numInRow >= 2) {
-            System.out.println("Vinner \\");
-        }
+
+        checks.forEach(circle -> {
+            System.out.println("X: " + circle.getValue().getX() + " Y: " + circle.getValue().getY());
+        });
     }
 }
