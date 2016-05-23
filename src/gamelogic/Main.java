@@ -11,8 +11,8 @@ import javafx.stage.Stage;
 import javafx.util.Pair;
 
 import java.awt.Toolkit;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by Mattias Larsson on 2016-05-17.
@@ -26,8 +26,8 @@ public class Main extends Application {
     private double screenWidth, screenHeight;
     private BooleanProperty player1Turn = new SimpleBooleanProperty(true);
     private GameBoard gameBoard;
-    private int numInRow1 = 0, numInRow2 = 0, numInCol1 = 0, numInCol2 = 0;
-    private int numInDiagF1 = 0, numInDiagF2 = 0, numInDiagB1 = 0, numInDiagB2 = 0;
+    int numInRow = 0;
+    private List<Pair<Circle, Point2D>> checks;
 
     public void start(Stage stage) {
         // Get the user's screensize
@@ -50,7 +50,6 @@ public class Main extends Application {
      */
     private Scene initGameBoard() {
         gameBoard = new GameBoard(screenWidth, screenHeight);
-
         ScrollPane gamePane = new ScrollPane();
         gamePane.setContent(gameBoard);
 
@@ -78,12 +77,13 @@ public class Main extends Application {
                     Circle marker = new PlayerMarker().placeMarker(1);
                     gameBoard.add(marker, clickCol, clickRow);
                     playerMarkers.add(marker);
+
                 } else {
                     Circle marker = new PlayerMarker().placeMarker(2);
                     gameBoard.add(marker, clickCol, clickRow);
                     playerMarkers.add(marker);
-
                 }
+
             }
 
             // Check if the grid is full of markers
@@ -97,6 +97,7 @@ public class Main extends Application {
                     gameBoard.getChildren().remove(marker);
                     gameBoard.add(marker, col+1, row+1);
                 });
+
             }
             // Bind the marker's radius so that they always fits in the cells
             playerMarkers.forEach(marker -> {
@@ -134,24 +135,163 @@ public class Main extends Application {
         int column = GridPane.getColumnIndex(lastMarker);
         int row = GridPane.getRowIndex(lastMarker);
         Paint color = lastMarker.getFill();
+        circleList.clear();
         playerMarkers.forEach(marker -> {
-            if (marker != lastMarker) {
-                circleList.add(new Pair(marker, new Point2D(
-                        (int) GridPane.getColumnIndex(marker),
-                        (int) GridPane.getRowIndex(marker))));
+            circleList.add(new Pair(marker, new Point2D(
+                (int) GridPane.getColumnIndex(marker),
+                (int) GridPane.getRowIndex(marker))));
+        });
+        System.out.println("---------------");
+        circleList.forEach(circle -> {
+            System.out.println("X: " + circle.getValue().getX() + " Y: " + circle.getValue().getY());
+        });
+
+
+
+        // Check row
+        numInRow = 0;
+
+
+        // Inserts all the markers with the same color on a single row in a new list
+        checks = circleList.stream().filter(c -> c.getValue().getY() == row)
+                .filter(c -> c.getKey().getFill() == color).collect(Collectors.toList());
+
+        // Sort the new list according to the element's x-coordinate
+        Collections.sort(checks, new Comparator<Pair<Circle, Point2D>>() {
+            @Override
+            public int compare(Pair<Circle, Point2D> c1, Pair<Circle, Point2D> c2) {
+                if(c1.getValue().getX() < c2.getValue().getX()) return -1;
+                if(c1.getValue().getX() > c2.getValue().getX()) return 1;
+                return 0;
             }
         });
 
-        // Check row
+        // Check if 3 adjacent markers have the same color
+        if(checks.size() > 2) {
+            for (int i = 0; i<checks.size()-1; i++) {
+                if (checks.get(i+1).getValue().getX() - checks.get(i).getValue().getX() == 1) {
+                    numInRow++;
+                } else {numInRow = 0;}
+            }
+            for (int i = checks.size()-1; i>0; i--) {
+                if (checks.get(i).getValue().getX() - checks.get(i-1).getValue().getX() == 1) {
+                    numInRow++;
+                } else {numInRow = 0;}
+            }
+        }
+        if (numInRow > 2) {
+            System.out.println("Vinner row");
+        }
+
 
 
         // Check column
+        numInRow = 0;
 
+        // Inserts all the markers with the same color in a single column in a new list
+        checks = circleList.stream().filter(c -> c.getValue().getX() == column)
+                .filter(c -> c.getKey().getFill() == color).collect(Collectors.toList());
+
+        // Sort the new list according to the element's x-coordinate
+        Collections.sort(checks, new Comparator<Pair<Circle, Point2D>>() {
+            @Override
+            public int compare(Pair<Circle, Point2D> c1, Pair<Circle, Point2D> c2) {
+                if(c1.getValue().getY() < c2.getValue().getY()) return -1;
+                if(c1.getValue().getY() > c2.getValue().getY()) return 1;
+                return 0;
+            }
+        });
+
+        // Check if 3 adjacent markers have the same color
+        if(checks.size() > 2) {
+            for (int i = 0; i<checks.size()-1; i++) {
+                if (checks.get(i+1).getValue().getY() - checks.get(i).getValue().getY() == 1) {
+                    numInRow++;
+                } else {numInRow = 0;}
+            }
+            for (int i = checks.size()-1; i>0; i--) {
+                if (checks.get(i).getValue().getY() - checks.get(i-1).getValue().getY() == 1) {
+                    numInRow++;
+                } else {numInRow = 0;}
+            }
+        }
+        if (numInRow > 2) {
+            System.out.println("Vinner column");
+        }
 
         // Check diag (forward slash)
+        numInRow = 0;
+
+        // Inserts all the markers with the same color
+        checks = circleList.stream().filter(c -> c.getKey().getFill() == color)
+                .collect(Collectors.toList());
+
+        // Sort the new list according to the element's x-coordinate
+        Collections.sort(checks, new Comparator<Pair<Circle, Point2D>>() {
+            @Override
+            public int compare(Pair<Circle, Point2D> c1, Pair<Circle, Point2D> c2) {
+                if(c1.getValue().getX() < c2.getValue().getX()) return -1;
+                if(c1.getValue().getX() > c2.getValue().getX()) return 1;
+                return 0;
+            }
+        });
 
 
-        // Check diag (backward slash)
+        // Check if 3 adjacent markers have the same color
+        if(checks.size() > 2) {
+            for (int i = 0; i<checks.size()-1; i++) {
+                if (checks.get(i+1).getValue().getY() - checks.get(i).getValue().getY() == -1
+                        && checks.get(i+1).getValue().getX() - checks.get(i).getValue().getX() == 1) {
+                    numInRow++;
+                } else {numInRow = 0;}
+            }
+            for (int i = checks.size()-1; i>0; i--) {
+                if (checks.get(i).getValue().getY() - checks.get(i-1).getValue().getY() == -1
+                        && checks.get(i).getValue().getX() - checks.get(i-1).getValue().getX() == 1) {
+                    numInRow++;
+                } else {numInRow = 0;}
+            }
+        }
+        if (numInRow >= 2) {
+            System.out.println("Vinner /");
+        }
 
+        // Check diag (backslash)
+        numInRow = 0;
+
+        // Inserts all the markers with the same color
+        checks = circleList.stream().filter(c -> c.getKey().getFill() == color)
+                .collect(Collectors.toList());
+
+        // Sort the new list according to the element's x-coordinate
+        Collections.sort(checks, new Comparator<Pair<Circle, Point2D>>() {
+            @Override
+            public int compare(Pair<Circle, Point2D> c1, Pair<Circle, Point2D> c2) {
+                if(c1.getValue().getX() < c2.getValue().getX()) return -1;
+                if(c1.getValue().getX() > c2.getValue().getX()) return 1;
+                return 0;
+            }
+        });
+
+
+        // Check if 3 adjacent markers have the same color
+        if(checks.size() > 2) {
+            for (int i = 0; i<checks.size()-1; i++) {
+                if (checks.get(i+1).getValue().getY() - checks.get(i).getValue().getY() == 1
+                        && checks.get(i+1).getValue().getX() - checks.get(i).getValue().getX() == 1) {
+                    System.out.println("\\");
+                    numInRow++;
+                } else {numInRow = 0;}
+            }
+            for (int i = checks.size()-1; i>0; i--) {
+                if (checks.get(i).getValue().getY() - checks.get(i-1).getValue().getY() == -1
+                        && checks.get(i).getValue().getX() - checks.get(i-1).getValue().getX() == -1) {
+                    numInRow++;
+                } else {numInRow = 0;}
+            }
+        }
+        if (numInRow >= 2) {
+            System.out.println("Vinner \\");
+        }
     }
 }
