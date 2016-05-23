@@ -3,10 +3,13 @@ package network;
 import logic.Controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
+ * Initializes serversocket and it's thread.
+ *
  * Created by Johan Lindström (jolindse@hotmail.com) on 2016-05-20.
  */
 public class NetworkHandler implements Runnable {
@@ -34,14 +37,19 @@ public class NetworkHandler implements Runnable {
 	}
 
 	/**
-	 * Runnable method. Listens for incomming connections and sets the status in controller.
+	 * Runnable method. Listens for incoming connections and sets the status in controller.
 	 *
 	 */
 	public void run() {
 		while(appRunning) {
 			try {
 				connection = listener.accept();
-				controller.connectedPlayer(connection);
+				if (!controller.connected(connection)) {
+					PrintWriter out = new PrintWriter(connection.getOutputStream(),true);
+					out.println("This client is already in a game.");
+					out.close();
+					connection.close();
+				}
 			} catch (IOException e) {
 				System.out.println("Error setting a socket for incomming connection: "+e.getStackTrace());
 			}
@@ -53,5 +61,10 @@ public class NetworkHandler implements Runnable {
 	 */
 	public void disconnect() {
 		appRunning = false;
+		try {
+			listener.close();
+		} catch (IOException e) {
+			System.out.println("Error closing listening socket: "+e.getStackTrace());
+		}
 	}
 }

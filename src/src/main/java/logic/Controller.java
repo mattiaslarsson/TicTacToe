@@ -16,6 +16,9 @@ public class Controller {
 	private MainWindow view;
 	private Player player;
 
+	private boolean connected = false;
+
+
 	public Controller() {
 
 	}
@@ -24,12 +27,25 @@ public class Controller {
 		this.view = view;
 	}
 
-	public void connectedPlayer(Socket connection) {
-		this.connection = connection;
+	public boolean connected(Socket connection) {
+		boolean connectionOk = false;
+		if (!connected) {
+			this.connection = connection;
+			connectionOk = true;
+		}
+		return connectionOk;
 	}
+
+
 
 	// METHODS THAT CORRESPONDS TO COMMANDS FROM COMMANDHANDLER
 
-	public void registerPlayer(Player currPlayer)
+	public void connectPlayer(Player currPlayer) {
+		player = currPlayer;
+		connected = true;
+		//TODO Get player information from database
+	}
+
+
 
 }
