@@ -1,10 +1,5 @@
 package gamelogic;
 
-import javafx.geometry.Point2D;
-
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by Mattias on 2016-05-24.
  */

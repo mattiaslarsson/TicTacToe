@@ -1,24 +1,18 @@
 package gamelogic;
 
-import javafx.application.Application;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.EventHandler;
-import javafx.event.EventType;
-import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
-import javafx.util.Pair;
 import logic.Controller;
 
-import java.awt.Toolkit;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Mattias Larsson on 2016-05-17.
@@ -28,21 +22,18 @@ import java.util.stream.Collectors;
 public class MainWindow {
 
     private List<Circle> playerMarkers = new ArrayList<>();
-    private List<Pair<Circle, Point2D>> circleList = new ArrayList<>();
     private Stage stage;
     private double screenWidth, screenHeight;
     private BooleanProperty player1Turn = new SimpleBooleanProperty(true);
     private GameBoard gameBoard;
-    int numInRow = 0;
-    private List<Pair<Circle, Point2D>> checks;
     private Controller controller;
     private GameArray gameArray;
     private ScrollPane gamePane;
 
     public MainWindow(Stage stage, Controller controller) {
         this.controller = controller;
-        screenWidth = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
-        screenHeight = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
+        screenWidth = 800;
+        screenHeight = 800;
         this.stage = stage;
         this.stage.setScene(initGameBoard());
         this.stage.setMaximized(true);
@@ -77,7 +68,6 @@ public class MainWindow {
             });
             gameBoard.addEventHandler(MouseEvent.MOUSE_CLICKED, addMouseListener());
         }
-        
     }
 
     private boolean isFull() {
@@ -157,6 +147,4 @@ public class MainWindow {
             }
         };
     }
-
-
 }
