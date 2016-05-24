@@ -13,9 +13,9 @@ public class GameArray {
     private IntPair[] checkPattern = {
             new IntPair(0,-1),
             new IntPair(1,-1),
-            new IntPair(0,1),
-            new IntPair(1,1),
             new IntPair(1,0),
+            new IntPair(1,1),
+            new IntPair(0,1),
             new IntPair(-1,1),
             new IntPair(-1,0),
             new IntPair(-1,-1)
@@ -40,37 +40,33 @@ public class GameArray {
     }
 
     private boolean checkWinner(int x, int y, int player) {
-//        int iterator = 0;
-//        List<IntPair> matches = new ArrayList<>();
-//        matches.add(new IntPair(x, y));
-//        while (matches.size() > 0) {
-//            x = matches.get(matches.size()-1).getX();
-//            y = matches.get(matches.size()-1).getY();
-//            matches.remove(matches.size()-1);
-            for (int i = 0; i < checkPattern.length; i++) {
-                int currX = x + checkPattern[i].getX();
-                int currY = y + checkPattern[i].getY();
-                if (currX < 0 || currY < 0 || currX > gameGrid[0].length-1 || currY > gameGrid[0].length-1) {continue;}
-                
-                if (gameGrid[currX][currY] == player) {
-                    int sameDirX = currX + checkPattern[i].getX();
-                    int sameDirY = currY + checkPattern[i].getY();
-                    if (sameDirX < 0 || sameDirX > gameGrid[0].length-1 || sameDirY < 0 || sameDirY > gameGrid[0].length-1) {
-                        continue;
-                    }
-                    if (gameGrid[sameDirX][sameDirY] == player) {
-                        System.out.println("sameDir --- x: " + x + " y: " + y + " currX: " + currX + " currY: " + currY + " sameX: " + sameDirX + " sameY: " + sameDirY);
+        for (int i = 0; i < checkPattern.length; i++) {
+            int currX = x + checkPattern[i].getX();
+            int currY = y + checkPattern[i].getY();
+            if (currX < 0 || currY < 0 || currX > gameGrid[0].length-1 || currY > gameGrid[0].length-1) {continue;}
+
+            if (gameGrid[currX][currY] == player) {
+                int sameDirX = currX + checkPattern[i].getX();
+                int sameDirY = currY + checkPattern[i].getY();
+                if (sameDirX < 0 || sameDirX > gameGrid[0].length-1 || sameDirY < 0 || sameDirY > gameGrid[0].length-1) {
+                    continue;
+                }
+                if (gameGrid[sameDirX][sameDirY] == player) {
+                    System.out.println("sameDir --- x: " + x + " y: " + y + " currX: " + currX + " currY: " + currY + " sameX: " + sameDirX + " sameY: " + sameDirY);
+                    return true;
+                }
+
+                int oppositeX = i > 3 ? x + checkPattern[i-4].getX() : x + checkPattern[i+4].getX();
+                int oppositeY = i > 3 ? y + checkPattern[i-4].getY() : y + checkPattern[i+4].getY();
+                System.out.println("i: " + i);
+                System.out.println("oppx: " + oppositeX);
+                System.out.println("oppy: " + oppositeY);
+                if (oppositeX < 0 || oppositeX > gameGrid[0].length-1 || oppositeY < 0 || oppositeY > gameGrid[0].length-1) {
+                    continue;
+                }
+                if (gameGrid[oppositeX][oppositeY] == player) {
+                    System.out.println("OppDir --- x: " + x + " y: " + y + " currX: " + currX + " currY: " + currY + " oppX: " + oppositeX + " oppY: " + oppositeY);
                         return true;
-                    }
-                    
-                    int oppositeX = i > 3 ? x + checkPattern[i - 4].getX() : x + checkPattern[i+4].getX();
-                    int oppositeY = i > 3 ? y + checkPattern[i - 4].getY() : y + checkPattern[i+4].getY();
-                    if (oppositeX < 0 || oppositeX > gameGrid[0].length-1 || oppositeY < 0 || oppositeY > gameGrid[0].length-1) {
-                        continue;
-                    }
-                    if (gameGrid[oppositeX][oppositeY] == player) {
-                        System.out.println("OppDir --- x: " + x + " y: " + y + " currX: " + currX + " currY: " + currY + " oppX: " + oppositeX + " oppY: " + oppositeY);
-                            return true;
                 }
             }
         }
