@@ -41,8 +41,8 @@ public class MainWindow {
 
     public MainWindow(Stage stage, Controller controller) {
         this.controller = controller;
-        screenWidth = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
-        screenHeight = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
+        screenWidth = 800;
+        screenHeight = 800;
         this.stage = stage;
         this.stage.setScene(initGameBoard());
         this.stage.setMaximized(true);
