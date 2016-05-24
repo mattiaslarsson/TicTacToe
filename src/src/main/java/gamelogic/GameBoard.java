@@ -19,8 +19,9 @@ public class GameBoard extends GridPane {
     private int numOfRows = 3;
     private IntegerProperty cellSizeProperty = new SimpleIntegerProperty();
 
-    public GameBoard(double width, double height) {
+    public GameBoard(double width, double height, int numRows) {
         // The maximum width and height of the board
+        numOfRows = numRows;
         this.mWidth = width;
         this.mHeight = height;
         // Set the size of each cell in the grid
@@ -59,6 +60,7 @@ public class GameBoard extends GridPane {
         // Remove the constraints
         this.getColumnConstraints().remove(0, numOfRows);
         this.getRowConstraints().remove(0, numOfRows);
+
         numOfRows += 2;
         // Set new constraints
         for (int i = 0; i<numOfRows; i++) {
@@ -68,6 +70,9 @@ public class GameBoard extends GridPane {
         cellSizeProperty.setValue((int)mHeight/numOfRows);
     }
 
+    public void addMarker(Circle marker, int col, int row) {
+        System.out.println("Lade till i: " + col + ", " + row);
+    }
     /**
      *
      * @return The number of rows in the grid

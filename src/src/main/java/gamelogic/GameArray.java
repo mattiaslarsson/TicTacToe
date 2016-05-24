@@ -21,10 +21,10 @@ public class GameArray {
             new IntPair(-1,-1)
     };
 
+    private int gridSize;
 
-
-
-    public GameArray(int gridSize) {
+    public GameArray(int gS) {
+        this.gridSize = gS;
         gameGrid = new int[gridSize][gridSize];
     }
 
@@ -34,37 +34,32 @@ public class GameArray {
 
     public void addMarker(int player, int x, int y) {
         gameGrid[x][y] = player;
-        System.out.println("-----------------------------");
-        System.out.println("X: " + x);
-        System.out.println("Y: " + y);
         if(checkWinner(x, y, player)) {
             System.out.println("VINN");
         };
     }
 
     private boolean checkWinner(int x, int y, int player) {
-        int iterator = 0;
-        List<IntPair> matches = new ArrayList<>();
-        matches.add(new IntPair(x, y));
-        int matchesCounter = 0;
-        while (matches.size() > 0) {
-            x = matches.get(matches.size()-1).getX();
-            y = matches.get(matches.size()-1).getY();
-            matches.remove(matches.size()-1);
+//        int iterator = 0;
+//        List<IntPair> matches = new ArrayList<>();
+//        matches.add(new IntPair(x, y));
+//        while (matches.size() > 0) {
+//            x = matches.get(matches.size()-1).getX();
+//            y = matches.get(matches.size()-1).getY();
+//            matches.remove(matches.size()-1);
             for (int i = 0; i < checkPattern.length; i++) {
-                System.out.println("Börjar kontroll nr: "+i);
                 int currX = x + checkPattern[i].getX();
                 int currY = y + checkPattern[i].getY();
                 if (currX < 0 || currY < 0 || currX > gameGrid[0].length-1 || currY > gameGrid[0].length-1) {continue;}
                 
                 if (gameGrid[currX][currY] == player) {
-
                     int sameDirX = currX + checkPattern[i].getX();
                     int sameDirY = currY + checkPattern[i].getY();
                     if (sameDirX < 0 || sameDirX > gameGrid[0].length-1 || sameDirY < 0 || sameDirY > gameGrid[0].length-1) {
                         continue;
                     }
                     if (gameGrid[sameDirX][sameDirY] == player) {
+                        System.out.println("sameDir --- x: " + x + " y: " + y + " currX: " + currX + " currY: " + currY + " sameX: " + sameDirX + " sameY: " + sameDirY);
                         return true;
                     }
                     
@@ -74,15 +69,38 @@ public class GameArray {
                         continue;
                     }
                     if (gameGrid[oppositeX][oppositeY] == player) {
+                        System.out.println("OppDir --- x: " + x + " y: " + y + " currX: " + currX + " currY: " + currY + " oppX: " + oppositeX + " oppY: " + oppositeY);
                             return true;
-                    } else if (iterator < 1) {
-                        matches.add(new IntPair(currX, currY));
-                    }
                 }
             }
-            iterator++;
         }
         return false;
+    }
+
+    public void growBoard(int x, int y) {
+        boolean right = false, down = false;
+        if (x >= (gridSize-1)/2) {
+            right = true;
+        }
+        if (y >= (gridSize-1)/2) {
+            down = true;
+        }
+        gridSize += 2;
+        int[][] tempGrid = new int[gridSize][gridSize];
+        for (int oldX = 0; oldX < gameGrid.length; oldX++) {
+            for (int oldY = 0; oldY < gameGrid[oldX].length; oldY++) {
+                if(!right && !down) {
+                    tempGrid[oldX+2][oldY+2] = gameGrid[oldX][oldY];
+                } else if (!right && down) {
+                    tempGrid[oldX+2][oldY] = gameGrid[oldX][oldY];
+                } else if (right && !down) {
+                    tempGrid[oldX][oldY+2] = gameGrid[oldX][oldY];
+                } else {
+                    tempGrid[oldX][oldY] = gameGrid[oldX][oldY];
+                }
+            }
+        }
+        gameGrid = tempGrid;
     }
 }
 

@@ -3,9 +3,12 @@ package gamelogic;
 import javafx.application.Application;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
@@ -33,6 +36,8 @@ public class MainWindow {
     int numInRow = 0;
     private List<Pair<Circle, Point2D>> checks;
     private Controller controller;
+    private GameArray gameArray;
+    private ScrollPane gamePane;
 
     public MainWindow(Stage stage, Controller controller) {
         this.controller = controller;
@@ -51,78 +56,60 @@ public class MainWindow {
      * @return A Scene with a GridPane
      */
     private Scene initGameBoard() {
-        gameBoard = new GameBoard(screenWidth, screenHeight);
-        GameArray gameArray = new GameArray(gameBoard.getRows());
-        ScrollPane gamePane = new ScrollPane();
+        gameBoard = new GameBoard(screenWidth, screenHeight, 3);
+        gameArray = new GameArray(gameBoard.getRows());
+        gamePane = new ScrollPane();
         gamePane.setContent(gameBoard);
-
+        gameBoard.addEventHandler(MouseEvent.MOUSE_CLICKED, addMouseListener());
         Scene gameScene = new Scene(gamePane, screenWidth, screenHeight);
-
-        gameBoard.setOnMouseClicked(mouseClick -> {
-            // Find out which column and row the user clicked
-            int clickCol = (int)Math.round(((mouseClick.getX() -
-                    (mouseClick.getX() % gameBoard.getCellSize())) /
-                    gameBoard.getCellSize()));
-            int clickRow = (int)Math.round(((mouseClick.getY() -
-                    (mouseClick.getY() % gameBoard.getCellSize())) /
-                    gameBoard.getCellSize()));
-
-            // Check wether the click was outside the grid
-            if (clickCol > gameBoard.getRows() -1){clickCol = gameBoard.getRows()-1;}
-            if (clickRow > gameBoard.getRows() -1){clickRow = gameBoard.getRows()-1;}
-
-            // If the click was made in an empty cell
-            // place a marker in that cell with a color
-            // that corresponds to which player is currently playing
-            // and add that marker to a list
-            if (!checkDoubles(clickCol, clickRow)) {
-                if (player1Turn.getValue()) {
-                    Circle marker = new PlayerMarker().placeMarker(1);
-                    gameBoard.add(marker, clickCol, clickRow);
-                    playerMarkers.add(marker);
-                    gameArray.addMarker(1, clickCol, clickRow);
-
-                } else {
-                    Circle marker = new PlayerMarker().placeMarker(2);
-                    gameBoard.add(marker, clickCol, clickRow);
-                    playerMarkers.add(marker);
-                    gameArray.addMarker(2, clickCol, clickRow);
-                }
-
-            }
-
-            // Check if the grid is full of markers
-            if(playerMarkers.size()==(gameBoard.getRows()*gameBoard.getRows())) {
-                // Increase the gameboard's size
-                gameBoard.incGameBoard();
-                // Move the markers
-                playerMarkers.forEach(marker -> {
-                    int col = GridPane.getColumnIndex(marker);
-                    int row = GridPane.getRowIndex(marker);
-                    gameBoard.getChildren().remove(marker);
-                    gameBoard.add(marker, col+1, row+1);
-                });
-
-            }
-            // Bind the marker's radius so that they always fits in the cells
+        
+        return gameScene;
+    }
+    
+    private void viewController(int col, int row) {
+        if(!checkDoubles(col, row)) {
+            drawMarker(col, row);
+            player1Turn.setValue(!player1Turn.getValue());
+        }
+        if(isFull()) {
             playerMarkers.forEach(marker -> {
                 marker.radiusProperty().bind(gameBoard.getCellSizeProperty().divide(2));
             });
-
-            // Change the player to play
-            player1Turn.setValue(!player1Turn.getValue());
-        });
-        return gameScene;
+            gameBoard.addEventHandler(MouseEvent.MOUSE_CLICKED, addMouseListener());
+        }
+        
     }
 
-    /**
-     * Check if the marker is placed in an empty cell
-     *
-     * @param col The column where the player tried to place a marker
-     * @param row The row where the player tried to place a marker
-     *
-     * @return True if there is a double, False otherwise
-     */
+    private boolean isFull() {
+        if(playerMarkers.size()==(gameBoard.getRows()*gameBoard.getRows())) {
+                // Increase the gameboard's size
+                gameBoard.incGameBoard();
+                gameArray.growBoard(GridPane.getColumnIndex(playerMarkers.get(playerMarkers.size()-1)),
+                        GridPane.getRowIndex(playerMarkers.get(playerMarkers.size()-1)));
+
+                int[][] tempGrid = gameArray.getGameGrid();
+                playerMarkers.clear();
+                gameBoard = new GameBoard(screenWidth, screenHeight, tempGrid[0].length);
+                gamePane.setContent(gameBoard);
+                for (int x = 0; x<tempGrid.length; x++) {
+                    for(int y = 0; y<tempGrid[x].length; y++) {
+                        if (tempGrid[x][y] == 1) {
+                            Circle playerMarker = new PlayerMarker().placeMarker(1);
+                            gameBoard.add(playerMarker, x, y);
+                            playerMarkers.add(playerMarker);
+                        } else if(tempGrid[x][y] == 2) {
+                            Circle playerMarker = new PlayerMarker().placeMarker(2);
+                            gameBoard.add(playerMarker, x, y);
+                            playerMarkers.add(playerMarker);
+                        }
+                    }
+                }
+
+            return true;
+        }
+        return false;
+    }
+
     private boolean checkDoubles(int col, int row) {
         for (Circle circle : playerMarkers) {
             if (GridPane.getColumnIndex(circle) - col == 0 && GridPane.getRowIndex(circle) - row == 0) {
@@ -132,131 +119,44 @@ public class MainWindow {
         return false;
     }
 
-    /**
-     * Check if there is a player with 3 markers in a row
-     */
-    private void checkWinner() {
-        System.out.println("---------------");
-        Circle lastMarker = playerMarkers.get(playerMarkers.size()-1);
-        int column = GridPane.getColumnIndex(lastMarker);
-        int row = GridPane.getRowIndex(lastMarker);
-        Paint color = lastMarker.getFill();
-        circleList.clear();
-        playerMarkers.forEach(marker -> {
-            circleList.add(new Pair(marker, new Point2D(
-                (int) GridPane.getColumnIndex(marker),
-                (int) GridPane.getRowIndex(marker))));
-        });
-
-        // Inserts all the markers with the same color on a single row in a new list
-        checks = circleList.stream().filter(c -> c.getValue().getY() == row)
-                .filter(c -> c.getKey().getFill() == color).collect(Collectors.toList());
-
-        // Sort the new list according to the element's x-coordinate
-        Collections.sort(checks, new Comparator<Pair<Circle, Point2D>>() {
-            @Override
-            public int compare(Pair<Circle, Point2D> c1, Pair<Circle, Point2D> c2) {
-                if(c1.getValue().getX() < c2.getValue().getX()) return -1;
-                if(c1.getValue().getX() > c2.getValue().getX()) return 1;
-                return 0;
+    private void drawMarker(int col, int row) {
+        if (!checkDoubles(col, row)) {
+            if (player1Turn.getValue()) {
+                Circle marker = new PlayerMarker().placeMarker(1);
+                gameBoard.add(marker, col, row);
+                gameBoard.addMarker(marker, col, row);
+                playerMarkers.add(marker);
+                gameArray.addMarker(1, col, row);
+            } else {
+                Circle marker = new PlayerMarker().placeMarker(2);
+                gameBoard.add(marker, col, row);
+                gameBoard.addMarker(marker, col, row);
+                playerMarkers.add(marker);
+                gameArray.addMarker(2, col, row);
             }
-        });
-
-
-        // Check row
-        numInRow = 0;
-
-        // Check if 3 adjacent markers have the same color
-        if(checks.size() > 2) {
-            for (int i = 0; i<checks.size()-1; i++) {
-                if (checks.get(i+1).getValue().getX() - checks.get(i).getValue().getX() == 1) {
-                    numInRow++;
-                } else {numInRow = 0;}
-            }
-            for (int i = checks.size()-1; i>0; i--) {
-                if (checks.get(i).getValue().getX() - checks.get(i-1).getValue().getX() == 1) {
-                    numInRow++;
-                } else {numInRow = 0;}
-            }
+            playerMarkers.forEach(marker -> {
+                marker.radiusProperty().bind(gameBoard.getCellSizeProperty().divide(2));
+            });
         }
-        if (numInRow > 2) {
-            System.out.println("Vinner row");
-        }
-
-
-
-        // Check column
-        numInRow = 0;
-
-        // Check if 3 adjacent markers have the same color
-        if(checks.size() > 2) {
-            for (int i = 0; i<checks.size()-1; i++) {
-                if (checks.get(i+1).getValue().getY() - checks.get(i).getValue().getY() == 1) {
-                    numInRow++;
-                } else {numInRow = 0;}
-            }
-            for (int i = checks.size()-1; i>0; i--) {
-                if (checks.get(i).getValue().getY() - checks.get(i-1).getValue().getY() == 1) {
-                    numInRow++;
-                } else {numInRow = 0;}
-            }
-        }
-        if (numInRow > 2) {
-            System.out.println("Vinner column");
-        }
-
-        // Check diag (forward slash)
-        numInRow = 0;
-
-        // Check if 3 adjacent markers have the same color
-        if(checks.size() > 2) {
-            for (int i = 0; i<checks.size()-1; i++) {
-                if (checks.get(i+1).getValue().getY() - checks.get(i).getValue().getY() == -1
-                        && checks.get(i+1).getValue().getX() - checks.get(i).getValue().getX() == 1) {
-                    numInRow++;
-                } else {numInRow = 0;}
-            }
-            for (int i = checks.size()-1; i>0; i--) {
-                if (checks.get(i).getValue().getY() - checks.get(i-1).getValue().getY() == -1
-                        && checks.get(i).getValue().getX() - checks.get(i-1).getValue().getX() == 1) {
-                    numInRow++;
-                } else {numInRow = 0;}
-            }
-        }
-        if (numInRow >= 2) {
-            System.out.println("Vinner /");
-        }
-
-        // Check diag (backslash)
-        numInRow = 0;
-
-        // Check if 3 adjacent markers have the same color
-        if(checks.size() > 2) {
-            for (int i = 0; i<checks.size()-1; i++) {
-                System.out.println(checks.get(i+1).getValue().getY() - checks.get(i).getValue().getY());
-                System.out.println(checks.get(i+1).getValue().getX() - checks.get(i).getValue().getX());
-                if (checks.get(i+1).getValue().getY() - checks.get(i).getValue().getY() == 1
-                        && checks.get(i+1).getValue().getX() - checks.get(i).getValue().getX() == 1) {
-                    numInRow++;
-                    System.out.println(numInRow);
-                } else {numInRow = 0;}
-            }
-            for (int i = checks.size()-1; i>0; i--) {
-                System.out.println(checks.get(i).getValue().getY() - checks.get(i-1).getValue().getY());
-                System.out.println(checks.get(i).getValue().getX() - checks.get(i-1).getValue().getX());
-                if (checks.get(i).getValue().getY() - checks.get(i-1).getValue().getY() == 1
-                        && checks.get(i).getValue().getX() - checks.get(i-1).getValue().getX() == 1) {
-                    numInRow++;
-                    System.out.println(numInRow);
-                } else {numInRow = 0;}
-            }
-            if (numInRow >= 2) {
-                System.out.println("Vinner \\");
-            }
-        }
-
-        checks.forEach(circle -> {
-            System.out.println("X: " + circle.getValue().getX() + " Y: " + circle.getValue().getY());
-        });
     }
+
+    private EventHandler<MouseEvent> addMouseListener() {
+        return new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent e) {
+                if (e.getEventType() == MouseEvent.MOUSE_CLICKED) {
+                    int clickCol = (int) Math.round(((e.getX() -
+                            (e.getX() % gameBoard.getCellSize())) /
+                            gameBoard.getCellSize()));
+                    int clickRow = (int) Math.round(((e.getY() -
+                            (e.getY() % gameBoard.getCellSize())) /
+                            gameBoard.getCellSize()));
+                    
+                    viewController(clickCol, clickRow);
+                }
+            }
+        };
+    }
+
+
 }
