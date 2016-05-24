@@ -36,7 +36,7 @@ public class MainWindow {
         screenHeight = 800;
         this.stage = stage;
         this.stage.setScene(initGameBoard());
-        this.stage.setMaximized(true);
+//        this.stage.setMaximized(true);
         this.stage.show();
     }
 
