@@ -32,9 +32,10 @@ public class MainWindow {
     private GameBoard gameBoard;
     int numInRow = 0;
     private List<Pair<Circle, Point2D>> checks;
-
+    private Controller controller;
 
     public MainWindow(Stage stage, Controller controller) {
+        this.controller = controller;
         screenWidth = Toolkit.getDefaultToolkit().getScreenSize().getWidth();
         screenHeight = Toolkit.getDefaultToolkit().getScreenSize().getHeight();
         this.stage = stage;
@@ -51,6 +52,7 @@ public class MainWindow {
      */
     private Scene initGameBoard() {
         gameBoard = new GameBoard(screenWidth, screenHeight);
+        GameArray gameArray = new GameArray(gameBoard.getRows());
         ScrollPane gamePane = new ScrollPane();
         gamePane.setContent(gameBoard);
 
@@ -78,11 +80,13 @@ public class MainWindow {
                     Circle marker = new PlayerMarker().placeMarker(1);
                     gameBoard.add(marker, clickCol, clickRow);
                     playerMarkers.add(marker);
+                    gameArray.addMarker(1, clickCol, clickRow);
 
                 } else {
                     Circle marker = new PlayerMarker().placeMarker(2);
                     gameBoard.add(marker, clickCol, clickRow);
                     playerMarkers.add(marker);
+                    gameArray.addMarker(2, clickCol, clickRow);
                 }
 
             }
@@ -104,7 +108,7 @@ public class MainWindow {
             playerMarkers.forEach(marker -> {
                 marker.radiusProperty().bind(gameBoard.getCellSizeProperty().divide(2));
             });
-            checkWinner();
+
             // Change the player to play
             player1Turn.setValue(!player1Turn.getValue());
         });
