@@ -36,13 +36,12 @@ public class MainWindow {
         screenHeight = 800;
         this.stage = stage;
         this.stage.setScene(initGameBoard());
-//        this.stage.setMaximized(true);
         this.stage.show();
     }
 
 
     /**
-     * Initiates the Gameboard and sets up the eventlistener
+     * Initiates the Gameboard
      *
      * @return A Scene with a GridPane
      */
@@ -56,7 +55,7 @@ public class MainWindow {
         
         return gameScene;
     }
-    
+
     private void viewController(int col, int row) {
         if(!checkDoubles(col, row)) {
             drawMarker(col, row);
