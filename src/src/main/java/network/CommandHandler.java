@@ -21,7 +21,6 @@ public class CommandHandler implements Runnable {
 
 	private Controller controller;
 	private Socket connection;
-	//private PrintWriter out;
 	private PrintStream out;
 	private boolean disconnect = false;
 	private Gson gson;
@@ -36,7 +35,6 @@ public class CommandHandler implements Runnable {
 		this.controller = controller;
 		this.connection = connection;
 		try {
-			//out = new PrintWriter(connection.getOutputStream(), true);
 			out = new PrintStream(connection.getOutputStream());
 		} catch (IOException e) {
 			System.out.println("Error setting up connection: "+e.getStackTrace());
@@ -71,8 +69,6 @@ public class CommandHandler implements Runnable {
 				while (sc.hasNextLine()) {
 					logline = sc.nextLine();
 					parse(logline);
-					System.out.println(logline.contains(newLine));
-					System.out.println("har inget radavslut");
 				}
 			} catch (IOException e) {
 				System.out.println("Error with connection: "+e.getStackTrace());
@@ -93,8 +89,6 @@ public class CommandHandler implements Runnable {
 	 * @param currMessage Message
 	 */
 	public void sendMessage (Message currMessage) {
-
-		System.out.println("Sending message: "+currMessage.toString()); // TEST
 		String jsonData = gson.toJson(currMessage);
 		out.println(jsonData);
 		out.flush();
@@ -121,12 +115,14 @@ public class CommandHandler implements Runnable {
 			case "connected":
 				Player remotePlayer = gson.fromJson(cmdData.get(0),Player.class);
 				controller.connectedPlayer(remotePlayer);
+				break;
 			case "disconnect":
 				controller.remoteDisconnect();
 				break;
 			case "start":
 				boolean startPlayer = gson.fromJson(cmdData.get(0),Boolean.class);
 				controller.remoteStartGame(startPlayer);
+				break;
 			case "chat":
 				String chatMessage = gson.fromJson(cmdData.get(0), String.class);
 				controller.remoteChatMessage(chatMessage);

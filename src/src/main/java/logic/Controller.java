@@ -87,12 +87,12 @@ public class Controller {
         //TODO Get player information from database
         currMessage = new Message("connected", player);
         cmdhandler.sendMessage(currMessage);
-        System.out.println("Remote connected"); // TEST
     }
 
     public void connectedPlayer(Player currPlayer) {
         remotePlayer = currPlayer;
         connected = true;
+        view.connected(true);
     }
 
     /**
@@ -141,7 +141,6 @@ public class Controller {
                 currMessage = new Message("connect", player);
                 cmdhandler.sendMessage(currMessage);
                 connected = true;
-                System.out.println("Connected to a server"); // TEST
             }
         } catch (IOException e) {
             System.out.println("Error connecting to remote: " + e.getStackTrace());
@@ -154,9 +153,7 @@ public class Controller {
         if (start > 0.5) {
             startPlayer = true;
         }
-
         currMessage = new Message("start", !startPlayer);
-        System.out.println(currMessage.toString()); // TEST
         return startPlayer;
     }
 
