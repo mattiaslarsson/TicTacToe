@@ -121,6 +121,7 @@ public class MainWindow {
                 chatButton.setDisable(true);
                 connectBox.setVisible(true);
                 startBox.setVisible(false);
+                stage.setScene(initStartScreen());
             });
 
         }
@@ -155,15 +156,15 @@ public class MainWindow {
 
     private void viewController(int col, int row) {
         if(!checkDoubles(col, row)) {
-            controller.makeMove(col, row);
             drawMarker(col, row);
             player1Turn.setValue(!player1Turn.getValue());
-        }
-        if(isFull()) {
-            playerMarkers.forEach(marker -> {
-                marker.radiusProperty().bind(gameBoard.getCellSizeProperty().divide(2));
-            });
-            gameBoard.addEventHandler(MouseEvent.MOUSE_CLICKED, addMouseListener());
+            if(isFull()) {
+                playerMarkers.forEach(marker -> {
+                    marker.radiusProperty().bind(gameBoard.getCellSizeProperty().divide(2));
+                });
+                gameBoard.addEventHandler(MouseEvent.MOUSE_CLICKED, addMouseListener());
+            }
+            controller.makeMove(col, row);
         }
     }
 
