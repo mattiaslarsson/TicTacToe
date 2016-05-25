@@ -1,5 +1,6 @@
 package gamelogic;
 
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.EventHandler;
@@ -35,6 +36,9 @@ public class MainWindow {
     private ScrollPane gamePane;
     private Button chatButton;
     private BorderPane rootPane;
+    private HBox startBox;
+    private StackPane connectPane;
+    private HBox connectBox;
 
     public MainWindow(Stage stage, Controller controller) {
         this.controller = controller;
@@ -58,19 +62,41 @@ public class MainWindow {
     private Scene initStartScreen() {
         rootPane = new BorderPane();
         Scene startScene = new Scene(rootPane, screenWidth, screenHeight);
-
         TextField ip = new TextField();
         ip.setPromptText("Enter IP");
         Button connectButton = new Button("Connect");
-        HBox connectBox = new HBox();
+        connectBox = new HBox();
         connectBox.getChildren().addAll(ip, connectButton);
         connectBox.setAlignment(Pos.CENTER);
-        StackPane connectPane = new StackPane();
+        connectPane = new StackPane();
         connectPane.getChildren().add(connectBox);
         connectPane.setPrefSize(screenWidth, screenHeight - (screenHeight*0.1));
         connectPane.setStyle("-fx-background-color: #ff0000");
         rootPane.setCenter(connectPane);
 
+
+
+        rootPane.setBottom(chatBox());
+
+        connectButton.setOnAction(connect -> {
+            controller.connect(ip.getText());
+
+        });
+
+        startBox = new HBox();
+        Button startButton = new Button("START GAME!");
+        startBox.setAlignment(Pos.CENTER);
+        startButton.setOnAction(start -> {
+            player1Turn.setValue(controller.startGame());
+
+        });
+        startBox.getChildren().add(startButton);
+        connectPane.getChildren().add(startBox);
+        startBox.setVisible(false);
+        return startScene;
+    }
+
+    public HBox chatBox() {
         TextField chatMsg = new TextField();
         chatMsg.setPromptText("chat");
         chatMsg.setMinWidth(screenWidth - (screenWidth*0.2));
@@ -80,25 +106,16 @@ public class MainWindow {
         HBox chatBox = new HBox();
         chatBox.getChildren().addAll(chatMsg, chatButton);
 
-        rootPane.setBottom(chatBox);
-
-        connectButton.setOnAction(connect -> {
-            controller.connect(ip.getText());
-        });
-
-        HBox startBox = new HBox();
-        Button startButton = new Button("START GAME!");
-        startButton.setOnAction(start -> {
-            player1Turn.setValue(controller.startGame());
-
-        });
-
-        return startScene;
+        return chatBox;
     }
-
-
     public void connected(boolean conn) {
-        chatButton.setDisable(!conn);
+        Platform.runLater (() -> {
+            chatButton.setDisable(!conn);
+            connectBox.setVisible(false);
+            startBox.setVisible(true);
+            System.out.println(player1Turn.getValue());
+        });
+
 
     }
 
