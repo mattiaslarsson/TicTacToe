@@ -111,7 +111,7 @@ public class Controller {
      * @param y int
      */
     public void remoteMakeMove(int x, int y) {
-        //TODO Make sure it's players turn if so send coordinates to GUI
+        view.makeMove(x,y);
     }
 
     /**
@@ -154,6 +154,7 @@ public class Controller {
             startPlayer = true;
         }
         currMessage = new Message("start", !startPlayer);
+        cmdhandler.sendMessage(currMessage);
         return startPlayer;
     }
 
