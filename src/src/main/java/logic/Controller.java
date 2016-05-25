@@ -151,9 +151,16 @@ public class Controller {
 	 * Sends disconnection message.
 	 */
 	public void disconnect() {
-		currMessage = new Message("disconnect");
-		cmdhandler.sendMessage(currMessage);
-		cmdhandler.disconnect();
+		if (connected) {
+			currMessage = new Message("disconnect");
+			cmdhandler.sendMessage(currMessage);
+			cmdhandler.disconnect();
+		}
+	}
+
+	public void quit() {
+		disconnect();
+		System.exit(0);
 	}
 
 }

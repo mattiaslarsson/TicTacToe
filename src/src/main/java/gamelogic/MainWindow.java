@@ -42,7 +42,7 @@ public class MainWindow {
                 /**
                  * System exit closes all threads and connections.
                  */
-                System.exit(0);
+                controller.quit();
             }
         });
 
