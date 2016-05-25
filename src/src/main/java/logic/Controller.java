@@ -63,6 +63,15 @@ public class Controller {
 		player = new Player("TestName", "TestSurName", 22);
 	}
 
+	/**
+	 * Method to handle a program exit. Sends disconnect and then gracefully exits closing all threads.
+	 */
+	public void quit() {
+		disconnect();
+		System.exit(0);
+	}
+
+
 	// METHODS THAT CORRESPONDS TO REMOTE COMMANDS
 
 	/**
@@ -158,9 +167,5 @@ public class Controller {
 		}
 	}
 
-	public void quit() {
-		disconnect();
-		System.exit(0);
-	}
 
 }
