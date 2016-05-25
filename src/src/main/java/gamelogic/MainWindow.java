@@ -73,11 +73,7 @@ public class MainWindow {
         connectPane.setPrefSize(screenWidth, screenHeight - (screenHeight*0.1));
         connectPane.setStyle("-fx-background-color: #ff0000");
         rootPane.setCenter(connectPane);
-
-
-
         rootPane.setBottom(chatBox());
-
         connectButton.setOnAction(connect -> {
             controller.connect(ip.getText());
         });
@@ -132,6 +128,7 @@ public class MainWindow {
 
     public void startGame(boolean start) {
         player1Turn.setValue(start);
+
     }
 
     /**
@@ -140,10 +137,11 @@ public class MainWindow {
      * @return A Scene with a GridPane
      */
     private Scene initGameBoard() {
+        BorderPane gamePane = new BorderPane();
         gameBoard = new GameBoard(screenWidth, screenHeight, 3);
         gameArray = new GameArray(gameBoard.getRows());
-        gamePane = new ScrollPane();
-        gamePane.setContent(gameBoard);
+        gamePane.setCenter(gameBoard);
+        gamePane.setBottom(chatBox());
         gameBoard.addEventHandler(MouseEvent.MOUSE_CLICKED, addMouseListener());
         Scene gameScene = new Scene(gamePane, screenWidth, screenHeight);
         
@@ -152,6 +150,7 @@ public class MainWindow {
 
     private void viewController(int col, int row) {
         if(!checkDoubles(col, row)) {
+            controller.makeMove(col, row);
             drawMarker(col, row);
             player1Turn.setValue(!player1Turn.getValue());
         }
@@ -202,6 +201,10 @@ public class MainWindow {
         return false;
     }
 
+    public void makeMove(int x, int y) {
+        viewController(x, y);
+    }
+
     private void drawMarker(int col, int row) {
         if (!checkDoubles(col, row)) {
             if (player1Turn.getValue()) {
@@ -228,7 +231,7 @@ public class MainWindow {
         return new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
-                if (e.getEventType() == MouseEvent.MOUSE_CLICKED) {
+                if (e.getEventType() == MouseEvent.MOUSE_CLICKED && player1Turn.get()) {
                     int clickCol = (int) Math.round(((e.getX() -
                             (e.getX() % gameBoard.getCellSize())) /
                             gameBoard.getCellSize()));
