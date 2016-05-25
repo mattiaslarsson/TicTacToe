@@ -9,6 +9,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import logic.Controller;
 
 import java.util.ArrayList;
@@ -35,6 +36,16 @@ public class MainWindow {
         screenWidth = 800;
         screenHeight = 800;
         this.stage = stage;
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                /**
+                 * System exit closes all threads and connections.
+                 */
+                System.exit(0);
+            }
+        });
+
         this.stage.setScene(initGameBoard());
         this.stage.show();
     }
@@ -129,6 +140,7 @@ public class MainWindow {
         }
     }
 
+
     private EventHandler<MouseEvent> addMouseListener() {
         return new EventHandler<MouseEvent>() {
             @Override
@@ -146,4 +158,6 @@ public class MainWindow {
             }
         };
     }
+
 }
+
