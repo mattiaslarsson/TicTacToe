@@ -112,7 +112,7 @@ public class CommandHandler implements Runnable {
 				break;
 			case "start":
 				boolean startPlayer = gson.fromJson(cmdData.get(0),Boolean.class);
-				controller.remoteStartGame();
+				controller.remoteStartGame(startPlayer);
 			case "chat":
 				String chatMessage = gson.fromJson(cmdData.get(0), String.class);
 				controller.remoteChatMessage(chatMessage);
