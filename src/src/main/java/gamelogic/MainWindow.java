@@ -83,7 +83,7 @@ public class MainWindow {
         startBox.setAlignment(Pos.CENTER);
         startButton.setOnAction(start -> {
             player1Turn.setValue(controller.startGame());
-
+            stage.setScene(initGameBoard());
             System.out.println(player1Turn.getValue());
 
         });
@@ -207,7 +207,10 @@ public class MainWindow {
     }
 
     public void makeMove(int x, int y) {
-        viewController(x, y);
+        Platform.runLater(() -> {
+            viewController(x, y);
+        });
+
     }
 
     private void drawMarker(int col, int row) {
