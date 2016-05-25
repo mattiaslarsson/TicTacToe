@@ -34,6 +34,7 @@ public class MainWindow {
     private GameArray gameArray;
     private ScrollPane gamePane;
     private Button chatButton;
+    private BorderPane rootPane;
 
     public MainWindow(Stage stage, Controller controller) {
         this.controller = controller;
@@ -55,7 +56,7 @@ public class MainWindow {
     }
 
     private Scene initStartScreen() {
-        BorderPane rootPane = new BorderPane();
+        rootPane = new BorderPane();
         Scene startScene = new Scene(rootPane, screenWidth, screenHeight);
 
         TextField ip = new TextField();
@@ -85,11 +86,24 @@ public class MainWindow {
             controller.connect(ip.getText());
         });
 
+        HBox startBox = new HBox();
+        Button startButton = new Button("START GAME!");
+        startButton.setOnAction(start -> {
+            player1Turn.setValue(controller.startGame());
+
+        });
+
         return startScene;
     }
 
+
     public void connected(boolean conn) {
         chatButton.setDisable(!conn);
+
+    }
+
+    public void startGame(boolean start) {
+        player1Turn.setValue(start);
     }
 
     /**
