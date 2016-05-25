@@ -223,7 +223,7 @@ public class MainWindow {
 
     public void makeMove(int x, int y) {
         Platform.runLater(() -> {
-            viewController(x, y);
+            viewController(x-xOffset, y-yOffset);
         });
 
     }
