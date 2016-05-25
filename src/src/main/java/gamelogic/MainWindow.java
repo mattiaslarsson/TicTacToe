@@ -39,6 +39,7 @@ public class MainWindow {
     private StackPane connectPane;
     private HBox connectBox;
     private BorderPane gamePane;
+    private int xOffset = 0, yOffset = 0;
 
     public MainWindow(Stage stage, Controller controller) {
         this.controller = controller;
@@ -164,7 +165,7 @@ public class MainWindow {
                 });
                 gameBoard.addEventHandler(MouseEvent.MOUSE_CLICKED, addMouseListener());
             }
-            controller.makeMove(col, row);
+            controller.makeMove(col+xOffset, row+yOffset);
         }
     }
 
@@ -172,7 +173,7 @@ public class MainWindow {
         if(playerMarkers.size()==(gameBoard.getRows()*gameBoard.getRows())) {
                 // Increase the gameboard's size
                 gameBoard.incGameBoard();
-                gameArray.growBoard(GridPane.getColumnIndex(playerMarkers.get(playerMarkers.size()-1)),
+                int offset = gameArray.growBoard(GridPane.getColumnIndex(playerMarkers.get(playerMarkers.size()-1)),
                         GridPane.getRowIndex(playerMarkers.get(playerMarkers.size()-1)));
 
                 int[][] tempGrid = gameArray.getGameGrid();
@@ -192,9 +193,22 @@ public class MainWindow {
                         }
                     }
                 }
-
+            switch(offset) {
+                case 1:
+                    xOffset = 2;
+                    break;
+                case 2:
+                    yOffset = 2;
+                    break;
+                case 3:
+                    xOffset = 2;
+                    yOffset = 2;
+                    break;
+            }
             return true;
         }
+        xOffset = 0;
+        yOffset = 0;
         return false;
     }
 

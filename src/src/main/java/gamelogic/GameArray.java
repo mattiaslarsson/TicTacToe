@@ -106,7 +106,8 @@ public class GameArray {
      * @param x x-coordinate of the last marker played
      * @param y y-coordinate of the last marker played
      */
-    public void growBoard(int x, int y) {
+    public int growBoard(int x, int y) {
+        int returnOffset = 0;
         boolean right = false, down = false;
         // The direction of the grow depends on where the last marker is played
         if (x >= (gridSize-1)/2) {
@@ -122,16 +123,20 @@ public class GameArray {
             for (int oldY = 0; oldY < gameGrid[oldX].length; oldY++) {
                 if(!right && !down) {
                     tempGrid[oldX+2][oldY+2] = gameGrid[oldX][oldY];
+                    returnOffset = 3;
                 } else if (!right && down) {
                     tempGrid[oldX+2][oldY] = gameGrid[oldX][oldY];
+                    returnOffset = 1;
                 } else if (right && !down) {
                     tempGrid[oldX][oldY+2] = gameGrid[oldX][oldY];
+                    returnOffset = 2;
                 } else {
                     tempGrid[oldX][oldY] = gameGrid[oldX][oldY];
                 }
             }
         }
         gameGrid = tempGrid;
+        return returnOffset;
     }
 }
 
