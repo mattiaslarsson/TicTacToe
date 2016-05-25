@@ -59,12 +59,17 @@ public class CommandHandler implements Runnable {
 	 */
 	@Override
 	public void run() {
+		String newLine = System.getProperty("line.separator");
+		String logline = "";
 		Scanner sc = null;
 		while(!disconnect) {
 			try {
 				sc = new Scanner(connection.getInputStream());
 				while (sc.hasNextLine()) {
-					parse(sc.nextLine());
+					logline = sc.nextLine();
+					parse(logline);
+					System.out.println(logline.contains(newLine));
+					System.out.println("har inget radavslut");
 				}
 			} catch (IOException e) {
 				System.out.println("Error with connection: "+e.getStackTrace());
@@ -95,7 +100,7 @@ public class CommandHandler implements Runnable {
 	 * @param input String
 	 */
 	private void parse(String input) {
-		System.out.println("Parsing line: "+input); // TEST
+		System.out.println("Input: "+input); // TEST
 		String currData;
 		// Parses json to Message-object
 		Message currMessage = gson.fromJson(input, Message.class);
