@@ -33,12 +33,12 @@ public class MainWindow {
     private GameBoard gameBoard;
     private Controller controller;
     private GameArray gameArray;
-    private ScrollPane gamePane;
     private Button chatButton;
     private BorderPane rootPane;
     private HBox startBox;
     private StackPane connectPane;
     private HBox connectBox;
+    private BorderPane gamePane;
 
     public MainWindow(Stage stage, Controller controller) {
         this.controller = controller;
@@ -142,7 +142,7 @@ public class MainWindow {
      * @return A Scene with a GridPane
      */
     private Scene initGameBoard() {
-        BorderPane gamePane = new BorderPane();
+        gamePane = new BorderPane();
         gameBoard = new GameBoard(screenWidth, screenHeight, 3);
         gameArray = new GameArray(gameBoard.getRows());
         gamePane.setCenter(gameBoard);
@@ -177,7 +177,7 @@ public class MainWindow {
                 int[][] tempGrid = gameArray.getGameGrid();
                 playerMarkers.clear();
                 gameBoard = new GameBoard(screenWidth, screenHeight, tempGrid[0].length);
-                gamePane.setContent(gameBoard);
+                gamePane.setCenter(gameBoard);
                 for (int x = 0; x<tempGrid.length; x++) {
                     for(int y = 0; y<tempGrid[x].length; y++) {
                         if (tempGrid[x][y] == 1) {
