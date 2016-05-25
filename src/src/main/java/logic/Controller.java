@@ -85,6 +85,7 @@ public class Controller {
 		connected = true;
 		//TODO Get player information from database
 		currMessage = new Message("connect", player);
+		System.out.println("Remote connected"); // TEST
 	}
 
 	/**
@@ -124,9 +125,11 @@ public class Controller {
 	public void connect(String ip) {
 		try {
 			Socket newConnection = new Socket(ip,33000);
-			if (!connected(newConnection)) {
+			if (connected(newConnection)) {
 				currMessage = new Message("connect", player);
 				cmdhandler.sendMessage(currMessage);
+				connected = true;
+				System.out.println("Connected to a server"); // TEST
 			}
 		} catch (IOException e) {
 			System.out.println("Error connecting to remote: "+e.getStackTrace());
