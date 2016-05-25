@@ -88,6 +88,7 @@ public class MainWindow {
         startBox.setAlignment(Pos.CENTER);
         startButton.setOnAction(start -> {
             player1Turn.setValue(controller.startGame());
+            System.out.println(player1Turn.getValue());
 
         });
         startBox.getChildren().add(startButton);
@@ -114,7 +115,6 @@ public class MainWindow {
                 chatButton.setDisable(false);
                 connectBox.setVisible(false);
                 startBox.setVisible(true);
-                System.out.println(player1Turn.getValue());
             });
         } else {
             Platform.runLater(() -> {
