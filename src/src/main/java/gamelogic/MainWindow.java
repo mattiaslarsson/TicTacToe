@@ -33,7 +33,7 @@ public class MainWindow {
 
     public MainWindow(Stage stage, Controller controller) {
         this.controller = controller;
-        screenWidth = 800;
+        screenWidth = 600;
         screenHeight = 800;
         this.stage = stage;
         stage.setOnCloseRequest(new EventHandler<WindowEvent>() {

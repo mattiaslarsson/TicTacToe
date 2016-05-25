@@ -167,5 +167,10 @@ public class Controller {
 		}
 	}
 
+	// GETTERS & SETTERS
 
+
+	public boolean getConnected() {
+		return connected;
+	}
 }
