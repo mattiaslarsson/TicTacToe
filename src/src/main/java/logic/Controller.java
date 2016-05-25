@@ -1,5 +1,6 @@
 package logic;
 
+import dao.DatabaseConnector;
 import gamelogic.MainWindow;
 import models.Message;
 import models.Player;
@@ -18,11 +19,13 @@ public class Controller {
     private MainWindow view;
     private Player player, remotePlayer;
     private Message currMessage;
+    private DatabaseConnector dbconn;
 
     private boolean connected = false;
 
 
     public Controller() {
+        dbconn = new DatabaseConnector();
         setOwnPlayer();
     }
 
@@ -69,6 +72,7 @@ public class Controller {
      */
     public void quit() {
         disconnect();
+        dbconn.closeConnection();
         System.exit(0);
     }
 
@@ -195,8 +199,13 @@ public class Controller {
         }
     }
 
-    // GETTERS & SETTERS
+    // CHECK FOR FIRST USE
 
+    private boolean firstUse(){
+        return false;
+    }
+
+    // GETTERS & SETTERS
 
     public boolean getConnected() {
         return connected;
