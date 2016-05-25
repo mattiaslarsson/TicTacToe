@@ -128,6 +128,7 @@ public class MainWindow {
 
     public void startGame(boolean start) {
         player1Turn.setValue(start);
+        stage.setScene(initGameBoard());
 
     }
 
