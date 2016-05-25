@@ -109,13 +109,21 @@ public class MainWindow {
         return chatBox;
     }
     public void connected(boolean conn) {
-        Platform.runLater (() -> {
-            chatButton.setDisable(!conn);
-            connectBox.setVisible(false);
-            startBox.setVisible(true);
-            System.out.println(player1Turn.getValue());
-        });
+        if (conn) {
+            Platform.runLater(() -> {
+                chatButton.setDisable(false);
+                connectBox.setVisible(false);
+                startBox.setVisible(true);
+                System.out.println(player1Turn.getValue());
+            });
+        } else {
+            Platform.runLater(() -> {
+                chatButton.setDisable(true);
+                connectBox.setVisible(true);
+                startBox.setVisible(false);
+            });
 
+        }
 
     }
 
