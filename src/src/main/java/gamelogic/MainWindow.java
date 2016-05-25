@@ -80,7 +80,6 @@ public class MainWindow {
 
         connectButton.setOnAction(connect -> {
             controller.connect(ip.getText());
-
         });
 
         startBox = new HBox();
@@ -106,6 +105,10 @@ public class MainWindow {
         chatButton.setMinWidth(screenWidth - (screenWidth*0.8));
         HBox chatBox = new HBox();
         chatBox.getChildren().addAll(chatMsg, chatButton);
+        chatButton.setOnAction(chat -> {
+            controller.chatMessage(chatMsg.getText());
+            chatMsg.setText("");
+        });
 
         return chatBox;
     }
