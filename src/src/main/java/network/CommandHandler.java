@@ -93,6 +93,8 @@ public class CommandHandler implements Runnable {
 	 * @param currMessage Message
 	 */
 	public void sendMessage (Message currMessage) {
+
+		System.out.println("Sending message: "+currMessage.toString()); // TEST
 		String jsonData = gson.toJson(currMessage);
 		out.println(jsonData);
 		out.flush();
@@ -116,6 +118,9 @@ public class CommandHandler implements Runnable {
 				Player currPlayer = gson.fromJson(cmdData.get(0),Player.class);
 				controller.connectPlayer(currPlayer);
 				break;
+			case "connected":
+				Player remotePlayer = gson.fromJson(cmdData.get(0),Player.class);
+				controller.connectedPlayer(remotePlayer);
 			case "disconnect":
 				controller.remoteDisconnect();
 				break;
