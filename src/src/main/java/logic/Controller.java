@@ -86,6 +86,7 @@ public class Controller {
 		connected = true;
 		//TODO Get player information from database
 		currMessage = new Message("connect", player);
+		cmdhandler.sendMessage(currMessage);
 		System.out.println("Remote connected"); // TEST
 	}
 
@@ -148,7 +149,7 @@ public class Controller {
 		if (start > 0.5) {
 			startPlayer = true;
 		}
-		currMessage = new Message("start",startPlayer);
+		currMessage = new Message("start",!startPlayer);
 		return startPlayer;
 	}
 
@@ -183,6 +184,7 @@ public class Controller {
 			currMessage = new Message("disconnect");
 			cmdhandler.sendMessage(currMessage);
 			cmdhandler.disconnect();
+			view.connected(false);
 		}
 	}
 
