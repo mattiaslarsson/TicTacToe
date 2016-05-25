@@ -117,6 +117,10 @@ public class Controller {
 		connected = false;
 	}
 
+	public void remoteStartGame(boolean startPlayer) {
+		view.startGame(startPlayer);
+	}
+
 	// METHODS FOR SENDING COMMANDS
 
 	/**
@@ -136,6 +140,16 @@ public class Controller {
 		} catch (IOException e) {
 			System.out.println("Error connecting to remote: "+e.getStackTrace());
 		}
+	}
+
+	public boolean startGame() {
+		boolean startPlayer = false;
+		double start = Math.random();
+		if (start > 0.5) {
+			startPlayer = true;
+		}
+		currMessage = new Message("start",startPlayer);
+		return startPlayer;
 	}
 
 	/**
