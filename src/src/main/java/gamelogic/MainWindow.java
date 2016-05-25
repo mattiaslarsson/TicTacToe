@@ -83,6 +83,7 @@ public class MainWindow {
         startBox.setAlignment(Pos.CENTER);
         startButton.setOnAction(start -> {
             player1Turn.setValue(controller.startGame());
+
             System.out.println(player1Turn.getValue());
 
         });
@@ -127,8 +128,11 @@ public class MainWindow {
     }
 
     public void startGame(boolean start) {
-        player1Turn.setValue(start);
-        stage.setScene(initGameBoard());
+        Platform.runLater(() -> {
+            player1Turn.setValue(start);
+            stage.setScene(initGameBoard());
+        });
+
 
     }
 
