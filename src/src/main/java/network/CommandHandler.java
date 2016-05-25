@@ -95,6 +95,7 @@ public class CommandHandler implements Runnable {
 	 * @param input String
 	 */
 	private void parse(String input) {
+		System.out.println("Parsing line: "+input); // TEST
 		String currData;
 		// Parses json to Message-object
 		Message currMessage = gson.fromJson(input, Message.class);

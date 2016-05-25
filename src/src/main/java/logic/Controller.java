@@ -51,6 +51,7 @@ public class Controller {
 			Thread connectionThread = new Thread(cmdhandler);
 			connectionThread.start();
 			connectionOk = true;
+			view.connected(true);
 		}
 		return connectionOk;
 	}
@@ -112,6 +113,7 @@ public class Controller {
 	 */
 	public void remoteDisconnect() {
 		cmdhandler.disconnect();
+		view.connected(false);
 		connected = false;
 	}
 
