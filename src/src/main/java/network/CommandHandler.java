@@ -6,6 +6,7 @@ import models.Message;
 import models.Player;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.List;
@@ -20,7 +21,8 @@ public class CommandHandler implements Runnable {
 
 	private Controller controller;
 	private Socket connection;
-	private PrintWriter out;
+	//private PrintWriter out;
+	private PrintStream out;
 	private boolean disconnect = false;
 	private Gson gson;
 	/**
@@ -34,7 +36,8 @@ public class CommandHandler implements Runnable {
 		this.controller = controller;
 		this.connection = connection;
 		try {
-			out = new PrintWriter(connection.getOutputStream(), true);
+			//out = new PrintWriter(connection.getOutputStream(), true);
+			out = new PrintStream(connection.getOutputStream());
 		} catch (IOException e) {
 			System.out.println("Error setting up connection: "+e.getStackTrace());
 		}
@@ -91,7 +94,8 @@ public class CommandHandler implements Runnable {
 	 */
 	public void sendMessage (Message currMessage) {
 		String jsonData = gson.toJson(currMessage);
-		out.println(jsonData+"\n");
+		out.println(jsonData);
+		out.flush();
 	}
 
 	/**

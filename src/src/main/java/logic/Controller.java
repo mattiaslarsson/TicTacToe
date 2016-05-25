@@ -149,8 +149,9 @@ public class Controller {
 		if (start > 0.5) {
 			startPlayer = true;
 		}
-		System.out.println(currMessage.toString()); // TEST
+
 		currMessage = new Message("start",!startPlayer);
+		System.out.println(currMessage.toString()); // TEST
 		return startPlayer;
 	}
 
