@@ -107,6 +107,12 @@ public class CommandHandler implements Runnable {
 				Player currPlayer = gson.fromJson(cmdData.get(0),Player.class);
 				controller.connectPlayer(currPlayer);
 				break;
+			case "disconnect":
+				controller.remoteDisconnect();
+				break;
+			case "start":
+				boolean startPlayer = gson.fromJson(cmdData.get(0),Boolean.class);
+				controller.remoteStartGame();
 			case "chat":
 				String chatMessage = gson.fromJson(cmdData.get(0), String.class);
 				controller.remoteChatMessage(chatMessage);
@@ -116,9 +122,7 @@ public class CommandHandler implements Runnable {
 				int yMove = gson.fromJson(cmdData.get(1), Integer.class);
 				controller.remoteMakeMove(xMove, yMove);
 				break;
-			case "disconnect":
-				controller.remoteDisconnect();
-				break;
+
 		}
 	}
 }
