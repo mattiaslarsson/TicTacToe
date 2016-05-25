@@ -86,7 +86,7 @@ public class CommandHandler implements Runnable {
 	 */
 	public void sendMessage (Message currMessage) {
 		String jsonData = gson.toJson(currMessage);
-		out.println(jsonData);
+		out.println(jsonData+"\n");
 	}
 
 	/**
