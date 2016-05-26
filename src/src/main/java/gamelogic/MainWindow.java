@@ -39,6 +39,9 @@ public class MainWindow {
     private HBox connectBox;
     private BorderPane gamePane;
     private int reqToWin;
+    private RadioButton threeRadio, fourRadio, fiveRadio;
+    private CheckBox growable, drawAllowed;
+
 
     public MainWindow(Stage stage, Controller controller) {
         this.controller = controller;
@@ -91,14 +94,14 @@ public class MainWindow {
         });
 
         Text playOptionsText = new Text("OPTIONS");
-        RadioButton threeRadio = new RadioButton("3-in-a-row");
-        RadioButton fourRadio = new RadioButton("4-in-a-row");
-        RadioButton fiveRadio = new RadioButton("5-in-a-row");
+        threeRadio = new RadioButton("3-in-a-row");
+        fourRadio = new RadioButton("4-in-a-row");
+        fiveRadio = new RadioButton("5-in-a-row");
         ToggleGroup radioGroup = new ToggleGroup();
         radioGroup.getToggles().addAll(threeRadio, fourRadio, fiveRadio);
 
-        CheckBox growable = new CheckBox("Growable Grid");
-        CheckBox drawAllowed = new CheckBox("Allow Draw");
+        growable = new CheckBox("Growable Grid");
+        drawAllowed = new CheckBox("Allow Draw");
         threeRadio.setSelected(true);
 
         threeRadio.setOnAction(threeAction -> {
@@ -106,6 +109,7 @@ public class MainWindow {
                 reqToWin = 3;
                 growable.setDisable(false);
                 drawAllowed.setSelected(true);
+                sendOptions(reqToWin, growable.isSelected(), drawAllowed.isSelected());
             }
         });
         fourRadio.setOnAction(fourAction -> {
@@ -115,6 +119,7 @@ public class MainWindow {
                 growable.setDisable(true);
                 drawAllowed.setSelected(false);
                 drawAllowed.setDisable(true);
+                sendOptions(reqToWin, growable.isSelected(), drawAllowed.isSelected());
             } else {
                 drawAllowed.setDisable(false);
             }
@@ -126,6 +131,7 @@ public class MainWindow {
                 growable.setDisable(true);
                 drawAllowed.setSelected(false);
                 drawAllowed.setDisable(true);
+                sendOptions(reqToWin, growable.isSelected(), drawAllowed.isSelected());
             } else {
                 drawAllowed.setDisable(false);
             }
@@ -137,18 +143,22 @@ public class MainWindow {
                 fiveRadio.setDisable(true);
                 growable.setSelected(false);
                 growable.setDisable(true);
+                sendOptions(reqToWin, growable.isSelected(), drawAllowed.isSelected());
             } else {
                 fourRadio.setDisable(false);
                 fiveRadio.setDisable(false);
                 growable.setDisable(false);
+                sendOptions(reqToWin, growable.isSelected(), drawAllowed.isSelected());
             }
         });
         growable.setOnAction(growAction -> {
            if(growable.isSelected()) {
                drawAllowed.setSelected(false);
                drawAllowed.setDisable(true);
+               sendOptions(reqToWin, growable.isSelected(), drawAllowed.isSelected());
            } else {
                drawAllowed.setDisable(false);
+               sendOptions(reqToWin, growable.isSelected(), drawAllowed.isSelected());
            }
         });
 
@@ -162,7 +172,32 @@ public class MainWindow {
     }
 
     public void sendOptions(int reqToWin, boolean growable, boolean draw) {
+        controller.sendOptions(reqToWin, growable, draw);
+    }
 
+    public void getOptions(int reqToWin, boolean growable, boolean draw) {
+        this.reqToWin = reqToWin;
+        Platform.runLater(() -> {
+            switch(reqToWin) {
+                case 3:
+                    threeRadio.setSelected(true);
+                    break;
+                case 4:
+                    fourRadio.setSelected(true);
+                    break;
+                case 5:
+                    fiveRadio.setSelected(true);
+            }
+            if(growable)
+                this.growable.setSelected(true);
+            else
+                this.growable.setSelected(false);
+            if (draw)
+                this.drawAllowed.setSelected(true);
+            else
+                this.drawAllowed.setSelected(false);
+
+        });
     }
 
     public HBox chatBox() {
