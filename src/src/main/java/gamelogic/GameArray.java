@@ -1,5 +1,10 @@
 package gamelogic;
 
+import javafx.geometry.Point2D;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Mattias on 2016-05-24.
  *
@@ -46,9 +51,9 @@ public class GameArray {
      * @param x x-coordinate of the move
      * @param y y-coordinate of the move
      */
-    public void addMarker(int player, int x, int y) {
+    public void addMarker(int player, int x, int y, int reqToWin) {
         gameGrid[x][y] = player;
-        if(checkWinner(x, y, player)) {
+        if(checkWinner(x, y, player, reqToWin)) {
             System.out.println("VINN");
         };
     }
@@ -61,44 +66,64 @@ public class GameArray {
      * @param player which player are we checking
      * @return boolean if there is a winner
      */
-    private boolean checkWinner(int x, int y, int player) {
+    private boolean checkWinner(int x, int y, int player, int reqToWin) {
+        int numInRow = 0;
         // Loop through the array with relative coordinates
+        outerLoop:
         for (int i = 0; i < checkPattern.length; i++) {
             int currX = x + checkPattern[i].getX();
             int currY = y + checkPattern[i].getY();
-            // If the new coordinate is out of bounds, continue with the next relative coordinate
-            if (currX < 0 || currY < 0 || currX > gameGrid[0].length-1 || currY > gameGrid[0].length-1) {
+            if (currX < 0 || currY < 0 || currX > gameGrid[0].length-1 || currY > gameGrid[0].length-1 || gameGrid[currX][currY] != player) {
                 continue;
             }
-            // If the new coordinate contains a marker played by the same player
+            System.out.println("Kollar sameDir: " + currX + "," + currY);
             if (gameGrid[currX][currY] == player) {
-                // Continue the check one step further away from the original marker
-                int sameDirX = currX + checkPattern[i].getX();
-                int sameDirY = currY + checkPattern[i].getY();
-                // If the new coordinate is out of bounds, check the opposite direction
-                if (sameDirX < 0 || sameDirX > gameGrid[0].length-1 || sameDirY < 0 || sameDirY > gameGrid[0].length-1) {
-                    int oppositeX = i > 3 ? x + checkPattern[i-4].getX() : x + checkPattern[i+4].getX();
-                    int oppositeY = i > 3 ? y + checkPattern[i-4].getY() : y + checkPattern[i+4].getY();
-                    // If the opposite coordinate is out of bounds, continue with the next relative coordinate
-                    if (oppositeX < 0 || oppositeX > gameGrid[0].length-1 || oppositeY < 0 || oppositeY > gameGrid[0].length-1) {
-                        continue;
+                System.out.println("Hittade en match i " + currX + "," + currY);
+                numInRow++;
+                if(numInRow >= reqToWin-1) {return true;}
+                for (int j = 0; j<reqToWin-2; j++) {
+                    currX += checkPattern[i].getX();
+                    currY += checkPattern[i].getY();
+                    if (currX < 0 || currY < 0 || currX > gameGrid[0].length-1 || currY > gameGrid[0].length-1 || gameGrid[currX][currY] != player) {
+                        int oppositeX = i > 3 ? x+checkPattern[i-4].getX() : x+checkPattern[i+4].getX();
+                        int oppositeY = i > 3 ? y+checkPattern[i-4].getY() : y+checkPattern[i+4].getY();
+                        if (oppositeX < 0 || oppositeY < 0 || oppositeX > gameGrid[0].length-1 || oppositeY > gameGrid[0].length-1 || gameGrid[oppositeX][oppositeY] != player) {
+                            numInRow = 0;
+                            continue outerLoop;
+                        }
+                        for (int k = 0; k < reqToWin-2; k++) {
+                            System.out.println("oppDir: " + oppositeX+"," + oppositeY);
+                            if (gameGrid[oppositeX][oppositeY] == player) {
+                                System.out.println("Hittade en oppMatch i " + oppositeX + "," + oppositeY);
+                                numInRow++;
+                                if(numInRow >= reqToWin-1) {return true;}
+                                oppositeX += i > 3 ? x+checkPattern[i-4].getX() : x+checkPattern[i+4].getX();
+                                oppositeY += i > 3 ? y+checkPattern[i-4].getY() : y+checkPattern[i+4].getY();
+                                if (oppositeX < 0 || oppositeY < 0 || oppositeX > gameGrid[0].length-1 || oppositeY > gameGrid[0].length-1 || gameGrid[oppositeX][oppositeY] != player) {
+                                    numInRow = 0;
+                                    continue outerLoop;
+                                }
+                            }
+                        }
+                    } else if(gameGrid[currX][currY] == player) {
+                        System.out.println("Hittade en match i " + currX + "," + currY);
+                        numInRow++;
+                        if(numInRow >= reqToWin-1) {return true;}
                     }
-                    // If the opposite marker is also of the same color we have a winner
-                    // else continue with the next relative coordinate
-                    if (gameGrid[oppositeX][oppositeY] == player) {
-                        return true;
-                    }
-                    continue;
+                    if (numInRow >= reqToWin-1) {return true;}
+
                 }
-                // If the marker two steps away from the original is of the same color
-                // we have a winner
-                if (gameGrid[sameDirX][sameDirY] == player) {
-                    return true;
-                }
+                numInRow = 0;
             }
         }
+
         return false;
     }
+
+
+
+
+
 
     /**
      * Increase the array of markers played
