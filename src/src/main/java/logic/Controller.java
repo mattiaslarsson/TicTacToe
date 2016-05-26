@@ -26,6 +26,10 @@ public class Controller {
 
     public Controller() {
         dbconn = new DatabaseConnector();
+        if(dbconn.firstRun()){
+            //TODO FANCY FIRST RUN ROUTINES
+            System.out.println("Första starten");
+        }
         setOwnPlayer();
     }
 
