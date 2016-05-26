@@ -42,10 +42,10 @@ public class DatabaseConnector {
         boolean isFirst = false;
         String sqlQ = "SELECT count(*) AS number FROM sqlite_master WHERE type='table' AND name='myPlayer';";
         ArrayList results = executeSQLQuery(sqlQ);
-        Map currRow = (HashMap)results.get(0);
+        Map currRow = (HashMap) results.get(0);
         int number = (int) currRow.get("number");
 
-        if (number > 0){
+        if (number > 0) {
             System.out.println("Tidigare spelare funnen");
         } else {
             initDB();
@@ -67,25 +67,25 @@ public class DatabaseConnector {
     }
 
     public void createOwnPlayer(String firstName, String surName) {
-        long id =  (System.currentTimeMillis() << 20) | (System.nanoTime() & ~9223372036854251520L);
-        insertPlayer("myPlayer",firstName, surName, 0, id);
+        long id = (System.currentTimeMillis() << 20) | (System.nanoTime() & ~9223372036854251520L);
+        insertPlayer("myPlayer", firstName, surName, 0, id);
     }
 
-    public Player getOwnPlayer (){
+    public Player getOwnPlayer() {
         String sql = "SELECT * FROM myPlayer;";
         ArrayList result = executeSQLQuery(sql);
         HashMap currMap = (HashMap) result.get(0);
-        String firstName = (String)currMap.get("firstName");
-        String surName = (String)currMap.get("surName");
-        int rank = (int)currMap.get("rank");
-        long id = (long)currMap.get("id");
+        String firstName = (String) currMap.get("firstName");
+        String surName = (String) currMap.get("surName");
+        int rank = (int) currMap.get("rank");
+        long id = (long) currMap.get("id");
         Player currPlayer = new Player(firstName, surName, id, rank);
         return currPlayer;
     }
 
-    public void updatePlayer (Player sentPlayer){
+    public void updatePlayer(Player sentPlayer) {
         Player currPlayer = null;
-        String sql = "SELECT * FROM players WHERE id = "+sentPlayer.getId()+";";
+        String sql = "SELECT * FROM players WHERE id = " + sentPlayer.getId() + ";";
         ArrayList result = executeSQLQuery(sql);
         if (result.size() > 0) {
             HashMap currMap = (HashMap) result.get(0);
@@ -93,17 +93,24 @@ public class DatabaseConnector {
             String surName = (String) currMap.get("surName");
             int rank = (int) currMap.get("rank");
             long id = (long) currMap.get("id");
-            String updateSql = "UPDATE players SET firstName =\""+firstName+"\", surName = \""+surName+"\", rank ="+rank+" WHERE id ="+id+";";
+            String updateSql = "UPDATE players SET firstName =\"" + firstName + "\", surName = \"" + surName + "\", rank =" + rank + " WHERE id =" + id + ";";
             executeSQL(updateSql);
         } else {
-            insertPlayer("players",sentPlayer.getFirstName(), sentPlayer.getSurName(), sentPlayer.getRank(), sentPlayer.getId());
+            insertPlayer("players", sentPlayer.getFirstName(), sentPlayer.getSurName(), sentPlayer.getRank(), sentPlayer.getId());
         }
     }
 
+    public void addMatch (Player remotePlayer, int points, int opppoints, long startTime, long endTime, int gridSize) {
+        // id INT opponent INT,points, INT opppoints,startTime INT,endTime INT,gridSize INT"
+        String sql = "INSERT INTO matches (opponent, points, opppoints, startTime, endTime, gridSize) VALUES ("+
+                remotePlayer.getId() + "," + points + "," + opppoints+ "," + startTime + "," +endTime+ "," +gridSize+ ");";
+        executeSQL(sql);
+    }
 
-    private void insertPlayer (String table, String name, String surName, int rank, long id) {
-            String sql = "INSERT INTO "+table+" (id,firstName,surName,rank)VALUES("+id+",\""+name+"\",\""+surName+"\","+rank+");";
-            executeSQL(sql);
+
+    private void insertPlayer(String table, String name, String surName, int rank, long id) {
+        String sql = "INSERT INTO " + table + " (id,firstName,surName,rank)VALUES(" + id + ",\"" + name + "\",\"" + surName + "\"," + rank + ");";
+        executeSQL(sql);
     }
 
     private void executeSQL(String sql) {
