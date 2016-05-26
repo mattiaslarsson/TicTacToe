@@ -6,12 +6,11 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import logic.Controller;
@@ -35,11 +34,14 @@ public class MainWindow {
     private GameArray gameArray;
     private Button chatButton;
     private BorderPane rootPane;
-    private HBox startBox;
+    private VBox startBox;
     private StackPane connectPane;
     private HBox connectBox;
     private BorderPane gamePane;
-    private int reqToWin = 4;
+    private int reqToWin;
+    private RadioButton threeRadio, fourRadio, fiveRadio;
+    private CheckBox growable, drawAllowed;
+
 
     public MainWindow(Stage stage, Controller controller) {
         this.controller = controller;
@@ -78,7 +80,9 @@ public class MainWindow {
             controller.connect(ip.getText());
         });
 
-        startBox = new HBox();
+
+
+        startBox = new VBox();
         Button startButton = new Button("START GAME!");
         startBox.setAlignment(Pos.CENTER);
         startButton.setOnAction(start -> {
@@ -87,10 +91,112 @@ public class MainWindow {
             System.out.println(player1Turn.getValue());
 
         });
-        startBox.getChildren().add(startButton);
+
+        Text playOptionsText = new Text("OPTIONS");
+        threeRadio = new RadioButton("3-in-a-row");
+        fourRadio = new RadioButton("4-in-a-row");
+        fiveRadio = new RadioButton("5-in-a-row");
+        ToggleGroup radioGroup = new ToggleGroup();
+        radioGroup.getToggles().addAll(threeRadio, fourRadio, fiveRadio);
+
+        growable = new CheckBox("Growable Grid");
+        drawAllowed = new CheckBox("Allow Draw");
+        threeRadio.setSelected(true);
+
+        threeRadio.setOnAction(threeAction -> {
+            if(threeRadio.isSelected()) {
+                reqToWin = 3;
+                growable.setDisable(false);
+                drawAllowed.setSelected(true);
+                sendOptions(reqToWin, growable.isSelected(), drawAllowed.isSelected());
+            }
+        });
+        fourRadio.setOnAction(fourAction -> {
+            if (fourRadio.isSelected()) {
+                reqToWin = 4;
+                growable.setSelected(true);
+                growable.setDisable(true);
+                drawAllowed.setSelected(false);
+                drawAllowed.setDisable(true);
+                sendOptions(reqToWin, growable.isSelected(), drawAllowed.isSelected());
+            } else {
+                drawAllowed.setDisable(false);
+            }
+        });
+        fiveRadio.setOnAction(fiveAction -> {
+            if (fiveRadio.isSelected()) {
+                reqToWin = 5;
+                growable.setSelected(true);
+                growable.setDisable(true);
+                drawAllowed.setSelected(false);
+                drawAllowed.setDisable(true);
+                sendOptions(reqToWin, growable.isSelected(), drawAllowed.isSelected());
+            } else {
+                drawAllowed.setDisable(false);
+            }
+        });
+        drawAllowed.setOnAction(drawAction -> {
+            if(drawAllowed.isSelected()) {
+                threeRadio.setSelected(true);
+                fourRadio.setDisable(true);
+                fiveRadio.setDisable(true);
+                growable.setSelected(false);
+                growable.setDisable(true);
+                sendOptions(reqToWin, growable.isSelected(), drawAllowed.isSelected());
+            } else {
+                fourRadio.setDisable(false);
+                fiveRadio.setDisable(false);
+                growable.setDisable(false);
+                sendOptions(reqToWin, growable.isSelected(), drawAllowed.isSelected());
+            }
+        });
+        growable.setOnAction(growAction -> {
+           if(growable.isSelected()) {
+               drawAllowed.setSelected(false);
+               drawAllowed.setDisable(true);
+               sendOptions(reqToWin, growable.isSelected(), drawAllowed.isSelected());
+           } else {
+               drawAllowed.setDisable(false);
+               sendOptions(reqToWin, growable.isSelected(), drawAllowed.isSelected());
+           }
+        });
+
+        VBox optionsBox = new VBox();
+        optionsBox.getChildren().addAll(playOptionsText, threeRadio, fourRadio, fiveRadio, growable,drawAllowed, startButton);
+
+        startBox.getChildren().addAll(optionsBox, startButton);
         connectPane.getChildren().add(startBox);
         startBox.setVisible(false);
         return startScene;
+    }
+
+    public void sendOptions(int reqToWin, boolean growable, boolean draw) {
+        controller.sendOptions(reqToWin, growable, draw);
+    }
+
+    public void getOptions(int reqToWin, boolean growable, boolean draw) {
+        this.reqToWin = reqToWin;
+        Platform.runLater(() -> {
+            switch(reqToWin) {
+                case 3:
+                    threeRadio.setSelected(true);
+                    break;
+                case 4:
+                    fourRadio.setSelected(true);
+                    break;
+                case 5:
+                    fiveRadio.setSelected(true);
+            }
+            if(growable)
+                this.growable.setSelected(true);
+            else
+                this.growable.setSelected(false);
+            if (draw)
+                this.drawAllowed.setSelected(true);
+            else
+                this.drawAllowed.setSelected(false);
+
+        });
     }
 
     public HBox chatBox() {
