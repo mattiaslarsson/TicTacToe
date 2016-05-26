@@ -39,6 +39,7 @@ public class MainWindow {
     private StackPane connectPane;
     private HBox connectBox;
     private BorderPane gamePane;
+    private int reqToWin = 4;
 
     public MainWindow(Stage stage, Controller controller) {
         this.controller = controller;
@@ -221,13 +222,13 @@ public class MainWindow {
                 gameBoard.add(marker, col, row);
                 gameBoard.addMarker(marker, col, row);
                 playerMarkers.add(marker);
-                gameArray.addMarker(1, col, row);
+                gameArray.addMarker(1, col, row, reqToWin);
             } else {
                 Circle marker = new PlayerMarker().placeMarker(2);
                 gameBoard.add(marker, col, row);
                 gameBoard.addMarker(marker, col, row);
                 playerMarkers.add(marker);
-                gameArray.addMarker(2, col, row);
+                gameArray.addMarker(2, col, row, reqToWin);
             }
             playerMarkers.forEach(marker -> {
                 marker.radiusProperty().bind(gameBoard.getCellSizeProperty().divide(2));
