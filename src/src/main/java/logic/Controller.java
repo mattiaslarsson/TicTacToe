@@ -30,6 +30,7 @@ public class Controller {
             //TODO FANCY FIRST RUN ROUTINES
             setOwnPlayer();
             dbconn.createOwnPlayer(player.getFirstName(), player.getSurName());
+            player = dbconn.getOwnPlayer();
         } else {
             player = dbconn.getOwnPlayer();
         }
@@ -94,14 +95,15 @@ public class Controller {
      * @param currPlayer Player
      */
     public void connectPlayer(Player currPlayer) {
-        remotePlayer = currPlayer;
-        connected = true;
-        //TODO Get player information from database
+        //remotePlayer = currPlayer;
+        //dbconn.updatePlayer(currPlayer);
+        //connected = true;
         currMessage = new Message("connected", player);
         cmdhandler.sendMessage(currMessage);
     }
 
     public void connectedPlayer(Player currPlayer) {
+        dbconn.updatePlayer(currPlayer);
         remotePlayer = currPlayer;
         connected = true;
         view.connected(true);
@@ -133,6 +135,10 @@ public class Controller {
         cmdhandler.disconnect();
         view.connected(false);
         connected = false;
+    }
+
+    public void setGameOptions(int rowsToWin, boolean growable, boolean drawable) {
+        view.getOptions(rowsToWin, growable, drawable);
     }
 
     public void remoteStartGame(boolean startPlayer) {
@@ -192,6 +198,14 @@ public class Controller {
         currMessage = new Message("move");
         currMessage.addCommandData(x);
         currMessage.addCommandData(y);
+        cmdhandler.sendMessage(currMessage);
+    }
+
+    public void sendOptions(int rowsToWin, boolean growable, boolean drawable) {
+        currMessage = new Message("gameoptions");
+        currMessage.addCommandData(rowsToWin);
+        currMessage.addCommandData(growable);
+        currMessage.addCommandData(drawable);
         cmdhandler.sendMessage(currMessage);
     }
 
