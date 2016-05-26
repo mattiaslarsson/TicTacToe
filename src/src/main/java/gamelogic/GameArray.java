@@ -111,19 +111,12 @@ public class GameArray {
                         if(numInRow >= reqToWin-1) {return true;}
                     }
                     if (numInRow >= reqToWin-1) {return true;}
-
                 }
                 numInRow = 0;
             }
         }
-
         return false;
     }
-
-
-
-
-
 
     /**
      * Increase the array of markers played

@@ -6,12 +6,11 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Circle;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import logic.Controller;
@@ -35,11 +34,11 @@ public class MainWindow {
     private GameArray gameArray;
     private Button chatButton;
     private BorderPane rootPane;
-    private HBox startBox;
+    private VBox startBox;
     private StackPane connectPane;
     private HBox connectBox;
     private BorderPane gamePane;
-    private int reqToWin = 4;
+    private int reqToWin;
 
     public MainWindow(Stage stage, Controller controller) {
         this.controller = controller;
@@ -79,7 +78,9 @@ public class MainWindow {
             controller.connect(ip.getText());
         });
 
-        startBox = new HBox();
+
+
+        startBox = new VBox();
         Button startButton = new Button("START GAME!");
         startBox.setAlignment(Pos.CENTER);
         startButton.setOnAction(start -> {
@@ -88,10 +89,80 @@ public class MainWindow {
             System.out.println(player1Turn.getValue());
 
         });
-        startBox.getChildren().add(startButton);
+
+        Text playOptionsText = new Text("OPTIONS");
+        RadioButton threeRadio = new RadioButton("3-in-a-row");
+        RadioButton fourRadio = new RadioButton("4-in-a-row");
+        RadioButton fiveRadio = new RadioButton("5-in-a-row");
+        ToggleGroup radioGroup = new ToggleGroup();
+        radioGroup.getToggles().addAll(threeRadio, fourRadio, fiveRadio);
+
+        CheckBox growable = new CheckBox("Growable Grid");
+        CheckBox drawAllowed = new CheckBox("Allow Draw");
+        threeRadio.setSelected(true);
+
+        threeRadio.setOnAction(threeAction -> {
+            if(threeRadio.isSelected()) {
+                reqToWin = 3;
+                growable.setDisable(false);
+                drawAllowed.setSelected(true);
+            }
+        });
+        fourRadio.setOnAction(fourAction -> {
+            if (fourRadio.isSelected()) {
+                reqToWin = 4;
+                growable.setSelected(true);
+                growable.setDisable(true);
+                drawAllowed.setSelected(false);
+                drawAllowed.setDisable(true);
+            } else {
+                drawAllowed.setDisable(false);
+            }
+        });
+        fiveRadio.setOnAction(fiveAction -> {
+            if (fiveRadio.isSelected()) {
+                reqToWin = 5;
+                growable.setSelected(true);
+                growable.setDisable(true);
+                drawAllowed.setSelected(false);
+                drawAllowed.setDisable(true);
+            } else {
+                drawAllowed.setDisable(false);
+            }
+        });
+        drawAllowed.setOnAction(drawAction -> {
+            if(drawAllowed.isSelected()) {
+                threeRadio.setSelected(true);
+                fourRadio.setDisable(true);
+                fiveRadio.setDisable(true);
+                growable.setSelected(false);
+                growable.setDisable(true);
+            } else {
+                fourRadio.setDisable(false);
+                fiveRadio.setDisable(false);
+                growable.setDisable(false);
+            }
+        });
+        growable.setOnAction(growAction -> {
+           if(growable.isSelected()) {
+               drawAllowed.setSelected(false);
+               drawAllowed.setDisable(true);
+           } else {
+               drawAllowed.setDisable(false);
+           }
+        });
+
+        VBox optionsBox = new VBox();
+        optionsBox.getChildren().addAll(playOptionsText, threeRadio, fourRadio, fiveRadio, growable,drawAllowed, startButton);
+
+        startBox.getChildren().addAll(optionsBox, startButton);
         connectPane.getChildren().add(startBox);
         startBox.setVisible(false);
         return startScene;
+    }
+
+    public void sendOptions(int reqToWin, boolean growable, boolean draw) {
+
     }
 
     public HBox chatBox() {
