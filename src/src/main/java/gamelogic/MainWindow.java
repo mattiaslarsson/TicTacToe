@@ -41,6 +41,11 @@ public class MainWindow {
     private int reqToWin;
     private RadioButton threeRadio, fourRadio, fiveRadio;
     private CheckBox growable, drawAllowed;
+    private BooleanProperty threeProp = new SimpleBooleanProperty(true);
+    private BooleanProperty fourProp = new SimpleBooleanProperty(false);
+    private BooleanProperty fiveProp = new SimpleBooleanProperty(false);
+    private BooleanProperty growProp = new SimpleBooleanProperty(false);
+    private BooleanProperty drawProp = new SimpleBooleanProperty(false);
 
 
     public MainWindow(Stage stage, Controller controller) {
@@ -99,64 +104,69 @@ public class MainWindow {
         ToggleGroup radioGroup = new ToggleGroup();
         radioGroup.getToggles().addAll(threeRadio, fourRadio, fiveRadio);
 
+        threeRadio.selectedProperty().bind(threeProp);
+        fourRadio.selectedProperty().bind(fourProp);
+        fiveRadio.selectedProperty().bind(fiveProp);
+
+        threeRadio.disableProperty().bind(growProp);
+        fourRadio.disableProperty().bind(drawProp);
+        fiveRadio.disableProperty().bind(drawProp);
+
         growable = new CheckBox("Growable Grid");
         drawAllowed = new CheckBox("Allow Draw");
-        threeRadio.setSelected(true);
+
+        growable.selectedProperty().bind(growProp);
+        drawAllowed.selectedProperty().bind(drawProp);
+
+        growable.disableProperty().bind(drawProp.not());
+        drawAllowed.disableProperty().bind(growProp.not());
+
+        growProp.bind(drawProp.not());
+        drawProp.bind(growProp.not());
 
         threeRadio.setOnAction(threeAction -> {
             if(threeRadio.isSelected()) {
                 reqToWin = 3;
-                growable.setDisable(false);
-                drawAllowed.setSelected(true);
+                growProp.setValue(false);
+                drawProp.setValue(true);
                 sendOptions(reqToWin, growable.isSelected(), drawAllowed.isSelected());
             }
         });
         fourRadio.setOnAction(fourAction -> {
             if (fourRadio.isSelected()) {
                 reqToWin = 4;
-                growable.setSelected(true);
-                growable.setDisable(true);
-                drawAllowed.setSelected(false);
-                drawAllowed.setDisable(true);
+                growProp.setValue(true);
+                drawProp.setValue(false);
                 sendOptions(reqToWin, growable.isSelected(), drawAllowed.isSelected());
             } else {
-                drawAllowed.setDisable(false);
+                drawProp.setValue(true);
             }
         });
         fiveRadio.setOnAction(fiveAction -> {
             if (fiveRadio.isSelected()) {
                 reqToWin = 5;
-                growable.setSelected(true);
-                growable.setDisable(true);
-                drawAllowed.setSelected(false);
-                drawAllowed.setDisable(true);
+                growProp.setValue(true);
+                drawProp.setValue(false);
                 sendOptions(reqToWin, growable.isSelected(), drawAllowed.isSelected());
             } else {
-                drawAllowed.setDisable(false);
+                drawProp.setValue(true);
             }
         });
         drawAllowed.setOnAction(drawAction -> {
             if(drawAllowed.isSelected()) {
-                threeRadio.setSelected(true);
-                fourRadio.setDisable(true);
-                fiveRadio.setDisable(true);
-                growable.setSelected(false);
-                growable.setDisable(true);
+                drawProp.setValue(true);
                 sendOptions(reqToWin, growable.isSelected(), drawAllowed.isSelected());
             } else {
-                fourRadio.setDisable(false);
-                fiveRadio.setDisable(false);
-                growable.setDisable(false);
+                drawProp.setValue(false);
                 sendOptions(reqToWin, growable.isSelected(), drawAllowed.isSelected());
             }
         });
         growable.setOnAction(growAction -> {
            if(growable.isSelected()) {
-               drawAllowed.setSelected(false);
-               drawAllowed.setDisable(true);
+               growProp.setValue(true);
                sendOptions(reqToWin, growable.isSelected(), drawAllowed.isSelected());
            } else {
-               drawAllowed.setDisable(false);
+               growProp.setValue(false);
                sendOptions(reqToWin, growable.isSelected(), drawAllowed.isSelected());
            }
         });
@@ -179,23 +189,22 @@ public class MainWindow {
         Platform.runLater(() -> {
             switch(reqToWin) {
                 case 3:
-                    threeRadio.setSelected(true);
+                    threeProp.setValue(true);
                     break;
                 case 4:
-                    fourRadio.setSelected(true);
+                    fourProp.setValue(true);
                     break;
                 case 5:
-                    fiveRadio.setSelected(true);
+                    fiveProp.setValue(true);
             }
             if(growable)
-                this.growable.setSelected(true);
+                growProp.setValue(true);
             else
-                this.growable.setSelected(false);
+                growProp.setValue(false);
             if (draw)
-                this.drawAllowed.setSelected(true);
+                drawProp.setValue(true);
             else
-                this.drawAllowed.setSelected(false);
-
+                drawProp.setValue(false);
         });
     }
 
