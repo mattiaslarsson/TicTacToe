@@ -58,7 +58,6 @@ public class MainWindow {
             }
         });
         this.stage.setScene(initStartScreen());
-//        this.stage.setScene(initGameBoard());
         this.stage.show();
     }
 

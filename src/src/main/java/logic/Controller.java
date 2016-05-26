@@ -1,5 +1,6 @@
 package logic;
 
+import dao.DatabaseConnector;
 import gamelogic.MainWindow;
 import models.Message;
 import models.Player;
@@ -18,12 +19,21 @@ public class Controller {
     private MainWindow view;
     private Player player, remotePlayer;
     private Message currMessage;
+    private DatabaseConnector dbconn;
 
     private boolean connected = false;
 
 
     public Controller() {
-        setOwnPlayer();
+        dbconn = new DatabaseConnector();
+        if(dbconn.firstRun()){
+            //TODO FANCY FIRST RUN ROUTINES
+            setOwnPlayer();
+            dbconn.createOwnPlayer(player.getFirstName(), player.getSurName());
+            player = dbconn.getOwnPlayer();
+        } else {
+            player = dbconn.getOwnPlayer();
+        }
     }
 
     /**
@@ -61,7 +71,9 @@ public class Controller {
      */
     private void setOwnPlayer() {
         //TODO fix load of info
-        player = new Player("TestName", "TestSurName", 22);
+        String firstName = "Namn";
+        String surName = "Efternamn";
+        player = new Player(firstName, surName, 0);
     }
 
     /**
@@ -69,6 +81,7 @@ public class Controller {
      */
     public void quit() {
         disconnect();
+        dbconn.closeConnection();
         System.exit(0);
     }
 
@@ -82,14 +95,15 @@ public class Controller {
      * @param currPlayer Player
      */
     public void connectPlayer(Player currPlayer) {
-        remotePlayer = currPlayer;
-        connected = true;
-        //TODO Get player information from database
+        //remotePlayer = currPlayer;
+        //dbconn.updatePlayer(currPlayer);
+        //connected = true;
         currMessage = new Message("connected", player);
         cmdhandler.sendMessage(currMessage);
     }
 
     public void connectedPlayer(Player currPlayer) {
+        dbconn.updatePlayer(currPlayer);
         remotePlayer = currPlayer;
         connected = true;
         view.connected(true);
@@ -121,6 +135,10 @@ public class Controller {
         cmdhandler.disconnect();
         view.connected(false);
         connected = false;
+    }
+
+    public void setGameOptions(int rowsToWin, boolean growable, boolean drawable) {
+        view.getOptions(rowsToWin, growable, drawable);
     }
 
     public void remoteStartGame(boolean startPlayer) {
@@ -183,6 +201,14 @@ public class Controller {
         cmdhandler.sendMessage(currMessage);
     }
 
+    public void sendOptions(int rowsToWin, boolean growable, boolean drawable) {
+        currMessage = new Message("gameoptions");
+        currMessage.addCommandData(rowsToWin);
+        currMessage.addCommandData(growable);
+        currMessage.addCommandData(drawable);
+        cmdhandler.sendMessage(currMessage);
+    }
+
     /**
      * Sends disconnection message.
      */
@@ -195,8 +221,13 @@ public class Controller {
         }
     }
 
-    // GETTERS & SETTERS
+    // CHECK FOR FIRST USE
 
+    private boolean firstUse(){
+        return false;
+    }
+
+    // GETTERS & SETTERS
 
     public boolean getConnected() {
         return connected;
