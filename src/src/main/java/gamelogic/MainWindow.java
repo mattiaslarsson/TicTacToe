@@ -108,21 +108,19 @@ public class MainWindow {
         fourRadio.selectedProperty().bind(fourProp);
         fiveRadio.selectedProperty().bind(fiveProp);
 
-        threeRadio.disableProperty().bind(growProp);
         fourRadio.disableProperty().bind(drawProp);
         fiveRadio.disableProperty().bind(drawProp);
 
         growable = new CheckBox("Growable Grid");
         drawAllowed = new CheckBox("Allow Draw");
 
-        growable.selectedProperty().bind(growProp);
-        drawAllowed.selectedProperty().bind(drawProp);
+        growProp.bind(growable.selectedProperty());
+        drawProp.bind(drawAllowed.selectedProperty());
 
         growable.disableProperty().bind(drawProp.not());
         drawAllowed.disableProperty().bind(growProp.not());
 
-        growProp.bind(drawProp.not());
-        drawProp.bind(growProp.not());
+
 
         threeRadio.setOnAction(threeAction -> {
             if(threeRadio.isSelected()) {
@@ -138,8 +136,6 @@ public class MainWindow {
                 growProp.setValue(true);
                 drawProp.setValue(false);
                 sendOptions(reqToWin, growable.isSelected(), drawAllowed.isSelected());
-            } else {
-                drawProp.setValue(true);
             }
         });
         fiveRadio.setOnAction(fiveAction -> {
@@ -148,8 +144,6 @@ public class MainWindow {
                 growProp.setValue(true);
                 drawProp.setValue(false);
                 sendOptions(reqToWin, growable.isSelected(), drawAllowed.isSelected());
-            } else {
-                drawProp.setValue(true);
             }
         });
         drawAllowed.setOnAction(drawAction -> {
