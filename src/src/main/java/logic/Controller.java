@@ -98,11 +98,13 @@ public class Controller {
         //remotePlayer = currPlayer;
         //dbconn.updatePlayer(currPlayer);
         //connected = true;
+        System.out.println("SENDING MY CONNECTSTRING");
         currMessage = new Message("connected", player);
         cmdhandler.sendMessage(currMessage);
     }
 
     public void connectedPlayer(Player currPlayer) {
+        System.out.println("GOT CONNECTSTRING FROM REMOTE");
         dbconn.updatePlayer(currPlayer);
         remotePlayer = currPlayer;
         connected = true;
