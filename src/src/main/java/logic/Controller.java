@@ -28,9 +28,11 @@ public class Controller {
         dbconn = new DatabaseConnector();
         if(dbconn.firstRun()){
             //TODO FANCY FIRST RUN ROUTINES
-            System.out.println("Första starten");
+            setOwnPlayer();
+            dbconn.createOwnPlayer(player.getFirstName(), player.getSurName());
+        } else {
+            player = dbconn.getOwnPlayer();
         }
-        setOwnPlayer();
     }
 
     /**
@@ -68,7 +70,9 @@ public class Controller {
      */
     private void setOwnPlayer() {
         //TODO fix load of info
-        player = new Player("TestName", "TestSurName", 22);
+        String firstName = "Namn";
+        String surName = "Efternamn";
+        player = new Player(firstName, surName, 0);
     }
 
     /**
