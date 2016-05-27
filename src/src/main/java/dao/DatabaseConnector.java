@@ -9,12 +9,22 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Database connection and operations class.
+ *
  * Created by Johan Lindström (jolindse@hotmail.com) on 2016-05-25.
  */
+
 public class DatabaseConnector {
 
     private Connection conn = null;
 
+	/*******************************************************************************************************************
+     * Init and standard operations
+     ******************************************************************************************************************/
+
+	/**
+     * Initializes database connection.
+     */
     public DatabaseConnector() {
         // db parameters
         String url = "jdbc:sqlite:game.db";
@@ -27,6 +37,9 @@ public class DatabaseConnector {
         }
     }
 
+	/**
+     * Closes database connection.
+     */
     public void closeConnection() {
         try {
             conn.close();
@@ -37,82 +50,11 @@ public class DatabaseConnector {
 
     }
 
-    public boolean firstRun() {
-        System.out.println("In first run.");
-        boolean isFirst = false;
-        String sqlQ = "SELECT count(*) AS number FROM sqlite_master WHERE type='table' AND name='myPlayer';";
-        ArrayList results = executeSQLQuery(sqlQ);
-        Map currRow = (HashMap) results.get(0);
-        int number = (int) currRow.get("number");
-
-        if (number > 0) {
-            System.out.println("Tidigare spelare funnen");
-        } else {
-            initDB();
-            System.out.println("Skapar databas, ingen tidigare spelare funnen.");
-            isFirst = true;
-        }
-        return isFirst;
-    }
-
-    private void initDB() {
-        String sqlInit[] = {
-                "CREATE TABLE IF NOT EXISTS myPlayer (id INT NOT NULL PRIMARY KEY,firstName TEXT,surName TEXT,rank INT);",
-                "CREATE TABLE IF NOT EXISTS players (id INT NOT NULL PRIMARY KEY,firstName TEXT,surName INT,rank INT);",
-                "CREATE TABLE IF NOT EXISTS matches (id INT AUTO_INCREMENT PRIMARY KEY,opponent INT,points, INT opppoints,startTime INT,endTime INT,gridSize INT,FOREIGN KEY (opponent) REFERENCES players(id));"
-        };
-        for (String currSQL : sqlInit) {
-            executeSQL(currSQL);
-        }
-    }
-
-    public void createOwnPlayer(String firstName, String surName) {
-        long id = (System.currentTimeMillis() << 20) | (System.nanoTime() & ~9223372036854251520L);
-        insertPlayer("myPlayer", firstName, surName, 0, id);
-    }
-
-    public Player getOwnPlayer() {
-        String sql = "SELECT * FROM myPlayer;";
-        ArrayList result = executeSQLQuery(sql);
-        HashMap currMap = (HashMap) result.get(0);
-        String firstName = (String) currMap.get("firstName");
-        String surName = (String) currMap.get("surName");
-        int rank = (int) currMap.get("rank");
-        long id = (long) currMap.get("id");
-        Player currPlayer = new Player(firstName, surName, id, rank);
-        return currPlayer;
-    }
-
-    public void updatePlayer(Player sentPlayer) {
-        Player currPlayer = null;
-        String sql = "SELECT * FROM players WHERE id = " + sentPlayer.getId() + ";";
-        ArrayList result = executeSQLQuery(sql);
-        if (result.size() > 0) {
-            HashMap currMap = (HashMap) result.get(0);
-            String firstName = (String) currMap.get("firstName");
-            String surName = (String) currMap.get("surName");
-            int rank = (int) currMap.get("rank");
-            long id = (long) currMap.get("id");
-            String updateSql = "UPDATE players SET firstName =\"" + firstName + "\", surName = \"" + surName + "\", rank =" + rank + " WHERE id =" + id + ";";
-            executeSQL(updateSql);
-        } else {
-            insertPlayer("players", sentPlayer.getFirstName(), sentPlayer.getSurName(), sentPlayer.getRank(), sentPlayer.getId());
-        }
-    }
-
-    public void addMatch (Player remotePlayer, int points, int opppoints, long startTime, long endTime, int gridSize) {
-        // id INT opponent INT,points, INT opppoints,startTime INT,endTime INT,gridSize INT"
-        String sql = "INSERT INTO matches (opponent, points, opppoints, startTime, endTime, gridSize) VALUES ("+
-                remotePlayer.getId() + "," + points + "," + opppoints+ "," + startTime + "," +endTime+ "," +gridSize+ ");";
-        executeSQL(sql);
-    }
-
-
-    private void insertPlayer(String table, String name, String surName, int rank, long id) {
-        String sql = "INSERT INTO " + table + " (id,firstName,surName,rank)VALUES(" + id + ",\"" + name + "\",\"" + surName + "\"," + rank + ");";
-        executeSQL(sql);
-    }
-
+	/**
+     * Executes a SQL-query that doesn't return useful information.
+     *
+     * @param sql String
+     */
     private void executeSQL(String sql) {
         if (conn != null) {
             Statement stmnt = null;
@@ -135,6 +77,12 @@ public class DatabaseConnector {
         }
     }
 
+	/**
+	 * Executes a SQL-query that returns information from the database.
+     *
+     * @param sql String
+     * @return ArrayList<HashMap>
+     */
     private ArrayList executeSQLQuery(String sql) {
         ArrayList returnList = null;
         Statement stmnt = null;
@@ -168,6 +116,12 @@ public class DatabaseConnector {
         return returnList;
     }
 
+	/**
+     * Converts a resultset to a ArrayList of HashMaps.
+     *
+     * @param rs ResultSet
+     * @return ArrayList<HashMap>
+     */
     private ArrayList resultSetToArrayList(ResultSet rs) {
         ResultSetMetaData md = null;
         ArrayList list = null;
@@ -187,4 +141,128 @@ public class DatabaseConnector {
         }
         return list;
     }
+
+    /*******************************************************************************************************************
+     * OPERATION METHODS
+     ******************************************************************************************************************/
+
+	/**
+     * Checks if myPlayer-table contains entries and if not intializes database tables.
+     *
+     * @return boolean
+     */
+    public boolean firstRun() {
+        boolean isFirst = false;
+        String sqlQ = "SELECT count(*) AS number FROM sqlite_master WHERE type='table' AND name='myPlayer';";
+        ArrayList results = executeSQLQuery(sqlQ);
+        Map currRow = (HashMap) results.get(0);
+        int number = (int) currRow.get("number");
+
+        if (number > 0) {
+            // Earlier player found - no action.
+        } else {
+            // First run. Create database.
+            initDB();
+            isFirst = true;
+        }
+        return isFirst;
+    }
+
+	/**
+     * Creates the tables.
+     */
+    private void initDB() {
+        String sqlInit[] = {
+                "CREATE TABLE IF NOT EXISTS myPlayer (id INT NOT NULL PRIMARY KEY,firstName TEXT,surName TEXT,rank INT);",
+                "CREATE TABLE IF NOT EXISTS players (id INT NOT NULL PRIMARY KEY,firstName TEXT,surName INT,rank INT);",
+                "CREATE TABLE IF NOT EXISTS matches (id INT AUTO_INCREMENT PRIMARY KEY,opponent INT,points, INT opppoints,startTime INT,endTime INT,gridSize INT,FOREIGN KEY (opponent) REFERENCES players(id));"
+        };
+        for (String currSQL : sqlInit) {
+            executeSQL(currSQL);
+        }
+    }
+
+	/**
+     * Creates the own player entry.
+     *
+     * @param firstName String
+     * @param surName String
+     */
+    public void createOwnPlayer(String firstName, String surName) {
+        // Make unique id
+        long id = (System.currentTimeMillis() << 20) | (System.nanoTime() & ~9223372036854251520L);
+        insertPlayer("myPlayer", firstName, surName, 0, id);
+    }
+
+	/**
+     * Gets the own player from database.
+     *
+     * @return Player
+     */
+    public Player getOwnPlayer() {
+        String sql = "SELECT * FROM myPlayer;";
+        ArrayList result = executeSQLQuery(sql);
+        HashMap currMap = (HashMap) result.get(0);
+        String firstName = (String) currMap.get("firstName");
+        String surName = (String) currMap.get("surName");
+        int rank = (int) currMap.get("rank");
+        long id = (long) currMap.get("id");
+        Player currPlayer = new Player(firstName, surName, id, rank);
+        return currPlayer;
+    }
+
+	/**
+     * Updates a player in database.
+     *
+     * @param sentPlayer Player
+     */
+    public void updatePlayer(Player sentPlayer) {
+        Player currPlayer = null;
+        String sql = "SELECT * FROM players WHERE id = " + sentPlayer.getId() + ";";
+        ArrayList result = executeSQLQuery(sql);
+        if (result.size() > 0) {
+            HashMap currMap = (HashMap) result.get(0);
+            String firstName = (String) currMap.get("firstName");
+            String surName = (String) currMap.get("surName");
+            int rank = (int) currMap.get("rank");
+            long id = (long) currMap.get("id");
+            String updateSql = "UPDATE players SET firstName =\"" + firstName + "\", surName = \"" + surName + "\", rank =" + rank + " WHERE id =" + id + ";";
+            executeSQL(updateSql);
+        } else {
+            insertPlayer("players", sentPlayer.getFirstName(), sentPlayer.getSurName(), sentPlayer.getRank(), sentPlayer.getId());
+        }
+    }
+
+	/**
+     * Adds a finished match to database.
+     *
+     * @param remotePlayer Player
+     * @param points int
+     * @param opppoints int
+     * @param startTime long
+     * @param endTime long
+     * @param gridSize int
+     */
+    public void addMatch (Player remotePlayer, int points, int opppoints, long startTime, long endTime, int gridSize) {
+        // id INT opponent INT,points, INT opppoints,startTime INT,endTime INT,gridSize INT"
+        String sql = "INSERT INTO matches (opponent, points, opppoints, startTime, endTime, gridSize) VALUES ("+
+                remotePlayer.getId() + "," + points + "," + opppoints+ "," + startTime + "," +endTime+ "," +gridSize+ ");";
+        executeSQL(sql);
+    }
+
+	/**
+     * Adds a player to database.
+     *
+     * @param table String
+     * @param name String
+     * @param surName String
+     * @param rank int
+     * @param id long
+     */
+    private void insertPlayer(String table, String name, String surName, int rank, long id) {
+        String sql = "INSERT INTO " + table + " (id,firstName,surName,rank)VALUES(" + id + ",\"" + name + "\",\"" + surName + "\"," + rank + ");";
+        executeSQL(sql);
+    }
+
+
 }

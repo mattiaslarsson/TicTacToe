@@ -81,7 +81,6 @@ public class CommandHandler implements Runnable {
 		}
 	}
 
-
 	/**
 	 * Method to send a command + data to client. Translates to json and sends through
 	 * the printwriter.
@@ -109,36 +108,42 @@ public class CommandHandler implements Runnable {
 
 		switch (currMessage.getCommand()) {
 			case "connect":
+				// First connect handshake.
 				Player currPlayer = gson.fromJson(cmdData.get(0),Player.class);
 				controller.connectPlayer(currPlayer);
 				break;
 			case "connected":
+				// Second connect handshake.
 				Player remotePlayer = gson.fromJson(cmdData.get(0),Player.class);
 				controller.connectedPlayer(remotePlayer);
 				break;
 			case "disconnect":
+				// Disconnection.
 				controller.remoteDisconnect();
 				break;
 			case "start":
+				// Start game command.
 				boolean startPlayer = gson.fromJson(cmdData.get(0),Boolean.class);
 				controller.remoteStartGame(startPlayer);
 				break;
 			case "chat":
+				// Remote chatmessage.
 				String chatMessage = gson.fromJson(cmdData.get(0), String.class);
 				controller.remoteChatMessage(chatMessage);
 				break;
 			case "move":
+				// Remote move.
 				int xMove = gson.fromJson(cmdData.get(0), Integer.class);
 				int yMove = gson.fromJson(cmdData.get(1), Integer.class);
 				controller.remoteMakeMove(xMove, yMove);
 				break;
 			case "gameoptions":
+				// Remote gameoptions.
 				int rowsToWin = gson.fromJson(cmdData.get(0), Integer.class);
 				boolean growable = gson.fromJson(cmdData.get(1), Boolean.class);
 				boolean drawable = gson.fromJson(cmdData.get(0), Boolean.class);
 				controller.setGameOptions(rowsToWin, growable, drawable);
 				break;
-
 		}
 	}
 }
