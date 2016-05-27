@@ -94,7 +94,6 @@ public class MainWindow {
         startButton.setOnAction(start -> {
             player1Turn.setValue(controller.startGame());
             stage.setScene(initGameBoard());
-            timeStart = System.currentTimeMillis() / 1000L;
             System.out.println(player1Turn.getValue());
 
         });
@@ -230,6 +229,7 @@ public class MainWindow {
         Platform.runLater(() -> {
             player1Turn.setValue(start);
             stage.setScene(initGameBoard());
+            timeStart = System.currentTimeMillis()/1000L;
         });
 
 
@@ -323,6 +323,7 @@ public class MainWindow {
                 numMyMarkers++;
                 winner = gameArray.addMarker(1, col, row, reqToWin);
                 if (winner) {
+                    System.out.println("Vinner");
                     timeEnd = System.currentTimeMillis()/1000L;
                     int points = (int)(10*gameArray.getGridSize()+reqToWin)/numMyMarkers;
                     controller.winning(points, 0, timeStart, timeEnd, gameArray.getGridSize(), numMyMarkers);
