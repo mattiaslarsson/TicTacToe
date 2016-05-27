@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Gameboard panel.
+ *
  * Created by Johan Lindström (jolindse@hotmail.com) on 2016-05-27.
  */
 public class GameBoardPanel extends BorderPane {
@@ -41,6 +43,11 @@ public class GameBoardPanel extends BorderPane {
 		this.viewController = viewController;
 	}
 
+	/**
+	 * Starts a game.
+	 *
+	 * @param startPlayer boolean
+	 */
 	public void startGame(boolean startPlayer) {
 		player1Turn = startPlayer;
 		numMyMarkers = 0;
@@ -50,8 +57,6 @@ public class GameBoardPanel extends BorderPane {
 
 	/**
 	 * Initiates the Gameboard
-	 *
-	 * @return A Scene with a GridPane
 	 */
 	private void initGameBoard() {
 		gameBoard = new GameBoard(viewController.getPanelWidth(), viewController.getPanelWidth(), 3);
@@ -61,6 +66,12 @@ public class GameBoardPanel extends BorderPane {
 		gameBoard.addEventHandler(MouseEvent.MOUSE_CLICKED, addMouseListener());
 	}
 
+	/**
+	 * Makes a move
+	 *
+	 * @param col int
+	 * @param row int
+	 */
 	public void makeMove(int col, int row) {
 		if (!checkDoubles(col, row)) {
 			drawMarker(col, row);
@@ -77,6 +88,11 @@ public class GameBoardPanel extends BorderPane {
 		}
 	}
 
+	/**
+	 * Checks if gameboard is full and expands it if it's the desired behaviour.
+	 *
+	 * @return boolean
+	 */
 	private boolean isFull() {
 		if (playerMarkers.size() == (gameBoard.getRows() * gameBoard.getRows())) {
 			// Increase the gameboard's size
@@ -106,6 +122,13 @@ public class GameBoardPanel extends BorderPane {
 		return false;
 	}
 
+	/**
+	 * Checks if there is a marker in the desired spot allready
+	 *
+	 * @param col int
+	 * @param row int
+	 * @return boolean
+	 */
 	private boolean checkDoubles(int col, int row) {
 		for (Circle circle : playerMarkers) {
 			if (GridPane.getColumnIndex(circle) - col == 0 && GridPane.getRowIndex(circle) - row == 0) {
@@ -115,6 +138,12 @@ public class GameBoardPanel extends BorderPane {
 		return false;
 	}
 
+	/**
+	 * Draws the marker and checks if there's a winner.
+	 *
+	 * @param col int
+	 * @param row int
+	 */
 	private void drawMarker(int col, int row) {
 		boolean winner = false;
 		if (!checkDoubles(col, row)) {
@@ -128,7 +157,8 @@ public class GameBoardPanel extends BorderPane {
 				if (winner) {
 					timeEnd = System.currentTimeMillis() / 1000L;
 					int points = (int) (10 * gameArray.getGridSize() + viewController.getRowsToWin()) / numMyMarkers;
-					controller.winning(points, 0, timeStart, timeEnd, gameArray.getGridSize(), numMyMarkers);
+					winner(points,0,numMyMarkers);
+					//controller.winning(points, 0, timeStart, timeEnd, gameArray.getGridSize(), numMyMarkers);
 				}
 
 			} else {
@@ -141,7 +171,8 @@ public class GameBoardPanel extends BorderPane {
 				if (winner) {
 					timeEnd = System.currentTimeMillis() / 1000L;
 					int points = (int) (10 * gameArray.getGridSize() + viewController.getRowsToWin()) / numOppMarkers;
-					controller.winning(0, points, timeStart, timeEnd, gameArray.getGridSize(), numOppMarkers);
+					winner(0,points,numOppMarkers);
+					//controller.winning(0, points, timeStart, timeEnd, gameArray.getGridSize(), numOppMarkers);
 				}
 			}
 			playerMarkers.forEach(marker -> {
@@ -150,7 +181,30 @@ public class GameBoardPanel extends BorderPane {
 		}
 	}
 
+	/**
+	 * Winner method. Display fancy message and return to startscreen.
+	 *
+	 * @param myPoints
+	 * @param oppPoints
+	 * @param numMarkers
+	 */
+	private void winner(int myPoints, int oppPoints, int numMarkers) {
+		//TODO DISPLAY WINNER IN FANCY STYLE
+		if (myPoints > oppPoints) {
+			System.out.println("You're the WINNER!");
+		} else {
+			System.out.println("Opponent won! Boooh!");
+		}
+		timeEnd = System.currentTimeMillis() / 1000L;
+		controller.winning(myPoints, oppPoints, timeStart, timeEnd, gameArray.getGridSize(), numMarkers);
+		viewController.initStart();
+	}
 
+	/**
+	 * Mouseclick handler
+	 *
+	 * @return EventHandler<MouseEvent>
+	 */
 	private EventHandler<MouseEvent> addMouseListener() {
 		return new EventHandler<MouseEvent>() {
 			@Override

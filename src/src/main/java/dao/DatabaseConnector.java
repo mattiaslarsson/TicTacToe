@@ -9,7 +9,7 @@ import java.util.Map;
 
 /**
  * Database connection and operations class.
- * <p>
+ *
  * Created by Johan Lindström (jolindse@hotmail.com) on 2016-05-25.
  */
 
@@ -276,6 +276,12 @@ public class DatabaseConnector {
 	 * STATISTICS METHODS
 	 ******************************************************************************************************************/
 
+	/**
+	 * Returns a integer from a resultset
+	 *
+	 * @param sql String
+	 * @return int
+	 */
 	private int getIntValue(String sql) {
 		ArrayList result = executeSQLQuery(sql);
 		HashMap currMap = (HashMap) result.get(0);
@@ -283,6 +289,12 @@ public class DatabaseConnector {
 		return value;
 	}
 
+	/**
+	 * Return a double from a resultset
+	 *
+	 * @param sql String
+	 * @return double
+	 */
 	private double getFloatValue(String sql) {
 		ArrayList result = executeSQLQuery(sql);
 		HashMap currMap = (HashMap) result.get(0);

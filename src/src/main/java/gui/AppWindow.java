@@ -9,6 +9,8 @@ import javafx.stage.WindowEvent;
 import logic.Controller;
 
 /**
+ * GUI controller class. Handles window and switches the content depending on what state the application is in.
+ *
  * Created by Johan Lindström (jolindse@hotmail.com) on 2016-05-27.
  */
 public class AppWindow {
@@ -58,6 +60,9 @@ public class AppWindow {
 	 * VIEWS
 	 ******************************************************************************************************************/
 
+	/**
+	 * Initializes the view when first ran. Checks if its a first time user.
+	 */
 	private void init() {
 		panelHeight = windowHeight;
 		panelWidth = windowWidth;
@@ -69,6 +74,11 @@ public class AppWindow {
 		stage.show();
 	}
 
+	/**
+	 * Initializes the game board for a new game.
+	 *
+	 * @param myStart boolean
+	 */
 	public void initGame(boolean myStart) {
 		gameBoardPanel = new GameBoardPanel(controller, this);
 		gameBoardPanel.startGame(myStart);
@@ -76,6 +86,9 @@ public class AppWindow {
 		inGame = true;
 	}
 
+	/**
+	 * Initializes the start view
+	 */
 	public void initStart() {
 		startPanel = new StartPanel(controller, this);
 		rootPane.setCenter(startPanel);
@@ -85,9 +98,13 @@ public class AppWindow {
 	 * METHODS CALLED FROM CONTROLLER
 	 ******************************************************************************************************************/
 
+	/**
+	 * Called if connection status changes.
+	 *
+	 * @param conn boolean
+	 */
 	public void connected(boolean conn) {
 		connected = conn;
-
 		if (conn) {
 			Platform.runLater(() -> {
 				if (!inGame) {
@@ -107,19 +124,36 @@ public class AppWindow {
 
 	}
 
+	/**
+	 * Adds a marker at the specified coordinates.
+	 *
+	 * @param x int
+	 * @param y int
+	 */
 	public void makeMove(int x, int y) {
 		Platform.runLater(() -> {
 			gameBoardPanel.makeMove(x, y);
 		});
 	}
 
+	/**
+	 * Sets game options from remote
+	 *
+	 * @param rowsToWin int
+	 * @param growable boolean
+	 * @param drawable boolean
+	 */
 	public void setOptions(int rowsToWin, boolean growable, boolean drawable) {
 		Platform.runLater(() -> {
 			startPanel.setOptions(rowsToWin, growable, drawable);
 		});
 	}
 
-
+	/**
+	 * Initializes a game from remote.
+	 *
+	 * @param start boolean
+	 */
 	public void startGame(boolean start) {
 		Platform.runLater(() -> {
 			initGame(start);
