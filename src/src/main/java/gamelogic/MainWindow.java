@@ -156,19 +156,23 @@ public class MainWindow {
 
     public void getOptions(int reqToWin, boolean grow, boolean draw) {
         this.reqToWin = reqToWin;
+        System.out.println("reqToWin, grow, draw "+reqToWin+";"+grow+";"+draw); // TEST
         Platform.runLater(() -> {
             switch(reqToWin) {
                 case 3:
+                    System.out.println("Case 3. grow: true, draw: allowed"); // TEST
                     threeRadio.setSelected(true);
                     growable.setDisable(false);
                     drawAllowed.setDisable(false);
                     break;
                 case 4:
+                    System.out.println("Case 4. grow: disabled true, draw: disabled false"); // TEST
                     fourRadio.setSelected(true);
                     growable.setDisable(true);
                     drawAllowed.setDisable(true);
                     break;
                 case 5:
+                    System.out.println("Case 3. grow: disabled true, draw: disabled false"); // TEST
                     fiveRadio.setSelected(true);
                     growable.setDisable(true);
                     drawAllowed.setDisable(true);
