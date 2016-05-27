@@ -107,8 +107,20 @@ public class Controller {
 		}
 	}
 
-	public void winning(){
-
+	/**
+	 * Runs every time a game ends with a winner or draw. Updates data in database and calculates rank for own
+	 * player.
+	 *
+	 * @param points int
+	 * @param opppoints int
+	 * @param startTime long
+	 * @param endTime long
+	 * @param gridSize int
+	 * @param numMoves int
+	 */
+	public void winning(int points, int opppoints, long startTime, long endTime, int gridSize, int numMoves){
+		dbconn.addMatch(remotePlayer,points,opppoints,startTime,endTime,gridSize,numMoves);
+		//TODO RANK CALCULATIONS
 	}
 
 /***********************************************************************************************************************

@@ -141,7 +141,7 @@ public class CommandHandler implements Runnable {
 				// Remote gameoptions.
 				int rowsToWin = gson.fromJson(cmdData.get(0), Integer.class);
 				boolean growable = gson.fromJson(cmdData.get(1), Boolean.class);
-				boolean drawable = gson.fromJson(cmdData.get(0), Boolean.class);
+				boolean drawable = gson.fromJson(cmdData.get(2), Boolean.class);
 				controller.setGameOptions(rowsToWin, growable, drawable);
 				break;
 		}

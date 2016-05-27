@@ -1,1 +1,6 @@
 .idea
+TicTacToe.iml
+src/TicTacToe.iml
+src/src/main/resources/
+src/src/test/
+src/target/
