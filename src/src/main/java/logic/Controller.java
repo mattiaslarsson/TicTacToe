@@ -156,7 +156,7 @@ public class Controller {
 	 * @param chatMessage String
 	 */
 	public void remoteChatMessage(String chatMessage) {
-		//TODO Send chatMessage to GUI
+		view.chatMessage(remotePlayer.getFirstName()+" "+remotePlayer.getSurName()+":"+chatMessage);
 	}
 
 	/**
