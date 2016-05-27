@@ -174,7 +174,7 @@ public class DatabaseConnector {
 		String sqlInit[] = {
 				"CREATE TABLE IF NOT EXISTS myPlayer (id INT NOT NULL PRIMARY KEY,firstName TEXT,surName TEXT,rank INT);",
 				"CREATE TABLE IF NOT EXISTS players (id INT NOT NULL PRIMARY KEY,firstName TEXT,surName INT,rank INT);",
-				"CREATE TABLE IF NOT EXISTS matches (id INT AUTO_INCREMENT PRIMARY KEY,opponent INT,points INT, opppoints INT, startTime INT,endTime INT,gridSize INT,numMoves INT,FOREIGN KEY (opponent) REFERENCES players(id));"
+				"CREATE TABLE IF NOT EXISTS matches (id INT PRIMARY KEY,opponent INT,points INT, opppoints INT, startTime INT,endTime INT,gridSize INT,numMoves INT,FOREIGN KEY (opponent) REFERENCES players(id));"
 		};
 		for (String currSQL : sqlInit) {
 			executeSQL(currSQL);
