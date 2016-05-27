@@ -172,10 +172,12 @@ public class MainWindow {
                     fiveRadio.setSelected(true);
                     growable.setDisable(true);
                     drawAllowed.setDisable(true);
+                    break;
             }
             drawAllowed.setDisable(grow);
             drawAllowed.setSelected(draw);
             growable.setSelected(grow);
+            growable.setDisable(draw);
         });
     }
 
