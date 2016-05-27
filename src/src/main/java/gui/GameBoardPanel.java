@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Gameboard panel.
+ * Game board panel.
  *
  * Created by Johan Lindström (jolindse@hotmail.com) on 2016-05-27.
  */
