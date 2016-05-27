@@ -43,7 +43,8 @@ public class MainWindow {
     private int reqToWin;
     private RadioButton threeRadio, fourRadio, fiveRadio;
     private CheckBox growable, drawAllowed;
-    private int numMarkers = 0;
+    private int numMyMarkers = 0;
+    private int numOppMarkers = 0;
     private boolean winner;
     private long timeStart;
     private long timeEnd;
@@ -310,7 +311,6 @@ public class MainWindow {
         Platform.runLater(() -> {
             viewController(x, y);
         });
-
     }
 
     private void drawMarker(int col, int row) {
@@ -320,13 +320,12 @@ public class MainWindow {
                 gameBoard.add(marker, col, row);
                 gameBoard.addMarker(marker, col, row);
                 playerMarkers.add(marker);
-                numMarkers++;
+                numMyMarkers++;
                 winner = gameArray.addMarker(1, col, row, reqToWin);
                 if (winner) {
                     timeEnd = System.currentTimeMillis()/1000L;
-                    int points = (int)(10*gameArray.getGridSize()+reqToWin)/numMarkers;
-                    controller.winning(points, 0, timeStart, timeEnd, gameArray.getGridSize(), numMarkers);
-                    System.out.println("Du vann! poäng: " + points);
+                    int points = (int)(10*gameArray.getGridSize()+reqToWin)/numMyMarkers;
+                    controller.winning(points, 0, timeStart, timeEnd, gameArray.getGridSize(), numMyMarkers);
                 }
 
             } else {
@@ -334,7 +333,13 @@ public class MainWindow {
                 gameBoard.add(marker, col, row);
                 gameBoard.addMarker(marker, col, row);
                 playerMarkers.add(marker);
-                gameArray.addMarker(2, col, row, reqToWin);
+                numOppMarkers++;
+                winner = gameArray.addMarker(2, col, row, reqToWin);
+                if (winner) {
+                    timeEnd = System.currentTimeMillis()/1000L;
+                    int points = (int)(10*gameArray.getGridSize()+reqToWin)/numOppMarkers;
+                    controller.winning(0, points, timeStart, timeEnd, gameArray.getGridSize(), numOppMarkers);
+                }
             }
             playerMarkers.forEach(marker -> {
                 marker.radiusProperty().bind(gameBoard.getCellSizeProperty().divide(2));
