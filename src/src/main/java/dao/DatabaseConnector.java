@@ -9,7 +9,7 @@ import java.util.Map;
 
 /**
  * Database connection and operations class.
- * <p>
+ *
  * Created by Johan Lindström (jolindse@hotmail.com) on 2016-05-25.
  */
 
@@ -172,9 +172,9 @@ public class DatabaseConnector {
 	 */
 	private void initDB() {
 		String sqlInit[] = {
-				"CREATE TABLE IF NOT EXISTS myPlayer (id INT NOT NULL PRIMARY KEY,firstName TEXT,surName TEXT,rank INT);",
-				"CREATE TABLE IF NOT EXISTS players (id INT NOT NULL PRIMARY KEY,firstName TEXT,surName INT,rank INT);",
-				"CREATE TABLE IF NOT EXISTS matches (id INT PRIMARY KEY,opponent INT,points INT, opppoints INT, startTime INT,endTime INT,gridSize INT,numMoves INT,FOREIGN KEY (opponent) REFERENCES players(id));"
+				"CREATE TABLE IF NOT EXISTS myPlayer (id INTEGER NOT NULL PRIMARY KEY,firstName TEXT,surName TEXT,rank INTEGER);",
+				"CREATE TABLE IF NOT EXISTS players (id INTEGER NOT NULL PRIMARY KEY,firstName TEXT,surName INTEGER,rank INTEGER);",
+				"CREATE TABLE IF NOT EXISTS matches (id INTEGER PRIMARY KEY,opponent INTEGER,points INTEGER, opppoints INTEGER, startTime INTEGER,endTime INTEGER,gridSize INTEGER,numMoves INTEGER,FOREIGN KEY (opponent) REFERENCES players(id));"
 		};
 		for (String currSQL : sqlInit) {
 			executeSQL(currSQL);
@@ -276,6 +276,12 @@ public class DatabaseConnector {
 	 * STATISTICS METHODS
 	 ******************************************************************************************************************/
 
+	/**
+	 * Returns a integer from a resultset
+	 *
+	 * @param sql String
+	 * @return int
+	 */
 	private int getIntValue(String sql) {
 		ArrayList result = executeSQLQuery(sql);
 		HashMap currMap = (HashMap) result.get(0);
@@ -283,6 +289,12 @@ public class DatabaseConnector {
 		return value;
 	}
 
+	/**
+	 * Return a double from a resultset
+	 *
+	 * @param sql String
+	 * @return double
+	 */
 	private double getFloatValue(String sql) {
 		ArrayList result = executeSQLQuery(sql);
 		HashMap currMap = (HashMap) result.get(0);

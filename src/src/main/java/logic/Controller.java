@@ -1,7 +1,7 @@
 package logic;
 
 import dao.DatabaseConnector;
-import gamelogic.MainWindow;
+import gui.AppWindow;
 import models.Message;
 import models.Player;
 import network.CommandHandler;
@@ -18,7 +18,7 @@ public class Controller {
 
 	private CommandHandler cmdhandler;
 	private Socket connection;
-	private MainWindow view;
+	private AppWindow view;
 	private Player player, remotePlayer;
 	private Message currMessage;
 	private DatabaseConnector dbconn;
@@ -45,7 +45,7 @@ public class Controller {
 	 *
 	 * @param view MainWindow
 	 */
-	public void registerView(MainWindow view) {
+	public void registerView(AppWindow view) {
 		this.view = view;
 	}
 
@@ -186,7 +186,7 @@ public class Controller {
 	 * @param drawable  boolean
 	 */
 	public void setGameOptions(int rowsToWin, boolean growable, boolean drawable) {
-		view.getOptions(rowsToWin, growable, drawable);
+		view.setOptions(rowsToWin, growable, drawable);
 	}
 
 	/**
