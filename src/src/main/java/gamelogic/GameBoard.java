@@ -40,7 +40,7 @@ public class GameBoard extends GridPane {
      *
      * @return The size of each cell
      */
-    protected double getCellSize() {
+    public double getCellSize() {
         return mHeight/numOfRows;
     }
 
@@ -48,7 +48,7 @@ public class GameBoard extends GridPane {
      *
      * @return The size of each cell as a property
      */
-    protected IntegerProperty getCellSizeProperty() {
+    public IntegerProperty getCellSizeProperty() {
         return cellSizeProperty;
     }
 
@@ -56,7 +56,7 @@ public class GameBoard extends GridPane {
      * Increase the board's size
      *
      */
-    protected void incGameBoard() {
+    public void incGameBoard() {
         // Remove the constraints
         this.getColumnConstraints().remove(0, numOfRows);
         this.getRowConstraints().remove(0, numOfRows);
@@ -77,7 +77,7 @@ public class GameBoard extends GridPane {
      *
      * @return The number of rows in the grid
      */
-    protected int getRows() {
+    public int getRows() {
         return numOfRows;
     }
 

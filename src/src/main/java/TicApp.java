@@ -1,4 +1,4 @@
-import gamelogic.MainWindow;
+import gui.AppWindow;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import logic.Controller;
@@ -12,7 +12,7 @@ import network.NetworkHandler;
  */
 public class TicApp extends Application{
 
-	private MainWindow view;
+	private AppWindow view;
 
 	public static void main (String[] args) {
 		launch(args);
@@ -23,7 +23,7 @@ public class TicApp extends Application{
 		// Init controller
 		Controller controller = new Controller();
 		// Init view
-		view = new MainWindow(primaryStage, controller);
+		view = new AppWindow(primaryStage, controller);
 		// Register view with controller
 		controller.registerView(view);
 
