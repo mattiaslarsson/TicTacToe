@@ -182,11 +182,11 @@ public class GameBoardPanel extends BorderPane {
 	}
 
 	/**
-	 * Winner method. Display fancy message and return to startscreen.
+	 * Winner method. Display fancy message and return to start screen.
 	 *
-	 * @param myPoints
-	 * @param oppPoints
-	 * @param numMarkers
+	 * @param myPoints int
+	 * @param oppPoints int
+	 * @param numMarkers int
 	 */
 	private void winner(int myPoints, int oppPoints, int numMarkers) {
 		//TODO DISPLAY WINNER IN FANCY STYLE
