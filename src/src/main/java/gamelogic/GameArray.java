@@ -30,12 +30,16 @@ public class GameArray {
     };
 
     private int gridSize;
+    private boolean growable;
 
     public GameArray(int gS) {
         gridSize = gS;
         gameGrid = new int[gridSize][gridSize];
     }
 
+    public void setGrowable(boolean growable) {
+        this.growable = growable;
+    }
     /**
      * Returns an array representing the gameboard
      * @return
@@ -51,11 +55,12 @@ public class GameArray {
      * @param x x-coordinate of the move
      * @param y y-coordinate of the move
      */
-    public void addMarker(int player, int x, int y, int reqToWin) {
+    public boolean addMarker(int player, int x, int y, int reqToWin) {
         gameGrid[x][y] = player;
         if(checkWinner(x, y, player, reqToWin)) {
-            System.out.println("VINN");
+            return true;
         };
+        return false;
     }
 
     /**
@@ -125,31 +130,37 @@ public class GameArray {
      * @param y y-coordinate of the last marker played
      */
     public void growBoard(int x, int y) {
-        boolean right = false, down = false;
-        // The direction of the grow depends on where the last marker is played
-        if (x >= (gridSize-1)/2) {
-            right = true;
-        }
-        if (y >= (gridSize-1)/2) {
-            down = true;
-        }
-        gridSize += 2;
-        // Move all the markers so that their positions remain the same
-        int[][] tempGrid = new int[gridSize][gridSize];
-        for (int oldX = 0; oldX < gameGrid.length; oldX++) {
-            for (int oldY = 0; oldY < gameGrid[oldX].length; oldY++) {
-                if(!right && !down) {
-                    tempGrid[oldX+2][oldY+2] = gameGrid[oldX][oldY];
-                } else if (!right && down) {
-                    tempGrid[oldX+2][oldY] = gameGrid[oldX][oldY];
-                } else if (right && !down) {
-                    tempGrid[oldX][oldY+2] = gameGrid[oldX][oldY];
-                } else {
-                    tempGrid[oldX][oldY] = gameGrid[oldX][oldY];
+        if(growable) {
+            boolean right = false, down = false;
+            // The direction of the grow depends on where the last marker is played
+            if (x >= (gridSize - 1) / 2) {
+                right = true;
+            }
+            if (y >= (gridSize - 1) / 2) {
+                down = true;
+            }
+            gridSize += 2;
+            // Move all the markers so that their positions remain the same
+            int[][] tempGrid = new int[gridSize][gridSize];
+            for (int oldX = 0; oldX < gameGrid.length; oldX++) {
+                for (int oldY = 0; oldY < gameGrid[oldX].length; oldY++) {
+                    if (!right && !down) {
+                        tempGrid[oldX + 2][oldY + 2] = gameGrid[oldX][oldY];
+                    } else if (!right && down) {
+                        tempGrid[oldX + 2][oldY] = gameGrid[oldX][oldY];
+                    } else if (right && !down) {
+                        tempGrid[oldX][oldY + 2] = gameGrid[oldX][oldY];
+                    } else {
+                        tempGrid[oldX][oldY] = gameGrid[oldX][oldY];
+                    }
                 }
             }
+            gameGrid = tempGrid;
         }
-        gameGrid = tempGrid;
+    }
+
+    public int getGridSize() {
+        return gridSize;
     }
 }
 

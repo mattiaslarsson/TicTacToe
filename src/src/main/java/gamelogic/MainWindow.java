@@ -43,6 +43,10 @@ public class MainWindow {
     private int reqToWin;
     private RadioButton threeRadio, fourRadio, fiveRadio;
     private CheckBox growable, drawAllowed;
+    private int numMarkers = 0;
+    private boolean winner;
+    private long timeStart;
+    private long timeEnd;
 
 
 
@@ -89,6 +93,7 @@ public class MainWindow {
         startButton.setOnAction(start -> {
             player1Turn.setValue(controller.startGame());
             stage.setScene(initGameBoard());
+            timeStart = System.currentTimeMillis() / 1000L;
             System.out.println(player1Turn.getValue());
 
         });
@@ -238,6 +243,7 @@ public class MainWindow {
         gamePane = new BorderPane();
         gameBoard = new GameBoard(screenWidth, screenHeight, 3);
         gameArray = new GameArray(gameBoard.getRows());
+        gameArray.setGrowable(growable.isSelected());
         gamePane.setCenter(gameBoard);
         gamePane.setBottom(chatBox());
         gameBoard.addEventHandler(MouseEvent.MOUSE_CLICKED, addMouseListener());
@@ -314,7 +320,15 @@ public class MainWindow {
                 gameBoard.add(marker, col, row);
                 gameBoard.addMarker(marker, col, row);
                 playerMarkers.add(marker);
-                gameArray.addMarker(1, col, row, reqToWin);
+                numMarkers++;
+                winner = gameArray.addMarker(1, col, row, reqToWin);
+                if (winner) {
+                    timeEnd = System.currentTimeMillis()/1000L;
+                    int points = (int)(10*gameArray.getGridSize()+reqToWin)/numMarkers;
+                    controller.winning(points, 0, timeStart, timeEnd, gameArray.getGridSize(), numMarkers);
+                    System.out.println("Du vann! poäng: " + points);
+                }
+
             } else {
                 Circle marker = new PlayerMarker().placeMarker(2);
                 gameBoard.add(marker, col, row);
