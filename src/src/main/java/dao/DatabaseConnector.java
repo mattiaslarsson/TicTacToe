@@ -276,110 +276,115 @@ public class DatabaseConnector {
 	 * STATISTICS METHODS
 	 ******************************************************************************************************************/
 
+	private int getIntValue(String sql) {
+		ArrayList result = executeSQLQuery(sql);
+		HashMap currMap = (HashMap) result.get(0);
+		int value = (int) currMap.get("TOTAL");
+		return value;
+	}
+
+	private double getFloatValue(String sql) {
+		ArrayList result = executeSQLQuery(sql);
+		HashMap currMap = (HashMap) result.get(0);
+		double value = (double) currMap.get("TOTAL");
+		return value;
+	}
+
 	// TOTAL POINTS
 	public int getTotalPoints() {
-		int totPoints = 0;
-
+		String sql = "SELECT SUM(points) as TOTAL FROM matches;";
+		int totPoints = getIntValue(sql);
 		return totPoints;
 	}
 
 	// POINTS GIVEN
-
 	public int getTotalGivenPoints() {
-		int totPoints = 0;
-
+		String sql = "SELECT SUM(opppoints) as TOTAL FROM matches;";
+		int totPoints = getIntValue(sql);
 		return totPoints;
 	}
 
 	// NUM WINS
-
 	public int getTotalWins() {
-		int totWins = 0;
-
+		String sql = "SELECT COUNT(*) AS TOTAL FROM matches WHERE points > opppoints;";
+		int totWins = getIntValue(sql);
 		return totWins;
 	}
 
 	// NUM LOSSES
-
 	public int getTotalDefeats() {
-		int totDefeats = 0;
-
+		String sql = "SELECT COUNT(*) AS TOTAL FROM matches WHERE points < opppoints;";
+		int totDefeats = getIntValue(sql);
 		return totDefeats;
 	}
 
 	// NUM DRAWS
-
 	public int getTotalDraws() {
-		int totDraws = 0;
-
+		String sql = "SELECT COUNT(*) AS TOTAL FROM matches WHERE points = opppoints;";
+		int totDraws = getIntValue(sql);
 		return totDraws;
 	}
 
 	// NUM MOVES
-
 	public int getTotalMoves() {
-		int totMoves = 0;
-
+		String sql = "SELECT SUM(numMoves) as TOTAL FROM matches;";
+		int totMoves = getIntValue(sql);
 		return totMoves;
 	}
 
 	// AVG TIME
-
 	public String getAvgTime() {
 		String avgTime = "";
-
 		return avgTime;
 	}
 
-
 	// AVG GRIDSIZE
-
-	public float getAvgGrid() {
-		float avgGrid = 0;
-
+	public double getAvgGrid() {
+		String sql = "SELECT AVG(gridSize) as TOTAL FROM matches;";
+		double avgGrid = getFloatValue(sql);
 		return avgGrid;
 	}
 
-
 	// AVG MOVES / GAME
-
-	public float getAvgMoves() {
-		float avgMoves = 0;
-
+	public double getAvgMoves() {
+		String sql = "SELECT AVG(numMoves) as TOTAL FROM matches;";
+		double avgMoves = getFloatValue(sql);
 		return avgMoves;
 	}
 
 	// AVG POINTS
-
-	public float getAvgPoints() {
-		float avgPoints = 0;
-
+	public double getAvgPoints() {
+		String sql = "SELECT AVG(points) as TOTAL FROM matches;";
+		double avgPoints = getFloatValue(sql);
 		return avgPoints;
 	}
 
 	// TOTAL WINS VS PLAYER
-
 	public int getTotalWinsVS(long playerId) {
-		int totWins = 0;
-
+		String sql = "SELECT COUNT(*) AS TOTAL FROM matches WHERE points > opppoints AND opponent = "+playerId+";";
+		int totWins = getIntValue(sql);
 		return totWins;
 	}
 
 	// TOTAL DEFEATS VS PLAYER
-
 	public int getTotalDefeatsVS(long playerId) {
-		int totDefeats = 0;
-
+		String sql = "SELECT COUNT(*) AS TOTAL FROM matches WHERE points < opppoints AND opponent = "+playerId+";";
+		int totDefeats = getIntValue(sql);
 		return totDefeats;
 	}
 
-	// TOTAL GAMES VS PLAYER
-
-	public int getTotalGamesVS(long playerId) {
-		int totGames = 0;
-
-		return totGames;
+	// TOTAL DRAWS VS PLAYER
+	public int getTotalDrawsVS(long playerId) {
+		String sql = "SELECT COUNT(*) AS TOTAL FROM matches WHERE points = opppoints AND opponent = "+playerId+";";
+		int totDraws = getIntValue(sql);
+		return totDraws;
 	}
 
+	// TOTAL GAMES VS PLAYER
+	public int getTotalGamesVS(long playerId) {
+		String sql = "SELECT COUNT(*) AS TOTAL FROM matches WHERE opponent = "+playerId+";";
+		int totGames = getIntValue(sql);
+		return totGames;
+	}
 
 }
