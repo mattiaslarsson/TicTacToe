@@ -56,7 +56,7 @@ public class StartPanel extends BorderPane {
 		Button startButton = new Button("START GAME!");
 		startBox.setAlignment(Pos.CENTER);
 		startButton.setOnAction(start -> {
-			viewController.startGame(controller.startGame());
+			viewController.initGame(controller.startGame());
 			/*
 			player1Turn.setValue(controller.startGame());
 			stage.setScene(initGameBoard());

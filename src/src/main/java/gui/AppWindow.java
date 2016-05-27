@@ -26,6 +26,7 @@ public class AppWindow {
 
 	// App configuration
 	private boolean connected = false;
+	private boolean inGame = false;
 	private String title = "";
 	private double windowHeight = 600;
 	private double windowWidth = 600;
@@ -49,22 +50,35 @@ public class AppWindow {
 				controller.quit();
 			}
 		});
+
+		init();
 	}
+
+	/*******************************************************************************************************************
+	 * VIEWS
+	 ******************************************************************************************************************/
 
 	private void init() {
 		panelHeight = windowHeight;
 		panelWidth = windowWidth;
 		rootPane = new BorderPane();
 		//TODO CHECK IF FIRST RUN AND DISPLAY FIRST TIME SCREEN IF SO
-		startPanel = new StartPanel(controller, this);
-		rootPane.setCenter(startPanel);
-		scene = new Scene(rootPane,windowWidth,windowHeight);
+		initStart();
+		scene = new Scene(rootPane, windowWidth, windowHeight);
 		stage.setScene(scene);
 		stage.show();
 	}
 
-	public void startGame(boolean myStart) {
-		System.out.println("GAME SKALL STARTAS");
+	public void initGame(boolean myStart) {
+		gameBoardPanel = new GameBoardPanel(controller, this);
+		gameBoardPanel.startGame(myStart);
+		rootPane.setCenter(gameBoardPanel);
+		inGame = true;
+	}
+
+	public void initStart() {
+		startPanel = new StartPanel(controller, this);
+		rootPane.setCenter(startPanel);
 	}
 
 	/*******************************************************************************************************************
@@ -76,10 +90,16 @@ public class AppWindow {
 
 		if (conn) {
 			Platform.runLater(() -> {
-				startPanel.connected();
+				if (!inGame) {
+					startPanel.connected();
+				}
 			});
 		} else {
 			Platform.runLater(() -> {
+				if (inGame) {
+					initStart();
+					inGame = false;
+				}
 				startPanel.disconnected();
 			});
 
@@ -93,24 +113,23 @@ public class AppWindow {
 		});
 	}
 
-	public void setOptions(int rowsToWin, boolean growable, boolean drawable){
+	public void setOptions(int rowsToWin, boolean growable, boolean drawable) {
 		Platform.runLater(() -> {
-			startPanel.setOptions(rowsToWin,growable,drawable);
+			startPanel.setOptions(rowsToWin, growable, drawable);
 		});
 	}
 
-	/*
+
 	public void startGame(boolean start) {
 		Platform.runLater(() -> {
-			player1Turn.setValue(start);
-			stage.setScene(initGameBoard());
+			initGame(start);
 		});
-*/
+	}
 
 
-		/*******************************************************************************************************************
-		 * GETTERS & SETTERS
-		 ******************************************************************************************************************/
+	/*******************************************************************************************************************
+	 * GETTERS & SETTERS
+	 ******************************************************************************************************************/
 
 	public int getRowsToWin() {
 		return rowsToWin;
