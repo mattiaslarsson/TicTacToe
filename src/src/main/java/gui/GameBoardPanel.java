@@ -36,6 +36,7 @@ public class GameBoardPanel extends BorderPane {
 
 	private boolean player1Turn = false;
 	private List<Circle> playerMarkers = new ArrayList<>();
+	private boolean draw = false;
 
 	public GameBoardPanel (Controller controller, AppWindow viewController) {
 		this.controller = controller;
@@ -84,6 +85,8 @@ public class GameBoardPanel extends BorderPane {
 					marker.radiusProperty().bind(gameBoard.getCellSizeProperty().divide(2));
 				});
 				gameBoard.addEventHandler(MouseEvent.MOUSE_CLICKED, addMouseListener());
+			} else if (isFull() && viewController.isDrawable()){
+				this.draw = true;
 			}
 		}
 	}
@@ -148,7 +151,7 @@ public class GameBoardPanel extends BorderPane {
 	 * @param row int
 	 */
 	private void drawMarker(int col, int row) {
-		boolean winner;
+		boolean winner = false;
 		if (!checkDoubles(col, row)) {
 			if (player1Turn) {
 				Circle marker = new PlayerMarker().placeMarker(1);
