@@ -37,7 +37,6 @@ public class StartPanel extends BorderPane {
 	}
 
 	private void initStartScreen() {
-		// Scene startScene = new Scene(this, screenWidth, screenHeight);
 		TextField ip = new TextField();
 		ip.setPromptText("Enter IP");
 		Button connectButton = new Button("Connect");
@@ -57,13 +56,6 @@ public class StartPanel extends BorderPane {
 		startBox.setAlignment(Pos.CENTER);
 		startButton.setOnAction(start -> {
 			viewController.initGame(controller.startGame());
-			/*
-			player1Turn.setValue(controller.startGame());
-			stage.setScene(initGameBoard());
-			timeStart = System.currentTimeMillis() / 1000L;
-			System.out.println(player1Turn.getValue());
-			*/
-
 		});
 
 		Text playOptionsText = new Text("OPTIONS");

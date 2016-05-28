@@ -39,7 +39,6 @@ public class AppWindow {
 	private VBox chatDisplay;
 	private HBox chatBox;
 
-
 	private TextArea chatDisplayArea;
 
 	// App configuration
@@ -259,6 +258,9 @@ public class AppWindow {
 	 */
 	public void setOptions(int rowsToWin, boolean growable, boolean drawable) {
 		Platform.runLater(() -> {
+			this.setDrawable(drawable);
+			this.setGrowable(growable);
+			this.setRowsToWin(rowsToWin);
 			startPanel.setOptions(rowsToWin, growable, drawable);
 		});
 	}
