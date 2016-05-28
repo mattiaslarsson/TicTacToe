@@ -37,7 +37,6 @@ public class GameBoardPanel extends BorderPane {
 	private boolean player1Turn = false;
 	private List<Circle> playerMarkers = new ArrayList<>();
 
-
 	public GameBoardPanel (Controller controller, AppWindow viewController) {
 		this.controller = controller;
 		this.viewController = viewController;
@@ -62,6 +61,7 @@ public class GameBoardPanel extends BorderPane {
 		gameBoard = new GameBoard(viewController.getPanelWidth(), viewController.getPanelWidth(), 3);
 		gameArray = new GameArray(gameBoard.getRows());
 		gameArray.setGrowable(viewController.isGrowable());
+		gameArray.setDrawable(viewController.isDrawable());
 		this.setCenter(gameBoard);
 		gameBoard.addEventHandler(MouseEvent.MOUSE_CLICKED, addMouseListener());
 	}
@@ -79,7 +79,7 @@ public class GameBoardPanel extends BorderPane {
 				controller.makeMove(col, row);
 			}
 			player1Turn = !player1Turn;
-			if (isFull()) {
+			if (isFull() && !viewController.isDrawable()) {
 				playerMarkers.forEach(marker -> {
 					marker.radiusProperty().bind(gameBoard.getCellSizeProperty().divide(2));
 				});
@@ -94,6 +94,9 @@ public class GameBoardPanel extends BorderPane {
 	 * @return boolean
 	 */
 	private boolean isFull() {
+		if (gameArray.isGameOver()) {
+			winner(0,0,numMyMarkers);
+		}
 		if (playerMarkers.size() == (gameBoard.getRows() * gameBoard.getRows())) {
 			// Increase the gameboard's size
 			gameBoard.incGameBoard();
@@ -145,7 +148,7 @@ public class GameBoardPanel extends BorderPane {
 	 * @param row int
 	 */
 	private void drawMarker(int col, int row) {
-		boolean winner = false;
+		boolean winner;
 		if (!checkDoubles(col, row)) {
 			if (player1Turn) {
 				Circle marker = new PlayerMarker().placeMarker(1);
@@ -157,10 +160,9 @@ public class GameBoardPanel extends BorderPane {
 				if (winner) {
 					timeEnd = System.currentTimeMillis() / 1000L;
 					int points = (int) (10 * gameArray.getGridSize() + viewController.getRowsToWin()) / numMyMarkers;
-					winner(points,0,numMyMarkers);
+					winner(points, 0, numMyMarkers);
 					//controller.winning(points, 0, timeStart, timeEnd, gameArray.getGridSize(), numMyMarkers);
 				}
-
 			} else {
 				Circle marker = new PlayerMarker().placeMarker(2);
 				gameBoard.add(marker, col, row);
@@ -171,7 +173,7 @@ public class GameBoardPanel extends BorderPane {
 				if (winner) {
 					timeEnd = System.currentTimeMillis() / 1000L;
 					int points = (int) (10 * gameArray.getGridSize() + viewController.getRowsToWin()) / numOppMarkers;
-					winner(0,points,numOppMarkers);
+					winner(0, points, numOppMarkers);
 					//controller.winning(0, points, timeStart, timeEnd, gameArray.getGridSize(), numOppMarkers);
 				}
 			}
@@ -189,11 +191,14 @@ public class GameBoardPanel extends BorderPane {
 	 * @param numMarkers int
 	 */
 	private void winner(int myPoints, int oppPoints, int numMarkers) {
+		System.out.println("myPoints: " + myPoints + ", oppPoints: " + oppPoints);
 		//TODO DISPLAY WINNER IN FANCY STYLE
 		if (myPoints > oppPoints) {
 			System.out.println("You're the WINNER!");
-		} else {
+		} else if (oppPoints > myPoints){
 			System.out.println("Opponent won! Boooh!");
+		} else {
+			System.out.println("It's a draw!");
 		}
 		timeEnd = System.currentTimeMillis() / 1000L;
 		controller.winning(myPoints, oppPoints, timeStart, timeEnd, gameArray.getGridSize(), numMarkers);
