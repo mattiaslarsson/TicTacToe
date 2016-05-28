@@ -31,6 +31,8 @@ public class GameArray {
 
     private int gridSize;
     private boolean growable;
+    private boolean drawable;
+    private boolean gameOver = false;
 
     public GameArray(int gS) {
         gridSize = gS;
@@ -40,6 +42,8 @@ public class GameArray {
     public void setGrowable(boolean growable) {
         this.growable = growable;
     }
+    public void setDrawable(boolean drawable) { this.drawable = drawable; }
+    public boolean isGameOver() { return gameOver; }
     /**
      * Returns an array representing the gameboard
      * @return
@@ -85,7 +89,9 @@ public class GameArray {
             if (gameGrid[currX][currY] == player) {
                 System.out.println("Hittade en match i " + currX + "," + currY);
                 numInRow++;
-                if(numInRow >= reqToWin-1) {return true;}
+                if(numInRow >= reqToWin-1) {
+                    return true;
+                }
                 for (int j = 0; j<reqToWin-2; j++) {
                     currX += checkPattern[i].getX();
                     currY += checkPattern[i].getY();
@@ -101,7 +107,9 @@ public class GameArray {
                             if (gameGrid[oppositeX][oppositeY] == player) {
                                 System.out.println("Hittade en oppMatch i " + oppositeX + "," + oppositeY);
                                 numInRow++;
-                                if(numInRow >= reqToWin-1) {return true;}
+                                if(numInRow >= reqToWin-1) {
+                                    return true;
+                                }
                                 oppositeX += i > 3 ? x+checkPattern[i-4].getX() : x+checkPattern[i+4].getX();
                                 oppositeY += i > 3 ? y+checkPattern[i-4].getY() : y+checkPattern[i+4].getY();
                                 if (oppositeX < 0 || oppositeY < 0 || oppositeX > gameGrid[0].length-1 || oppositeY > gameGrid[0].length-1 || gameGrid[oppositeX][oppositeY] != player) {
@@ -113,9 +121,13 @@ public class GameArray {
                     } else if(gameGrid[currX][currY] == player) {
                         System.out.println("Hittade en match i " + currX + "," + currY);
                         numInRow++;
-                        if(numInRow >= reqToWin-1) {return true;}
+                        if(numInRow >= reqToWin-1) {
+                            return true;
+                        }
                     }
-                    if (numInRow >= reqToWin-1) {return true;}
+                    if (numInRow >= reqToWin-1) {
+                        return true;
+                    }
                 }
                 numInRow = 0;
             }
@@ -156,7 +168,10 @@ public class GameArray {
                 }
             }
             gameGrid = tempGrid;
+        } else {
+            gameOver = true;
         }
+
     }
 
     public int getGridSize() {

@@ -73,8 +73,8 @@ public class StartPanel extends BorderPane {
 		ToggleGroup radioGroup = new ToggleGroup();
 		radioGroup.getToggles().addAll(threeRadio, fourRadio, fiveRadio);
 
-		CheckBox growable = new CheckBox("Growable Grid");
-		CheckBox drawAllowed = new CheckBox("Allow Draw");
+		growable = new CheckBox("Growable Grid");
+		drawAllowed = new CheckBox("Allow Draw");
 
 		int reqToWin = 3;
 

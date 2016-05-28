@@ -293,6 +293,7 @@ public class AppWindow {
 
 	public void setDrawable(boolean drawable) {
 		this.drawable = drawable;
+
 	}
 
 	public boolean isGrowable() {
