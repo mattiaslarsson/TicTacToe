@@ -16,7 +16,7 @@ import java.net.Socket;
  */
 public class Controller {
 
-	private CommandHandler cmdhandler;
+	private CommandHandler cmdhandler = null;
 	private Socket connection;
 	private AppWindow view;
 	private Player player, remotePlayer;
@@ -31,13 +31,6 @@ public class Controller {
 	 */
 	public Controller() {
 		dbconn = new DatabaseConnector();
-		if (dbconn.firstRun()) {
-			setOwnPlayer();
-			dbconn.createOwnPlayer(player.getFirstName(), player.getSurName());
-			player = dbconn.getOwnPlayer();
-		} else {
-			player = dbconn.getOwnPlayer();
-		}
 	}
 
 	/**
@@ -49,13 +42,24 @@ public class Controller {
 		this.view = view;
 	}
 
+	public boolean isFirstRun(){
+		boolean firstRun = false;
+		if (dbconn.firstRun()) {
+			firstRun = true;
+			connected = true;
+		} else {
+			player = dbconn.getOwnPlayer();
+		}
+		return firstRun;
+	}
+
 	/**
 	 * Called when a connection to the server socket is accepted. Checks if
 	 * there are no ongoing connections and if not starts a commandhandler to
 	 * handle the new connection.
 	 *
 	 * @param connection Socket
-	 * @return
+	 * @return boolean
 	 */
 	public boolean connected(Socket connection) {
 		boolean connectionOk = false;
@@ -73,11 +77,11 @@ public class Controller {
 	/**
 	 * Method to load userdata for current session.
 	 */
-	private void setOwnPlayer() {
-		//TODO fix load of info
-		String firstName = "Namn";
-		String surName = "Efternamn";
+	public void setOwnPlayer(String firstName, String surName) {
 		player = new Player(firstName, surName, 0);
+		dbconn.createOwnPlayer(player.getFirstName(), player.getSurName());
+		connected = false;
+		view.initStart();
 	}
 
 	/**
@@ -176,6 +180,7 @@ public class Controller {
 		cmdhandler.disconnect();
 		view.connected(false);
 		connected = false;
+		cmdhandler = null;
 	}
 
 	/**
@@ -256,6 +261,13 @@ public class Controller {
 		cmdhandler.sendMessage(currMessage);
 	}
 
+	public void sendBusy(){
+		currMessage = new Message("busy");
+		if (cmdhandler != null) {
+			cmdhandler.sendMessage(currMessage);
+		}
+	}
+
 	/**
 	 * Sends disconnection message.
 	 */
@@ -265,6 +277,7 @@ public class Controller {
 			cmdhandler.sendMessage(currMessage);
 			cmdhandler.disconnect();
 			view.connected(false);
+			cmdhandler = null;
 		}
 	}
 
