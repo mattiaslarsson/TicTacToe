@@ -1,6 +1,7 @@
 package gui;
 
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
@@ -29,7 +30,8 @@ public class AppWindow {
 	// App configuration
 	private boolean connected = false;
 	private boolean inGame = false;
-	private String title = "";
+	private String versionString = "TicTacToe v0.6a";
+	private SimpleStringProperty titleProp;
 	private double windowHeight = 600;
 	private double windowWidth = 600;
 	private double panelHeight;
@@ -67,7 +69,9 @@ public class AppWindow {
 		panelHeight = windowHeight;
 		panelWidth = windowWidth;
 		rootPane = new BorderPane();
+		titleProp = new SimpleStringProperty(versionString);
 		//TODO CHECK IF FIRST RUN AND DISPLAY FIRST TIME SCREEN IF SO
+		stage.titleProperty().bind(titleProp);
 		initStart();
 		scene = new Scene(rootPane, windowWidth, windowHeight);
 		stage.setScene(scene);
@@ -110,6 +114,7 @@ public class AppWindow {
 				if (!inGame) {
 					startPanel.connected();
 				}
+				titleProp.setValue(versionString+" - Connected");
 			});
 		} else {
 			Platform.runLater(() -> {
@@ -118,8 +123,8 @@ public class AppWindow {
 					inGame = false;
 				}
 				startPanel.disconnected();
+				titleProp.setValue(versionString+" - Disconnected");
 			});
-
 		}
 
 	}
