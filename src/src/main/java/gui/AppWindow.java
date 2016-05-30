@@ -39,7 +39,6 @@ public class AppWindow {
 	private VBox chatDisplay;
 	private HBox chatBox;
 
-
 	private TextArea chatDisplayArea;
 
 	// App configuration
@@ -65,7 +64,7 @@ public class AppWindow {
 		this.controller = controller;
 		this.stage = stage;
 
-		chatMessages = new ArrayList<String>();
+		//chatMessages = new ArrayList<String>();
 
 		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
@@ -101,9 +100,14 @@ public class AppWindow {
 		panelWidth = windowWidth;
 		rootPane = new BorderPane();
 		titleProp = new SimpleStringProperty(versionString);
-		//TODO CHECK IF FIRST RUN AND DISPLAY FIRST TIME SCREEN IF SO
 		stage.titleProperty().bind(titleProp);
-		initStart();
+
+		if (controller.isFirstRun()){
+			firstStart();
+		} else {
+			initStart();
+		}
+
 		scene = new Scene(rootPane, windowWidth, windowHeight);
 		stage.setScene(scene);
 		stage.show();
@@ -120,6 +124,11 @@ public class AppWindow {
 		gameBoardPanel.startGame(myStart);
 		rootPane.setCenter(gameBoardPanel);
 		inGame = true;
+	}
+
+	public void firstStart(){
+		FirstRunPane firstRun = new FirstRunPane(controller);
+		rootPane.setCenter(firstRun);
 	}
 
 	/**
@@ -143,7 +152,7 @@ public class AppWindow {
 
 	private void hidePanels() {
 		stage.setWidth(windowWidth);
-		rootPane.getChildren().remove(1,2);
+		rootPane.getChildren().removeAll();
 		rootPane.setCenter(startPanel);
 	}
 
@@ -259,6 +268,9 @@ public class AppWindow {
 	 */
 	public void setOptions(int rowsToWin, boolean growable, boolean drawable) {
 		Platform.runLater(() -> {
+			this.setDrawable(drawable);
+			this.setGrowable(growable);
+			this.setRowsToWin(rowsToWin);
 			startPanel.setOptions(rowsToWin, growable, drawable);
 		});
 	}

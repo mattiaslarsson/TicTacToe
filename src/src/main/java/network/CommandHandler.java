@@ -144,6 +144,9 @@ public class CommandHandler implements Runnable {
 				boolean drawable = gson.fromJson(cmdData.get(2), Boolean.class);
 				controller.setGameOptions(rowsToWin, growable, drawable);
 				break;
+			case "busy":
+				// Busy client
+				break;
 		}
 	}
 }

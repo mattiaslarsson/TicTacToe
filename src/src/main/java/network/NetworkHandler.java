@@ -45,9 +45,7 @@ public class NetworkHandler implements Runnable {
 			try {
 				connection = listener.accept();
 				if (!controller.connected(connection)) {
-					PrintWriter out = new PrintWriter(connection.getOutputStream(),true);
-					out.println("This client is already in a game.");
-					out.close();
+					controller.sendBusy();
 					connection.close();
 				}
 			} catch (IOException e) {
@@ -55,6 +53,7 @@ public class NetworkHandler implements Runnable {
 			}
 		}
 	}
+
 
 	/**
 	 * Disconnect method to handle graceful exits.
