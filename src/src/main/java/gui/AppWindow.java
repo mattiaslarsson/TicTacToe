@@ -6,12 +6,12 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import logic.Controller;
@@ -48,9 +48,9 @@ public class AppWindow {
 	private String versionString = "TicTacToe v0.6a";
 	private SimpleStringProperty titleProp;
 
-	private double windowHeight = 600;
+	private double windowHeight = 620;
 	private double windowWidth = 600;
-	private double chatDisplayWidth = 200;
+	private double chatDisplayWidth = 300;
 	private double panelHeight;
 	private double panelWidth;
 
@@ -67,6 +67,8 @@ public class AppWindow {
 		this.stage = stage;
 
 		chatMessages = new ArrayList<String>();
+
+		Font.loadFont(getClass().getResource("/Roboto-Regular.ttf").toExternalForm(), 12);
 
 		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
@@ -98,7 +100,7 @@ public class AppWindow {
 	 * Initializes the view when first ran. Checks if its a first time user.
 	 */
 	private void init() {
-		panelHeight = windowHeight;
+		panelHeight = 600;
 		panelWidth = windowWidth;
 		rootPane = new BorderPane();
 		titleProp = new SimpleStringProperty(versionString);
@@ -111,6 +113,8 @@ public class AppWindow {
 		}
 
 		scene = new Scene(rootPane, windowWidth, windowHeight);
+		scene.getStylesheets().add
+				(getClass().getResource("/game.css").toExternalForm());
 		stage.setScene(scene);
 		stage.show();
 	}
@@ -184,7 +188,9 @@ public class AppWindow {
 		fieldChat.setPromptText("Enter chat message");
 		btnChat.setOnAction((e) -> {
 			if (connected) {
-				controller.chatMessage(fieldChat.getText());
+				String chatString = fieldChat.getText();
+				controller.chatMessage(chatString);
+				addMessage(chatString);
 				fieldChat.setText("");
 			}
 		});
@@ -252,7 +258,6 @@ public class AppWindow {
 	public void chatMessage(String message) {
 		Platform.runLater(() -> {
 			addMessage(message);
-			System.out.println("Chatmessage: "+message);
 		});
 	}
 

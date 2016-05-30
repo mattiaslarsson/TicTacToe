@@ -79,6 +79,8 @@ public class GameBoardPanel extends BorderPane {
 		gameArray.setDrawable(viewController.isDrawable());
 		this.setCenter(gameBoard);
 		gameBoard.addEventHandler(MouseEvent.MOUSE_CLICKED, addMouseListener());
+		gameBoard.setStyle("-fx-background-image: url(\"/textured_paper.png\");-fx-background-size: 600, 600;-fx-background-repeat: no-repeat;");
+
 	}
 
 	/**

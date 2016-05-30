@@ -1,11 +1,8 @@
 package gamelogic;
 
-import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.IOException;
 
 /**
  * Created by Mattias Larsson on 2016-05-19.
@@ -14,22 +11,24 @@ import java.io.*;
 public class PlayerMarker {
 
 
-    public PlayerMarker(){}
+	Image cross, circle;
 
-    /**
-     * Places a marker in the grid
-     * @param player integer - 1 if player 1, 2 if player 2
-     *
-     * @return Red Circle if player 1, blue Circle if player 2
-     */
-    public Image placeMarker(int player) throws IOException{
-        if (player == 1) {
-            Image cross=new Image(getClass().getResourceAsStream("/res/cross.png"));
-            return cross;
-        }
-        else {
-            Image circle=new Image(getClass().getResourceAsStream("/res/circle.png"));
-            return circle;
-        }
-    }
+	public PlayerMarker() {
+		cross = new Image(getClass().getResourceAsStream("/xL.png"));
+		circle = new Image(getClass().getResourceAsStream("/oL.png"));
+	}
+
+	/**
+	 * Places a marker in the grid
+	 *
+	 * @param player integer - 1 if player 1, 2 if player 2
+	 * @return Red Circle if player 1, blue Circle if player 2
+	 */
+	public Image placeMarker(int player) throws IOException {
+		if (player == 1) {
+			return cross;
+		} else {
+			return circle;
+		}
+	}
 }
