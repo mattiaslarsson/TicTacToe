@@ -5,13 +5,18 @@ import gamelogic.GameBoard;
 import gamelogic.PlayerMarker;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
+import javafx.geometry.HPos;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Circle;
 import logic.Controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +40,7 @@ public class GameBoardPanel extends BorderPane {
 	private long timeEnd;
 
 	private boolean player1Turn = false;
-	private List<Circle> playerMarkers = new ArrayList<>();
+	private List<ImageView> playerMarkers = new ArrayList<>();
 	private boolean draw = false;
 
 	public GameBoardPanel (Controller controller, AppWindow viewController) {
@@ -73,7 +78,7 @@ public class GameBoardPanel extends BorderPane {
 	 * @param col int
 	 * @param row int
 	 */
-	public void makeMove(int col, int row) {
+	public void makeMove(int col, int row) throws IOException {
 		if (!checkDoubles(col, row)) {
 			drawMarker(col, row);
 			if (player1Turn) {
@@ -82,7 +87,8 @@ public class GameBoardPanel extends BorderPane {
 			player1Turn = !player1Turn;
 			if (isFull() && !viewController.isDrawable()) {
 				playerMarkers.forEach(marker -> {
-					marker.radiusProperty().bind(gameBoard.getCellSizeProperty().divide(2));
+					marker.fitHeightProperty().bind(gameBoard.getCellSizeProperty().divide(2));
+					marker.fitWidthProperty().bind(gameBoard.getCellSizeProperty().divide(2));
 				});
 				gameBoard.addEventHandler(MouseEvent.MOUSE_CLICKED, addMouseListener());
 			} else if (isFull() && viewController.isDrawable()){
@@ -96,7 +102,7 @@ public class GameBoardPanel extends BorderPane {
 	 *
 	 * @return boolean
 	 */
-	private boolean isFull() {
+	private boolean isFull() throws IOException {
 		if (gameArray.isGameOver()) {
 			winner(0,0,numMyMarkers);
 		}
@@ -113,13 +119,20 @@ public class GameBoardPanel extends BorderPane {
 			for (int x = 0; x < tempGrid.length; x++) {
 				for (int y = 0; y < tempGrid[x].length; y++) {
 					if (tempGrid[x][y] == 1) {
-						Circle playerMarker = new PlayerMarker().placeMarker(1);
+						ImageView playerMarker = new ImageView(new PlayerMarker().placeMarker(1));
 						gameBoard.add(playerMarker, x, y);
+						GridPane.setHalignment(playerMarker, HPos.CENTER);
+						//Circle playerMarker = new PlayerMarker().placeMarker(1);
+						//gameBoard.add(playerMarker, x, y);
 						playerMarkers.add(playerMarker);
 					} else if (tempGrid[x][y] == 2) {
-						Circle playerMarker = new PlayerMarker().placeMarker(2);
+						ImageView playerMarker = new ImageView(new PlayerMarker().placeMarker(2));
 						gameBoard.add(playerMarker, x, y);
+						GridPane.setHalignment(playerMarker, HPos.CENTER);
 						playerMarkers.add(playerMarker);
+						//Circle playerMarker = new PlayerMarker().placeMarker(2);
+						//gameBoard.add(playerMarker, x, y);
+						//playerMarkers.add(playerMarker);
 					}
 				}
 			}
@@ -136,8 +149,13 @@ public class GameBoardPanel extends BorderPane {
 	 * @return boolean
 	 */
 	private boolean checkDoubles(int col, int row) {
-		for (Circle circle : playerMarkers) {
+		/*for (Circle circle : playerMarkers) {
 			if (GridPane.getColumnIndex(circle) - col == 0 && GridPane.getRowIndex(circle) - row == 0) {
+				return true;
+			}
+		}*/
+		for (ImageView image : playerMarkers) {
+			if (GridPane.getColumnIndex(image) - col == 0 && GridPane.getRowIndex(image) - row == 0) {
 				return true;
 			}
 		}
@@ -150,14 +168,16 @@ public class GameBoardPanel extends BorderPane {
 	 * @param col int
 	 * @param row int
 	 */
-	private void drawMarker(int col, int row) {
+	private void drawMarker(int col, int row) throws IOException {
 		boolean winner = false;
 		if (!checkDoubles(col, row)) {
 			if (player1Turn) {
-				Circle marker = new PlayerMarker().placeMarker(1);
+				ImageView marker = new ImageView(new PlayerMarker().placeMarker(1));
+				//Circle marker = new PlayerMarker().placeMarker(1);
 				gameBoard.add(marker, col, row);
 				gameBoard.addMarker(marker, col, row);
 				playerMarkers.add(marker);
+				GridPane.setHalignment(marker, HPos.CENTER);
 				numMyMarkers++;
 				winner = gameArray.addMarker(1, col, row, viewController.getRowsToWin());
 				if (winner) {
@@ -167,10 +187,12 @@ public class GameBoardPanel extends BorderPane {
 					//controller.winning(points, 0, timeStart, timeEnd, gameArray.getGridSize(), numMyMarkers);
 				}
 			} else {
-				Circle marker = new PlayerMarker().placeMarker(2);
+				ImageView marker = new ImageView(new PlayerMarker().placeMarker(2));
+				//Circle marker = new PlayerMarker().placeMarker(2);
 				gameBoard.add(marker, col, row);
 				gameBoard.addMarker(marker, col, row);
 				playerMarkers.add(marker);
+				GridPane.setHalignment(marker, HPos.CENTER);
 				numOppMarkers++;
 				winner = gameArray.addMarker(2, col, row, viewController.getRowsToWin());
 				if (winner) {
@@ -181,7 +203,9 @@ public class GameBoardPanel extends BorderPane {
 				}
 			}
 			playerMarkers.forEach(marker -> {
-				marker.radiusProperty().bind(gameBoard.getCellSizeProperty().divide(2));
+				marker.fitHeightProperty().bind(gameBoard.getCellSizeProperty().divide(2));
+				marker.fitWidthProperty().bind(gameBoard.getCellSizeProperty().divide(2));
+				//marker.radiusProperty().bind(gameBoard.getCellSizeProperty().divide(2));
 			});
 		}
 	}
@@ -225,7 +249,11 @@ public class GameBoardPanel extends BorderPane {
 							(e.getY() % gameBoard.getCellSize())) /
 							gameBoard.getCellSize()));
 
-					makeMove(clickCol, clickRow);
+					try {
+						makeMove(clickCol, clickRow);
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
 				}
 			}
 		};

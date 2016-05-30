@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import logic.Controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,7 +65,7 @@ public class AppWindow {
 		this.controller = controller;
 		this.stage = stage;
 
-		//chatMessages = new ArrayList<String>();
+		chatMessages = new ArrayList<String>();
 
 		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
@@ -154,6 +155,8 @@ public class AppWindow {
 		stage.setWidth(windowWidth);
 		rootPane.getChildren().removeAll();
 		rootPane.setCenter(startPanel);
+		rootPane.setRight(null);
+		rootPane.setBottom(null);
 	}
 
 	/**
@@ -228,6 +231,7 @@ public class AppWindow {
 					initStart();
 					inGame = false;
 				}
+				initStart();
 				startPanel.disconnected();
 				titleProp.setValue(versionString + " - Disconnected");
 			});
@@ -255,7 +259,11 @@ public class AppWindow {
 	 */
 	public void makeMove(int x, int y) {
 		Platform.runLater(() -> {
-			gameBoardPanel.makeMove(x, y);
+			try {
+				gameBoardPanel.makeMove(x, y);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		});
 	}
 

@@ -1,8 +1,12 @@
 package gamelogic;
 
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
@@ -24,6 +28,7 @@ public class GameBoard extends GridPane {
         numOfRows = numRows;
         this.mWidth = width;
         this.mHeight = height;
+
         // Set the size of each cell in the grid
         for (int i = 0; i < numOfRows; i++) {
             ColumnConstraints column = new ColumnConstraints((int)mHeight/numOfRows);
@@ -70,7 +75,7 @@ public class GameBoard extends GridPane {
         cellSizeProperty.setValue((int)mHeight/numOfRows);
     }
 
-    public void addMarker(Circle marker, int col, int row) {
+    public void addMarker(ImageView marker, int col, int row) {
         System.out.println("Lade till i: " + col + ", " + row);
     }
     /**

@@ -1,7 +1,11 @@
 package gamelogic;
 
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.image.Image;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
 
 /**
  * Created by Mattias Larsson on 2016-05-19.
@@ -9,7 +13,8 @@ import javafx.scene.shape.Circle;
 
 public class PlayerMarker {
 
-    public PlayerMarker() {}
+
+    public PlayerMarker(){}
 
     /**
      * Places a marker in the grid
@@ -17,9 +22,20 @@ public class PlayerMarker {
      *
      * @return Red Circle if player 1, blue Circle if player 2
      */
-    public Circle placeMarker(int player) {
-        Circle marker = new Circle();
-        marker.setFill(player == 1 ? Color.RED : Color.BLUE);
-        return marker;
+    public Image placeMarker(int player) throws IOException{
+//        Image crossImage = new Image("res/cross.png");
+//        Image circleImage = new Image("res/circle.png");
+        if (player == 1) {
+            System.out.println(System.getProperty("user.dir"));
+            BufferedImage crossTemp = ImageIO.read(new File("/res/cross.png"));
+            Image cross = SwingFXUtils.toFXImage(crossTemp,null);
+            return cross;
+        }
+        else {
+            System.out.println("returnerar circle");
+            BufferedImage circleTemp = ImageIO.read(new File("/res/circle.png"));
+            Image circle = SwingFXUtils.toFXImage(circleTemp, null);
+            return circle;
+        }
     }
 }
