@@ -14,8 +14,8 @@ public class PlayerMarker {
 	Image cross, circle;
 
 	public PlayerMarker() {
-		cross = new Image(getClass().getResourceAsStream("/res/xL.png"));
-		circle = new Image(getClass().getResourceAsStream("/res/oL.png"));
+		cross = new Image(getClass().getResourceAsStream("/xL.png"));
+		circle = new Image(getClass().getResourceAsStream("/oL.png"));
 	}
 
 	/**

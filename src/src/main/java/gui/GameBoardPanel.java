@@ -4,7 +4,6 @@ import gamelogic.GameArray;
 import gamelogic.GameBoard;
 import gamelogic.PlayerMarker;
 import javafx.animation.ScaleTransition;
-import javafx.animation.ScaleTransitionBuilder;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Point2D;
@@ -228,11 +227,11 @@ public class GameBoardPanel extends BorderPane {
 		System.out.println("myPoints: " + myPoints + ", oppPoints: " + oppPoints);
 		//TODO DISPLAY WINNER IN FANCY STYLE
 		if (myPoints > oppPoints) {
-			playSound("/res/applause.mp3");
+			playSound("/applause.mp3");
 		} else if (oppPoints > myPoints){
-			playSound("/res/boo.mp3");
+			playSound("/boo.mp3");
 		} else {
-			playSound("/res/sigh.mp3");
+			playSound("/sigh.mp3");
 		}
 		timeEnd = System.currentTimeMillis() / 1000L;
 		controller.winning(myPoints, oppPoints, timeStart, timeEnd, gameArray.getGridSize(), numMarkers);

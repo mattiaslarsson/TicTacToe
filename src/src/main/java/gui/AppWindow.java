@@ -68,7 +68,7 @@ public class AppWindow {
 
 		chatMessages = new ArrayList<String>();
 
-		Font.loadFont(getClass().getResource("/res/Roboto-Regular.ttf").toExternalForm(), 12);
+		Font.loadFont(getClass().getResource("/Roboto-Regular.ttf").toExternalForm(), 12);
 
 		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
@@ -114,7 +114,7 @@ public class AppWindow {
 
 		scene = new Scene(rootPane, windowWidth, windowHeight);
 		scene.getStylesheets().add
-				(getClass().getResource("/res/game.css").toExternalForm());
+				(getClass().getResource("/game.css").toExternalForm());
 		stage.setScene(scene);
 		stage.show();
 	}
