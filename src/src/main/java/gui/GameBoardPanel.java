@@ -3,19 +3,14 @@ package gui;
 import gamelogic.GameArray;
 import gamelogic.GameBoard;
 import gamelogic.PlayerMarker;
-import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.scene.shape.Circle;
 import logic.Controller;
 
 import java.io.IOException;
@@ -45,6 +40,7 @@ public class GameBoardPanel extends BorderPane {
 	private URL soundRes;
 	private Media sound;
 	private MediaPlayer mediaPlayer;
+
 
 	private boolean player1Turn = false;
 	private List<ImageView> playerMarkers = new ArrayList<>();

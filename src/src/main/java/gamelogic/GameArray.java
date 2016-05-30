@@ -33,10 +33,12 @@ public class GameArray {
     private boolean growable;
     private boolean drawable;
     private boolean gameOver = false;
+    private List<IntPair> winningRow;
 
     public GameArray(int gS) {
         gridSize = gS;
         gameGrid = new int[gridSize][gridSize];
+        winningRow = new ArrayList<>();
     }
 
     public void setGrowable(boolean growable) {
@@ -76,6 +78,8 @@ public class GameArray {
      * @return boolean if there is a winner
      */
     private boolean checkWinner(int x, int y, int player, int reqToWin) {
+        winningRow.clear();
+        winningRow.add(new IntPair(x, y));
         int numInRow = 0;
         // Loop through the array with relative coordinates
         outerLoop:
@@ -89,6 +93,7 @@ public class GameArray {
             if (gameGrid[currX][currY] == player) {
                 System.out.println("Hittade en match i " + currX + "," + currY);
                 numInRow++;
+                winningRow.add(new IntPair(currX, currY));
                 if(numInRow >= reqToWin-1) {
                     return true;
                 }
@@ -121,6 +126,7 @@ public class GameArray {
                     } else if(gameGrid[currX][currY] == player) {
                         System.out.println("Hittade en match i " + currX + "," + currY);
                         numInRow++;
+                        winningRow.add(new IntPair(currX, currY));
                         if(numInRow >= reqToWin-1) {
                             return true;
                         }
@@ -177,6 +183,8 @@ public class GameArray {
     public int getGridSize() {
         return gridSize;
     }
+
+    public List<IntPair> getWinningRow() { return winningRow; }
 }
 
 /**
