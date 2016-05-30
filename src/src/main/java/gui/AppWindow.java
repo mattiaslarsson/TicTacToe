@@ -239,10 +239,9 @@ public class AppWindow {
 		} else {
 			Platform.runLater(() -> {
 				if (inGame) {
-					initStart();
 					inGame = false;
+					initStart();
 				}
-				initStart();
 				startPanel.disconnected();
 				initStart();
 				titleProp.setValue(versionString + " - Disconnected");

@@ -232,7 +232,6 @@ public class GameBoardPanel extends BorderPane {
 		}
 		timeEnd = System.currentTimeMillis() / 1000L;
 		controller.winning(myPoints, oppPoints, timeStart, timeEnd, gameArray.getGridSize(), numMarkers);
-		//viewController.initStart();
 	}
 
 	private void playSound(String url) {
@@ -266,7 +265,7 @@ public class GameBoardPanel extends BorderPane {
 		sT.setAutoReverse(true);
 		sT.play();
 		sT.setOnFinished(event -> {
-			// TODO go to options settings
+			viewController.initStart();
 		});
 	}
 

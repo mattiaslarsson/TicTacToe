@@ -38,6 +38,7 @@ public class StartPanel extends BorderPane {
 	public StartPanel(Controller controller, AppWindow viewController) {
 		this.controller = controller;
 		this.viewController = viewController;
+		this.setStyle("-fx-background-image: url(\"/textured_paper.png\");-fx-background-size: 600, 600;-fx-background-repeat: no-repeat;");
 		initStartScreen();
 	}
 
@@ -144,13 +145,13 @@ public class StartPanel extends BorderPane {
 		toe.setFitHeight(100);
 
 		tic.setX(10);
-		tic.setY(10);
+		tic.setY(140);
 
 		tac.setX(200);
-		tac.setY(60);
+		tac.setY(120);
 
 		toe.setX(390);
-		toe.setY(30);
+		toe.setY(144);
 
 		anchPane.getChildren().addAll(tic, tac, toe);
 
@@ -159,6 +160,7 @@ public class StartPanel extends BorderPane {
 
 		Timeline repeatTl = new Timeline(new KeyFrame(Duration.millis(4000),ae -> {
 			int num = random.nextInt(2-0+1) + 0;
+			logoArray[num].toFront();
 			ScaleTransition currAnim = zoomAnim(logoArray[num]);
 			currAnim.play();
 		}));
@@ -170,7 +172,7 @@ public class StartPanel extends BorderPane {
 
 
 	private ScaleTransition zoomAnimFirst(ImageView currImage) {
-		ScaleTransition st = new ScaleTransition(Duration.millis(500), currImage);
+		ScaleTransition st = new ScaleTransition(Duration.millis(400), currImage);
 		st.setFromX(0.01f);
 		st.setFromY(0.01f);
 		st.setToX(1.0f);
@@ -180,7 +182,7 @@ public class StartPanel extends BorderPane {
 	}
 
 	private ScaleTransition zoomAnim(ImageView currImage) {
-		ScaleTransition st = new ScaleTransition(Duration.millis(800), currImage);
+		ScaleTransition st = new ScaleTransition(Duration.millis(600), currImage);
 		st.setFromX(1.0f);
 		st.setFromY(1.0f);
 		st.setToX(1.5f);
