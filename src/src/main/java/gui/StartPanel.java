@@ -44,9 +44,9 @@ public class StartPanel extends BorderPane {
 		HBox logoBox = new HBox();
 		logoBox.setSpacing(10);
 
-		Image ticImg = new Image(getClass().getResourceAsStream("/tic.png"));
-		Image tacImg = new Image(getClass().getResourceAsStream("/tac.png"));
-		Image toeImg = new Image(getClass().getResourceAsStream("/toe.png"));
+		Image ticImg = new Image(getClass().getResourceAsStream("/res/tic.png"));
+		Image tacImg = new Image(getClass().getResourceAsStream("/res/tac.png"));
+		Image toeImg = new Image(getClass().getResourceAsStream("/res/toe.png"));
 
 		ImageView tic = new ImageView(ticImg);
 		ImageView tac = new ImageView(tacImg);
