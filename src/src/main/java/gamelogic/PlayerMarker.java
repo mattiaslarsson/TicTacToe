@@ -1,10 +1,7 @@
 package gamelogic;
 
-import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.*;
 
 /**
@@ -24,11 +21,11 @@ public class PlayerMarker {
      */
     public Image placeMarker(int player) throws IOException{
         if (player == 1) {
-            Image cross=new Image(getClass().getResourceAsStream("/res/cross.png"));
+            Image cross=new Image(getClass().getResourceAsStream("../res/cross.png"));
             return cross;
         }
         else {
-            Image circle=new Image(getClass().getResourceAsStream("/res/circle.png"));
+            Image circle=new Image(getClass().getResourceAsStream("../res/circle.png"));
             return circle;
         }
     }

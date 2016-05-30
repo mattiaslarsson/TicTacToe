@@ -1,9 +1,9 @@
 package gui;
 
-import javafx.application.Platform;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -40,13 +40,33 @@ public class StartPanel extends BorderPane {
 		TextField ip = new TextField();
 		ip.setPromptText("Enter IP");
 		Button connectButton = new Button("Connect");
+
+		HBox logoBox = new HBox();
+		logoBox.setSpacing(10);
+
+		Image ticImg = new Image(getClass().getResourceAsStream("/res/tic.png"));
+		Image tacImg = new Image(getClass().getResourceAsStream("/res/tac.png"));
+		Image toeImg = new Image(getClass().getResourceAsStream("/res/toe.png"));
+
+		ImageView tic = new ImageView(ticImg);
+		ImageView tac = new ImageView(tacImg);
+		ImageView toe = new ImageView(toeImg);
+
+		tic.setFitWidth(180);
+		tac.setFitWidth(180);
+		toe.setFitWidth(180);
+
+		logoBox.getChildren().addAll(tic, tac, toe);
+		logoBox.setAlignment(Pos.CENTER);
+
 		connectBox = new HBox();
 		connectBox.getChildren().addAll(ip, connectButton);
 		connectBox.setAlignment(Pos.CENTER);
 		connectPane = new StackPane();
 		connectPane.getChildren().add(connectBox);
-		connectPane.setStyle("-fx-background-color: #ff0000");
+		//connectPane.setStyle("-fx-background-color: #ff0000");
 		this.setCenter(connectPane);
+		this.setTop(logoBox);
 		connectButton.setOnAction(connect -> {
 			controller.connect(ip.getText());
 		});

@@ -3,19 +3,14 @@ package gui;
 import gamelogic.GameArray;
 import gamelogic.GameBoard;
 import gamelogic.PlayerMarker;
-import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.scene.shape.Circle;
 import logic.Controller;
 
 import java.io.IOException;
@@ -53,6 +48,7 @@ public class GameBoardPanel extends BorderPane {
 	public GameBoardPanel (Controller controller, AppWindow viewController) {
 		this.controller = controller;
 		this.viewController = viewController;
+
 	}
 
 	/**
@@ -77,6 +73,8 @@ public class GameBoardPanel extends BorderPane {
 		gameArray.setDrawable(viewController.isDrawable());
 		this.setCenter(gameBoard);
 		gameBoard.addEventHandler(MouseEvent.MOUSE_CLICKED, addMouseListener());
+		gameBoard.setStyle("-fx-background-image: url(\"/res/textured_paper.png\");-fx-background-size: 600, 600;-fx-background-repeat: no-repeat;");
+
 	}
 
 	/**
