@@ -13,10 +13,13 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.shape.Circle;
 import logic.Controller;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +41,10 @@ public class GameBoardPanel extends BorderPane {
 	private int numOppMarkers;
 	private long timeStart;
 	private long timeEnd;
+
+	private URL soundRes;
+	private Media sound;
+	private MediaPlayer mediaPlayer;
 
 	private boolean player1Turn = false;
 	private List<ImageView> playerMarkers = new ArrayList<>();
@@ -173,7 +180,6 @@ public class GameBoardPanel extends BorderPane {
 		if (!checkDoubles(col, row)) {
 			if (player1Turn) {
 				ImageView marker = new ImageView(new PlayerMarker().placeMarker(1));
-				//Circle marker = new PlayerMarker().placeMarker(1);
 				gameBoard.add(marker, col, row);
 				gameBoard.addMarker(marker, col, row);
 				playerMarkers.add(marker);
@@ -187,7 +193,6 @@ public class GameBoardPanel extends BorderPane {
 				}
 			} else {
 				ImageView marker = new ImageView(new PlayerMarker().placeMarker(2));
-				//Circle marker = new PlayerMarker().placeMarker(2);
 				gameBoard.add(marker, col, row);
 				gameBoard.addMarker(marker, col, row);
 				playerMarkers.add(marker);
@@ -203,7 +208,6 @@ public class GameBoardPanel extends BorderPane {
 			playerMarkers.forEach(marker -> {
 				marker.fitHeightProperty().bind(gameBoard.getCellSizeProperty().divide(2));
 				marker.fitWidthProperty().bind(gameBoard.getCellSizeProperty().divide(2));
-				//marker.radiusProperty().bind(gameBoard.getCellSizeProperty().divide(2));
 			});
 		}
 	}
@@ -216,20 +220,29 @@ public class GameBoardPanel extends BorderPane {
 	 * @param numMarkers int
 	 */
 	private void winner(int myPoints, int oppPoints, int numMarkers) {
+
 		System.out.println("myPoints: " + myPoints + ", oppPoints: " + oppPoints);
 		//TODO DISPLAY WINNER IN FANCY STYLE
 		if (myPoints > oppPoints) {
-			System.out.println("You're the WINNER!");
+			playSound("/res/applause.mp3");
 		} else if (oppPoints > myPoints){
-			System.out.println("Opponent won! Boooh!");
+			playSound("/res/boo.mp3");
 		} else {
-			System.out.println("It's a draw!");
+			playSound("/res/sigh.mp3");
 		}
 		timeEnd = System.currentTimeMillis() / 1000L;
 		controller.winning(myPoints, oppPoints, timeStart, timeEnd, gameArray.getGridSize(), numMarkers);
 		viewController.initStart();
 	}
 
+	private void playSound(String url) {
+		if (viewController.getSound()) {
+			soundRes = getClass().getResource(url);
+			sound = new Media(soundRes.toString());
+			mediaPlayer = new MediaPlayer(sound);
+			mediaPlayer.play();
+		}
+	}
 	/**
 	 * Mouseclick handler
 	 *

@@ -60,6 +60,7 @@ public class AppWindow {
 	private boolean growable = false;
 	private boolean drawable = false;
 	private int rowsToWin = 3;
+	private boolean sound = true;
 
 	public AppWindow(Stage stage, Controller controller) {
 		this.controller = controller;
@@ -335,5 +336,7 @@ public class AppWindow {
 	public double getPanelWidth() {
 		return panelWidth;
 	}
+
+	public boolean getSound() { return sound; }
 
 }
