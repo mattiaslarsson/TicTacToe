@@ -68,7 +68,7 @@ public class AppWindow {
 
 		chatMessages = new ArrayList<String>();
 
-		Font.loadFont(getClass().getResource("/res/Roboto-Regular.ttf").toExternalForm(), 12);
+		Font.loadFont(getClass().getResource("/Roboto-Regular.ttf").toExternalForm(), 12);
 
 		stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
@@ -114,7 +114,7 @@ public class AppWindow {
 
 		scene = new Scene(rootPane, windowWidth, windowHeight);
 		scene.getStylesheets().add
-				(getClass().getResource("/res/game.css").toExternalForm());
+				(getClass().getResource("/game.css").toExternalForm());
 		stage.setScene(scene);
 		stage.show();
 	}
@@ -188,7 +188,9 @@ public class AppWindow {
 		fieldChat.setPromptText("Enter chat message");
 		btnChat.setOnAction((e) -> {
 			if (connected) {
-				controller.chatMessage(fieldChat.getText());
+				String chatString = fieldChat.getText();
+				controller.chatMessage(chatString);
+				addMessage(chatString);
 				fieldChat.setText("");
 			}
 		});
@@ -256,7 +258,6 @@ public class AppWindow {
 	public void chatMessage(String message) {
 		Platform.runLater(() -> {
 			addMessage(message);
-			System.out.println("Chatmessage: "+message);
 		});
 	}
 
