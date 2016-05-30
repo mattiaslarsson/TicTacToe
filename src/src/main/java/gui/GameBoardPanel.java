@@ -125,6 +125,7 @@ public class GameBoardPanel extends BorderPane {
 			int[][] tempGrid = gameArray.getGameGrid();
 			playerMarkers.clear();
 			gameBoard = new GameBoard(viewController.getPanelWidth(), viewController.getPanelHeight(), tempGrid[0].length);
+			gameBoard.setStyle("-fx-background-image: url(\"/textured_paper.png\");-fx-background-size: 600, 600;-fx-background-repeat: no-repeat;");
 			this.setCenter(gameBoard);
 			for (int x = 0; x < tempGrid.length; x++) {
 				for (int y = 0; y < tempGrid[x].length; y++) {
