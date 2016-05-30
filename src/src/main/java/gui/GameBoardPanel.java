@@ -3,6 +3,7 @@ package gui;
 import gamelogic.GameArray;
 import gamelogic.GameBoard;
 import gamelogic.PlayerMarker;
+import javafx.animation.Animation;
 import javafx.animation.ScaleTransition;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -50,6 +51,7 @@ public class GameBoardPanel extends BorderPane {
 	private boolean player1Turn = false;
 	private List<ImageView> playerMarkers = new ArrayList<>();
 	private boolean draw = false;
+	private boolean winner = false;
 
 	public GameBoardPanel (Controller controller, AppWindow viewController) {
 		this.controller = controller;
@@ -133,17 +135,12 @@ public class GameBoardPanel extends BorderPane {
 						ImageView playerMarker = new ImageView(new PlayerMarker().placeMarker(1));
 						gameBoard.add(playerMarker, x, y);
 						GridPane.setHalignment(playerMarker, HPos.CENTER);
-						//Circle playerMarker = new PlayerMarker().placeMarker(1);
-						//gameBoard.add(playerMarker, x, y);
 						playerMarkers.add(playerMarker);
 					} else if (tempGrid[x][y] == 2) {
 						ImageView playerMarker = new ImageView(new PlayerMarker().placeMarker(2));
 						gameBoard.add(playerMarker, x, y);
 						GridPane.setHalignment(playerMarker, HPos.CENTER);
 						playerMarkers.add(playerMarker);
-						//Circle playerMarker = new PlayerMarker().placeMarker(2);
-						//gameBoard.add(playerMarker, x, y);
-						//playerMarkers.add(playerMarker);
 					}
 				}
 			}
@@ -180,7 +177,6 @@ public class GameBoardPanel extends BorderPane {
 	 * @param row int
 	 */
 	private void drawMarker(int col, int row) throws IOException {
-		boolean winner = false;
 		if (!checkDoubles(col, row)) {
 			if (player1Turn) {
 				ImageView marker = new ImageView(new PlayerMarker().placeMarker(1));
@@ -269,6 +265,9 @@ public class GameBoardPanel extends BorderPane {
 		sT.setCycleCount(15);
 		sT.setAutoReverse(true);
 		sT.play();
+		sT.setOnFinished(event -> {
+			// TODO go to options settings
+		});
 	}
 
 	/**
