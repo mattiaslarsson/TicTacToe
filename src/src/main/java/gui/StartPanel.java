@@ -1,6 +1,7 @@
 package gui;
 
 import javafx.animation.*;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -54,21 +55,22 @@ public class StartPanel extends BorderPane {
 		connectBox.setAlignment(Pos.CENTER);
 		connectPane = new StackPane();
 		connectPane.getChildren().add(connectBox);
-		//connectPane.setStyle("-fx-background-color: #ff0000");
 		this.setCenter(connectPane);
 		this.setTop(logoPane);
+
 		connectButton.setOnAction(connect -> {
 			controller.connect(ip.getText());
 		});
 
 		startBox = new VBox();
 		Button startButton = new Button("START GAME!");
+
 		startBox.setAlignment(Pos.CENTER);
 		startButton.setOnAction(start -> {
 			viewController.initGame(controller.startGame());
 		});
 
-		Text playOptionsText = new Text("OPTIONS");
+		//Text playOptionsText = new Text("OPTIONS");
 		threeRadio = new RadioButton("3-in-a-row");
 		fourRadio = new RadioButton("4-in-a-row");
 		fiveRadio = new RadioButton("5-in-a-row");
@@ -115,9 +117,21 @@ public class StartPanel extends BorderPane {
 			sendOptions(reqToWin, growable.isSelected(), drawAllowed.isSelected());
 		});
 
-		VBox optionsBox = new VBox();
-		optionsBox.getChildren().addAll(playOptionsText, threeRadio, fourRadio, fiveRadio, growable, drawAllowed, startButton);
+		HBox optionsBox = new HBox();
+		optionsBox.setAlignment(Pos.CENTER);
+		optionsBox.setSpacing(20);
 
+		VBox numberOptionsBox = new VBox();
+		numberOptionsBox.setSpacing(10);
+		numberOptionsBox.getChildren().addAll(threeRadio, fourRadio, fiveRadio);
+
+		VBox growOptionsBox = new VBox();
+		growOptionsBox.setSpacing(10);
+		growOptionsBox.getChildren().addAll(growable, drawAllowed);
+
+		optionsBox.getChildren().addAll(numberOptionsBox, growOptionsBox);
+
+		startBox.setSpacing(30);
 		startBox.getChildren().addAll(optionsBox, startButton);
 		connectPane.getChildren().add(startBox);
 		startBox.setVisible(false);

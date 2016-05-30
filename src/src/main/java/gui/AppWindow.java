@@ -45,7 +45,7 @@ public class AppWindow {
 	// App configuration
 	private boolean connected = false;
 	private boolean inGame = false;
-	private String versionString = "TicTacToe v0.6a";
+	private String versionString = "TicTacToe v0.8a";
 	private SimpleStringProperty titleProp;
 
 	private double windowHeight = 620;
@@ -155,6 +155,8 @@ public class AppWindow {
 
 	private void displayPanels() {
 		stage.setWidth(windowWidth + chatDisplayWidth);
+		stage.setHeight(windowHeight+(chatBox.getHeight()));
+		startPanel.setMinSize(windowWidth,windowHeight-(chatBox.getHeight()));
 		rootPane.setCenter(startPanel);
 		rootPane.setBottom(chatBox);
 		rootPane.setRight(chatDisplay);
@@ -163,6 +165,7 @@ public class AppWindow {
 	private void hidePanels() {
 		System.out.println("In hidepanels windowWidth: "+windowWidth);
 		stage.setWidth(windowWidth);
+		stage.setHeight(windowHeight);
 		rootPane.setRight(null);
 		rootPane.setBottom(null);
 		rootPane.setCenter(startPanel);
@@ -180,6 +183,7 @@ public class AppWindow {
 		Button btnChat = new Button("Send");
 		TextField fieldChat = new TextField();
 
+		chatBox.setStyle("-fx-background-image: url(\"/textured_paper.png\");-fx-background-size: 600, 600;-fx-background-repeat: no-repeat;");
 		// Sizing
 		chatBox.setPrefHeight(boxHeight);
 		chatBox.setPrefWidth(windowHeight);
@@ -209,6 +213,7 @@ public class AppWindow {
 		VBox contentPane = new VBox();
 
 		chatDisplayArea = new TextArea();
+		chatDisplayArea.setId("chatDisplay");
 		chatDisplayArea.setPrefSize(chatDisplayWidth,windowHeight/2);
 		chatDisplayArea.setEditable(false);
 
