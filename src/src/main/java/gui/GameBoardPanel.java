@@ -3,14 +3,19 @@ package gui;
 import gamelogic.GameArray;
 import gamelogic.GameBoard;
 import gamelogic.PlayerMarker;
+import javafx.animation.ScaleTransition;
+import javafx.animation.ScaleTransitionBuilder;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
+import javafx.geometry.Point2D;
+import javafx.scene.Node;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.util.Duration;
 import logic.Controller;
 
 import java.io.IOException;
@@ -40,7 +45,7 @@ public class GameBoardPanel extends BorderPane {
 	private URL soundRes;
 	private Media sound;
 	private MediaPlayer mediaPlayer;
-
+	private List<Point2D> winningRow;
 
 
 	private boolean player1Turn = false;
@@ -229,17 +234,41 @@ public class GameBoardPanel extends BorderPane {
 		}
 		timeEnd = System.currentTimeMillis() / 1000L;
 		controller.winning(myPoints, oppPoints, timeStart, timeEnd, gameArray.getGridSize(), numMarkers);
-		viewController.initStart();
+		//viewController.initStart();
 	}
 
 	private void playSound(String url) {
+		winningRow = gameArray.getWinningRow();
 		if (viewController.getSound()) {
 			soundRes = getClass().getResource(url);
 			sound = new Media(soundRes.toString());
 			mediaPlayer = new MediaPlayer(sound);
 			mediaPlayer.play();
 		}
+		winningRow.forEach(coord -> {
+			playerMarkers.forEach(marker -> {
+				if(GridPane.getColumnIndex(marker) == (int)coord.getX()
+						&& GridPane.getRowIndex(marker) == (int)coord.getY()) {
+					addScale(marker);
+				}
+			});
+		});
+
 	}
+
+	private void addScale(Node node) {
+		ScaleTransition sT = new ScaleTransition();
+		sT.setDuration(Duration.seconds(0.5));
+		sT.setNode(node);
+		sT.setFromX(1);
+		sT.setToX(1.2);
+		sT.setFromY(1);
+		sT.setToY(1.2);
+		sT.setCycleCount(15);
+		sT.setAutoReverse(true);
+		sT.play();
+	}
+
 	/**
 	 * Mouseclick handler
 	 *

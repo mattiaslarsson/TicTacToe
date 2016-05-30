@@ -33,7 +33,7 @@ public class GameArray {
     private boolean growable;
     private boolean drawable;
     private boolean gameOver = false;
-    private List<IntPair> winningRow;
+    private List<Point2D> winningRow;
 
     public GameArray(int gS) {
         gridSize = gS;
@@ -79,7 +79,7 @@ public class GameArray {
      */
     private boolean checkWinner(int x, int y, int player, int reqToWin) {
         winningRow.clear();
-        winningRow.add(new IntPair(x, y));
+        winningRow.add(new Point2D(x, y));
         int numInRow = 0;
         // Loop through the array with relative coordinates
         outerLoop:
@@ -93,7 +93,7 @@ public class GameArray {
             if (gameGrid[currX][currY] == player) {
                 System.out.println("Hittade en match i " + currX + "," + currY);
                 numInRow++;
-                winningRow.add(new IntPair(currX, currY));
+                winningRow.add(new Point2D(currX, currY));
                 if(numInRow >= reqToWin-1) {
                     return true;
                 }
@@ -112,6 +112,7 @@ public class GameArray {
                             if (gameGrid[oppositeX][oppositeY] == player) {
                                 System.out.println("Hittade en oppMatch i " + oppositeX + "," + oppositeY);
                                 numInRow++;
+                                winningRow.add(new Point2D(oppositeX, oppositeY));
                                 if(numInRow >= reqToWin-1) {
                                     return true;
                                 }
@@ -126,7 +127,7 @@ public class GameArray {
                     } else if(gameGrid[currX][currY] == player) {
                         System.out.println("Hittade en match i " + currX + "," + currY);
                         numInRow++;
-                        winningRow.add(new IntPair(currX, currY));
+                        winningRow.add(new Point2D(currX, currY));
                         if(numInRow >= reqToWin-1) {
                             return true;
                         }
@@ -184,7 +185,7 @@ public class GameArray {
         return gridSize;
     }
 
-    public List<IntPair> getWinningRow() { return winningRow; }
+    public List<Point2D> getWinningRow() { return winningRow; }
 }
 
 /**
