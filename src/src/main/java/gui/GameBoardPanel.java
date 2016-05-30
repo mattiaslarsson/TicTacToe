@@ -42,6 +42,7 @@ public class GameBoardPanel extends BorderPane {
 	private MediaPlayer mediaPlayer;
 
 
+
 	private boolean player1Turn = false;
 	private List<ImageView> playerMarkers = new ArrayList<>();
 	private boolean draw = false;
