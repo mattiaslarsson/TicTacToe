@@ -146,7 +146,11 @@ public class AppWindow {
 		chatBox.setAlignment(Pos.BOTTOM_LEFT);
 		chatDisplay = createChatDisplay();
 		chatDisplay.setAlignment(Pos.TOP_RIGHT);
-		hidePanels();
+		if (!connected) {
+			hidePanels();
+		} else {
+			displayPanels();
+		}
 	}
 
 	private void displayPanels() {
@@ -159,12 +163,9 @@ public class AppWindow {
 	private void hidePanels() {
 		System.out.println("In hidepanels windowWidth: "+windowWidth);
 		stage.setWidth(windowWidth);
-		rootPane.getChildren().removeAll();
 		rootPane.setRight(null);
 		rootPane.setBottom(null);
 		rootPane.setCenter(startPanel);
-		rootPane.setRight(null);
-		rootPane.setBottom(null);
 	}
 
 	/**
