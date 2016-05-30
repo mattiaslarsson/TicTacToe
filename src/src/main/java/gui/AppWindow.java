@@ -152,8 +152,11 @@ public class AppWindow {
 	}
 
 	private void hidePanels() {
+		System.out.println("In hidepanels windowWidth: "+windowWidth);
 		stage.setWidth(windowWidth);
 		rootPane.getChildren().removeAll();
+		rootPane.setRight(null);
+		rootPane.setBottom(null);
 		rootPane.setCenter(startPanel);
 		rootPane.setRight(null);
 		rootPane.setBottom(null);
@@ -233,6 +236,7 @@ public class AppWindow {
 				}
 				initStart();
 				startPanel.disconnected();
+				initStart();
 				titleProp.setValue(versionString + " - Disconnected");
 			});
 		}

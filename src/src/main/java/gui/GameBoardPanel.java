@@ -184,7 +184,6 @@ public class GameBoardPanel extends BorderPane {
 					timeEnd = System.currentTimeMillis() / 1000L;
 					int points = (int) (10 * gameArray.getGridSize() + viewController.getRowsToWin()) / numMyMarkers;
 					winner(points, 0, numMyMarkers);
-					//controller.winning(points, 0, timeStart, timeEnd, gameArray.getGridSize(), numMyMarkers);
 				}
 			} else {
 				ImageView marker = new ImageView(new PlayerMarker().placeMarker(2));
@@ -199,7 +198,6 @@ public class GameBoardPanel extends BorderPane {
 					timeEnd = System.currentTimeMillis() / 1000L;
 					int points = (int) (10 * gameArray.getGridSize() + viewController.getRowsToWin()) / numOppMarkers;
 					winner(0, points, numOppMarkers);
-					//controller.winning(0, points, timeStart, timeEnd, gameArray.getGridSize(), numOppMarkers);
 				}
 			}
 			playerMarkers.forEach(marker -> {
