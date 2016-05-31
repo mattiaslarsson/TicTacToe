@@ -2,6 +2,7 @@ package logic;
 
 import dao.DatabaseConnector;
 import gui.AppWindow;
+import models.GameStats;
 import models.Message;
 import models.Player;
 import network.CommandHandler;
@@ -288,5 +289,21 @@ public class Controller {
 
 	public boolean getConnected() {
 		return connected;
+	}
+
+	public GameStats getCurrStats() {
+		GameStats gs = null;
+
+		System.out.println("In controller, get currStats "+remotePlayer+" "+connected);
+
+		if (connected && remotePlayer != null) {
+			System.out.println("Should get stats");
+			gs = dbconn.getStats(remotePlayer.getId());
+			gs.setOppName(remotePlayer.getFirstName());
+			gs.setOppSurname(remotePlayer.getSurName());
+			System.out.println(gs.toString());
+		}
+
+		return gs;
 	}
 }

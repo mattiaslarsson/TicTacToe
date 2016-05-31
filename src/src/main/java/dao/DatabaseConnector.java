@@ -1,8 +1,10 @@
 package dao;
 
+import models.GameStats;
 import models.Player;
 
 import java.sql.*;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -299,6 +301,7 @@ public class DatabaseConnector {
 		ArrayList result = executeSQLQuery(sql);
 		HashMap currMap = (HashMap) result.get(0);
 		double value = (double) currMap.get("TOTAL");
+		System.out.println("Get float return: "+value);
 		return value;
 	}
 
@@ -371,6 +374,13 @@ public class DatabaseConnector {
 		return avgPoints;
 	}
 
+	// AVG POINTS GIVEN
+	public double getAvgPointsGiven() {
+		String sql = "SELECT AVG(opppoints) AS TOTAL FROM matches;";
+		double avgPoints = getFloatValue(sql);
+		return avgPoints;
+	}
+
 	// TOTAL WINS VS PLAYER
 	public int getTotalWinsVS(long playerId) {
 		String sql = "SELECT COUNT(*) AS TOTAL FROM matches WHERE points > opppoints AND opponent = "+playerId+";";
@@ -397,6 +407,33 @@ public class DatabaseConnector {
 		String sql = "SELECT COUNT(*) AS TOTAL FROM matches WHERE opponent = "+playerId+";";
 		int totGames = getIntValue(sql);
 		return totGames;
+	}
+
+	public GameStats getStats(long playerId) {
+
+		GameStats gs = new GameStats();
+
+		DecimalFormat df = new DecimalFormat("0.##");
+
+		// Curr player
+		gs.setPrevWins(Integer.toString(getTotalWinsVS(playerId)));
+		gs.setPrevDefeats(Integer.toString(getTotalDefeatsVS(playerId)));
+		gs.setPrevDraws(Integer.toString(getTotalDrawsVS(playerId)));
+
+		// Avg
+		gs.setAvgPoints(df.format(getAvgPoints()));
+		gs.setAvgPointsGiven(df.format(getAvgPointsGiven()));
+		gs.setAvgMoves(df.format(getAvgMoves()));
+		gs.setAvgGridSize(df.format(getAvgGrid()));
+
+		// Total
+		gs.setTotPoints(Integer.toString(getTotalPoints()));
+		gs.setTotPointsGiven(Integer.toString(getTotalGivenPoints()));
+		gs.setTotWins(Integer.toString(getTotalWins()));
+		gs.setTotDefeats(Integer.toString(getTotalDefeats()));
+		gs.setTotDraws(Integer.toString(getTotalDraws()));
+
+		return gs;
 	}
 
 }
