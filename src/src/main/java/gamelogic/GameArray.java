@@ -49,7 +49,7 @@ public class GameArray {
 
     /**
      * Returns an array representing the gameboard
-     * @return
+     * @return int[][]
      */
     public int[][] getGameGrid() {
         return gameGrid;

@@ -6,10 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Message bean. Takes any data and adds it to commanddata.
+ * Message bean. Takes any data and adds it to command data.
  *
  * Created by Johan Lindström (jolindse@hotmail.com) on 2016-05-21.
  */
+
 public class Message<T> {
 
 	private String command;
@@ -42,6 +43,11 @@ public class Message<T> {
 		this.commandData = commandData;
 	}
 
+	/**
+	 * Adds data to Message.
+	 *
+	 * @param currData T
+	 */
 	public void addCommandData(T currData){
 		Gson gson = new Gson();
 		String cmdData = gson.toJson(currData);

@@ -3,7 +3,6 @@ package gui;
 import gamelogic.GameArray;
 import gamelogic.GameBoard;
 import gamelogic.PlayerMarker;
-import javafx.animation.Animation;
 import javafx.animation.ScaleTransition;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -25,7 +24,7 @@ import java.util.List;
 
 /**
  * Game board panel.
- *
+ * <p>
  * Created by Johan Lindström (jolindse@hotmail.com) on 2016-05-27.
  */
 public class GameBoardPanel extends BorderPane {
@@ -55,7 +54,7 @@ public class GameBoardPanel extends BorderPane {
 	private boolean draw = false;
 	private boolean winner = false;
 
-	public GameBoardPanel (Controller controller, AppWindow viewController) {
+	public GameBoardPanel(Controller controller, AppWindow viewController) {
 		this.controller = controller;
 		this.viewController = viewController;
 		myMove = new Media(getClass().getResource("/mySound.mp3").toString());
@@ -72,13 +71,18 @@ public class GameBoardPanel extends BorderPane {
 		numMyMarkers = 0;
 		numOppMarkers = 0;
 		initGameBoard();
+		if (startPlayer) {
+			viewController.messageViewer("You start!");
+		} else {
+			viewController.messageViewer("Opponent start!");
+		}
 	}
 
 	/**
 	 * Initiates the Gameboard
 	 */
 	private void initGameBoard() {
-		gameBoard = new GameBoard(viewController.getPanelWidth(), viewController.getPanelWidth(), 3);
+		gameBoard = new GameBoard(viewController.getPanelWidth(), viewController.getPanelHeight(), 3);
 		gameArray = new GameArray(gameBoard.getRows());
 		gameArray.setGrowable(viewController.isGrowable());
 		gameArray.setDrawable(viewController.isDrawable());
@@ -107,7 +111,7 @@ public class GameBoardPanel extends BorderPane {
 					marker.fitWidthProperty().bind(gameBoard.getCellSizeProperty().divide(2));
 				});
 				gameBoard.addEventHandler(MouseEvent.MOUSE_CLICKED, addMouseListener());
-			} else if (isFull() && viewController.isDrawable()){
+			} else if (isFull() && viewController.isDrawable()) {
 				this.draw = true;
 			}
 		}
@@ -120,7 +124,7 @@ public class GameBoardPanel extends BorderPane {
 	 */
 	private boolean isFull() throws IOException {
 		if (gameArray.isGameOver()) {
-			winner(0,0,numMyMarkers);
+			winner(0, 0, numMyMarkers);
 		}
 		if (playerMarkers.size() == (gameBoard.getRows() * gameBoard.getRows())) {
 			// Increase the gameboard's size
@@ -161,11 +165,6 @@ public class GameBoardPanel extends BorderPane {
 	 * @return boolean
 	 */
 	private boolean checkDoubles(int col, int row) {
-		/*for (Circle circle : playerMarkers) {
-			if (GridPane.getColumnIndex(circle) - col == 0 && GridPane.getRowIndex(circle) - row == 0) {
-				return true;
-			}
-		}*/
 		for (ImageView image : playerMarkers) {
 			if (GridPane.getColumnIndex(image) - col == 0 && GridPane.getRowIndex(image) - row == 0) {
 				return true;
@@ -183,13 +182,12 @@ public class GameBoardPanel extends BorderPane {
 	private void drawMarker(int col, int row) throws IOException {
 		if (!checkDoubles(col, row)) {
 			if (player1Turn) {
-				if(viewController.getSound()) {
+				if (viewController.getSound()) {
 					mediaPlayer = new MediaPlayer(myMove);
 					mediaPlayer.play();
 				}
 				ImageView marker = new ImageView(new PlayerMarker().placeMarker(1));
 				gameBoard.add(marker, col, row);
-				gameBoard.addMarker(marker, col, row);
 				playerMarkers.add(marker);
 				GridPane.setHalignment(marker, HPos.CENTER);
 				numMyMarkers++;
@@ -200,13 +198,12 @@ public class GameBoardPanel extends BorderPane {
 					winner(points, 0, numMyMarkers);
 				}
 			} else {
-				if(viewController.getSound()) {
+				if (viewController.getSound()) {
 					mediaPlayer = new MediaPlayer(yourMove);
 					mediaPlayer.play();
 				}
 				ImageView marker = new ImageView(new PlayerMarker().placeMarker(2));
 				gameBoard.add(marker, col, row);
-				gameBoard.addMarker(marker, col, row);
 				playerMarkers.add(marker);
 				GridPane.setHalignment(marker, HPos.CENTER);
 				numOppMarkers++;
@@ -227,25 +224,30 @@ public class GameBoardPanel extends BorderPane {
 	/**
 	 * Winner method. Display fancy message and return to start screen.
 	 *
-	 * @param myPoints int
-	 * @param oppPoints int
+	 * @param myPoints   int
+	 * @param oppPoints  int
 	 * @param numMarkers int
 	 */
 	private void winner(int myPoints, int oppPoints, int numMarkers) {
-
-		System.out.println("myPoints: " + myPoints + ", oppPoints: " + oppPoints);
-		//TODO DISPLAY WINNER IN FANCY STYLE
 		if (myPoints > oppPoints) {
 			playSound("/applause.mp3");
-		} else if (oppPoints > myPoints){
+			viewController.messageViewer("You won!");
+		} else if (oppPoints > myPoints) {
 			playSound("/boo.mp3");
+			viewController.messageViewer("You lost!");
 		} else {
 			playSound("/sigh.mp3");
+			viewController.messageViewer("It's a draw!");
 		}
 		timeEnd = System.currentTimeMillis() / 1000L;
 		controller.winning(myPoints, oppPoints, timeStart, timeEnd, gameArray.getGridSize(), numMarkers);
 	}
 
+	/**
+	 * Plays game sound effects.
+	 *
+	 * @param url String
+	 */
 	private void playSound(String url) {
 		winningRow = gameArray.getWinningRow();
 		if (viewController.getSound()) {
@@ -260,8 +262,8 @@ public class GameBoardPanel extends BorderPane {
 		}
 		winningRow.forEach(coord -> {
 			playerMarkers.forEach(marker -> {
-				if(GridPane.getColumnIndex(marker) == (int)coord.getX()
-						&& GridPane.getRowIndex(marker) == (int)coord.getY()) {
+				if (GridPane.getColumnIndex(marker) == (int) coord.getX()
+						&& GridPane.getRowIndex(marker) == (int) coord.getY()) {
 					addScale(marker);
 				}
 			});
@@ -269,6 +271,11 @@ public class GameBoardPanel extends BorderPane {
 
 	}
 
+	/**
+	 * Makes winner animation.
+	 *
+	 * @param node Node
+	 */
 	private void addScale(Node node) {
 		ScaleTransition sT = new ScaleTransition();
 		sT.setDuration(Duration.seconds(0.5));
@@ -311,5 +318,4 @@ public class GameBoardPanel extends BorderPane {
 			}
 		};
 	}
-
 }

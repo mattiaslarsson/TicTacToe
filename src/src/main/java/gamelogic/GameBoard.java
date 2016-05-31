@@ -75,9 +75,6 @@ public class GameBoard extends GridPane {
         cellSizeProperty.setValue((int)mHeight/numOfRows);
     }
 
-    public void addMarker(ImageView marker, int col, int row) {
-        System.out.println("Lade till i: " + col + ", " + row);
-    }
     /**
      *
      * @return The number of rows in the grid

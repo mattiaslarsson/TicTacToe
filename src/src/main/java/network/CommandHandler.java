@@ -24,6 +24,7 @@ public class CommandHandler implements Runnable {
 	private PrintStream out;
 	private boolean disconnect = false;
 	private Gson gson;
+
 	/**
 	 * Constructor that takes a socket as argument and opens a output writer in order to
 	 * send and receive messages from connected client.
@@ -60,7 +61,6 @@ public class CommandHandler implements Runnable {
 	 */
 	@Override
 	public void run() {
-		String newLine = System.getProperty("line.separator");
 		String logline = "";
 		Scanner sc = null;
 		while(!disconnect) {
@@ -83,7 +83,7 @@ public class CommandHandler implements Runnable {
 
 	/**
 	 * Method to send a command + data to client. Translates to json and sends through
-	 * the printwriter.
+	 * the printstream.
 	 *
 	 * @param currMessage Message
 	 */
@@ -99,7 +99,6 @@ public class CommandHandler implements Runnable {
 	 * @param input String
 	 */
 	private void parse(String input) {
-		System.out.println("Input: "+input); // TEST
 		String currData;
 		// Parses json to Message-object
 		Message currMessage = gson.fromJson(input, Message.class);
@@ -146,6 +145,7 @@ public class CommandHandler implements Runnable {
 				break;
 			case "busy":
 				// Busy client
+				controller.displayMessage("Client busy");
 				break;
 		}
 	}
