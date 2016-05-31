@@ -165,9 +165,9 @@ public class AppWindow {
 	}
 
 	public void initRestart() {
-		growable = false;
-		drawable = false;
-		rowsToWin = 3;
+//		growable = false;
+//		drawable = false;
+//		rowsToWin = 3;
 		displayPanels();
 	}
 

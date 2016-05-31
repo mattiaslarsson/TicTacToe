@@ -44,6 +44,8 @@ public class GameBoardPanel extends BorderPane {
 
 	private URL soundRes;
 	private Media sound;
+	private Media myMove;
+	private Media yourMove;
 	private MediaPlayer mediaPlayer;
 	private List<Point2D> winningRow;
 
@@ -56,6 +58,8 @@ public class GameBoardPanel extends BorderPane {
 	public GameBoardPanel (Controller controller, AppWindow viewController) {
 		this.controller = controller;
 		this.viewController = viewController;
+		myMove = new Media(getClass().getResource("/mySound.mp3").toString());
+		yourMove = new Media(getClass().getResource("/yourSound").toString());
 	}
 
 	/**
@@ -179,6 +183,10 @@ public class GameBoardPanel extends BorderPane {
 	private void drawMarker(int col, int row) throws IOException {
 		if (!checkDoubles(col, row)) {
 			if (player1Turn) {
+				if(viewController.getSound()) {
+					mediaPlayer = new MediaPlayer(myMove);
+					mediaPlayer.play();
+				}
 				ImageView marker = new ImageView(new PlayerMarker().placeMarker(1));
 				gameBoard.add(marker, col, row);
 				gameBoard.addMarker(marker, col, row);
@@ -192,6 +200,10 @@ public class GameBoardPanel extends BorderPane {
 					winner(points, 0, numMyMarkers);
 				}
 			} else {
+				if(viewController.getSound()) {
+					mediaPlayer = new MediaPlayer(yourMove);
+					mediaPlayer.play();
+				}
 				ImageView marker = new ImageView(new PlayerMarker().placeMarker(2));
 				gameBoard.add(marker, col, row);
 				gameBoard.addMarker(marker, col, row);
