@@ -11,6 +11,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -61,12 +63,19 @@ public class AppWindow {
 	private boolean drawable = false;
 	private int rowsToWin = 3;
 	private boolean sound = true;
+	private boolean music = true;
 
 	public AppWindow(Stage stage, Controller controller) {
 		this.controller = controller;
 		this.stage = stage;
 
 		chatMessages = new ArrayList<String>();
+
+		Media bossa = new Media(getClass().getResource("/bossa.mp3").toString());
+		MediaPlayer mPlayer = new MediaPlayer(bossa);
+		if (music) {
+			mPlayer.play();
+		}
 
 		Font.loadFont(getClass().getResource("/Roboto-Regular.ttf").toExternalForm(), 12);
 
