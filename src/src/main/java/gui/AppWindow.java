@@ -65,6 +65,8 @@ public class AppWindow {
 	private boolean sound = true;
 	private boolean music = true;
 
+	private MediaPlayer mPlayer;
+
 	public AppWindow(Stage stage, Controller controller) {
 		this.controller = controller;
 		this.stage = stage;
@@ -72,9 +74,9 @@ public class AppWindow {
 		chatMessages = new ArrayList<String>();
 
 		Media bossa = new Media(getClass().getResource("/bossa.mp3").toString());
-		MediaPlayer mPlayer = new MediaPlayer(bossa);
+		mPlayer = new MediaPlayer(bossa);
 		if (music) {
-			mPlayer.play();
+			playMusic();
 		}
 
 		Font.loadFont(getClass().getResource("/Roboto-Regular.ttf").toExternalForm(), 12);
@@ -312,6 +314,20 @@ public class AppWindow {
 			this.setRowsToWin(rowsToWin);
 			startPanel.setOptions(rowsToWin, growable, drawable);
 		});
+	}
+
+	/**
+	 * Plays the cozy music
+	 */
+	public void playMusic() {
+		mPlayer.play();
+	}
+
+	/** Stops the cozy music
+	 *
+	 */
+	public void stopMusic() {
+		mPlayer.stop();
 	}
 
 	/**
