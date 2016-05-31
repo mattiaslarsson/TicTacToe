@@ -11,6 +11,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.AudioClip;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Text;
@@ -24,237 +25,270 @@ import java.util.Random;
  */
 public class StartPanel extends BorderPane {
 
-	private Controller controller;
-	private AppWindow viewController;
+    private Controller controller;
+    private AppWindow viewController;
 
-	private HBox connectBox;
-	private StackPane connectPane;
-	private VBox startBox;
+    private HBox connectBox;
+    private StackPane connectPane;
+    private VBox startBox;
 
-	private RadioButton threeRadio;
-	private RadioButton fourRadio;
-	private RadioButton fiveRadio;
+    private RadioButton threeRadio;
+    private RadioButton fourRadio;
+    private RadioButton fiveRadio;
 
-	private CheckBox growable;
-	private CheckBox drawAllowed;
+    private CheckBox growable;
+    private CheckBox drawAllowed;
 
-	private MediaPlayer mediaPlayer;
+    private MediaPlayer mediaPlayer;
 
-	public StartPanel(Controller controller, AppWindow viewController) {
-		this.controller = controller;
-		this.viewController = viewController;
-		this.setStyle("-fx-background-image: url(\"/textured_paper.png\");-fx-background-size: 600, 600;-fx-background-repeat: no-repeat;");
-		initStartScreen();
-	}
+    private int logoCounter;
+    private AnimationTimer logoTimer;
 
-	private void initStartScreen() {
-		TextField ip = new TextField();
-		ip.setPromptText("Enter IP");
-		Button connectButton = new Button("Connect");
+    public StartPanel(Controller controller, AppWindow viewController) {
+        this.controller = controller;
+        this.viewController = viewController;
+        this.setStyle("-fx-background-image: url(\"/textured_paper.png\");-fx-background-size: 600, 600;-fx-background-repeat: no-repeat;");
+        initStartScreen();
+    }
 
-		AnchorPane logoPane = initLogoPane();
+    private void initStartScreen() {
+        TextField ip = new TextField();
+        ip.setPromptText("Enter IP");
+        Button connectButton = new Button("Connect");
 
-		connectBox = new HBox();
-		connectBox.getChildren().addAll(ip, connectButton);
-		connectBox.setAlignment(Pos.CENTER);
-		connectPane = new StackPane();
-		connectPane.getChildren().add(connectBox);
-		this.setCenter(connectPane);
-		this.setTop(logoPane);
+        AnchorPane logoPane = initLogoPane();
 
-		connectButton.setOnAction(connect -> {
-			controller.connect(ip.getText());
-		});
+        connectBox = new HBox();
+        connectBox.getChildren().addAll(ip, connectButton);
+        connectBox.setAlignment(Pos.CENTER);
+        connectPane = new StackPane();
+        connectPane.getChildren().add(connectBox);
+        this.setCenter(connectPane);
+        this.setTop(logoPane);
 
-		startBox = new VBox();
-		Button startButton = new Button("START GAME!");
+        connectButton.setOnAction(connect -> {
+            controller.connect(ip.getText());
+        });
 
-		startBox.setAlignment(Pos.CENTER);
-		startButton.setOnAction(start -> {
-			viewController.initGame(controller.startGame());
-		});
+        startBox = new VBox();
+        Button startButton = new Button("START GAME!");
 
-		//Text playOptionsText = new Text("OPTIONS");
-		threeRadio = new RadioButton("3-in-a-row");
-		fourRadio = new RadioButton("4-in-a-row");
-		fiveRadio = new RadioButton("5-in-a-row");
-		ToggleGroup radioGroup = new ToggleGroup();
-		radioGroup.getToggles().addAll(threeRadio, fourRadio, fiveRadio);
+        startBox.setAlignment(Pos.CENTER);
+        startButton.setOnAction(start -> {
+            viewController.initGame(controller.startGame());
+        });
 
-		growable = new CheckBox("Growable Grid");
-		drawAllowed = new CheckBox("Allow Draw");
+        //Text playOptionsText = new Text("OPTIONS");
+        threeRadio = new RadioButton("3-in-a-row");
+        fourRadio = new RadioButton("4-in-a-row");
+        fiveRadio = new RadioButton("5-in-a-row");
+        ToggleGroup radioGroup = new ToggleGroup();
+        radioGroup.getToggles().addAll(threeRadio, fourRadio, fiveRadio);
 
-		int reqToWin = 3;
+        growable = new CheckBox("Growable Grid");
+        drawAllowed = new CheckBox("Allow Draw");
 
-		threeRadio.setSelected(true);
-		threeRadio.setOnAction(threeAction -> {
-			if (threeRadio.isSelected()) {
-				growable.setDisable(false);
-				growable.setSelected(false);
-				drawAllowed.setDisable(false);
-				sendOptions(3, growable.isSelected(), drawAllowed.isSelected());
-			}
-		});
-		fourRadio.setOnAction(fourAction -> {
-			if (fourRadio.isSelected()) {
-				growable.setSelected(true);
-				growable.setDisable(true);
-				drawAllowed.setSelected(false);
-				drawAllowed.setDisable(true);
-				sendOptions(4, growable.isSelected(), drawAllowed.isSelected());
-			}
-		});
-		fiveRadio.setOnAction(fiveAction -> {
-			if (fiveRadio.isSelected()) {
-				growable.setSelected(true);
-				growable.setDisable(true);
-				drawAllowed.setSelected(false);
-				drawAllowed.setDisable(true);
-				sendOptions(5, growable.isSelected(), drawAllowed.isSelected());
-			}
-		});
-		drawAllowed.setOnAction(drawAction -> {
-			growable.setDisable(drawAllowed.isSelected());
-			sendOptions(reqToWin, growable.isSelected(), drawAllowed.isSelected());
-		});
-		growable.setOnAction(growAction -> {
-			drawAllowed.setDisable(growable.isSelected());
-			sendOptions(reqToWin, growable.isSelected(), drawAllowed.isSelected());
-		});
+        int reqToWin = 3;
 
-		HBox optionsBox = new HBox();
-		optionsBox.setAlignment(Pos.CENTER);
-		optionsBox.setSpacing(20);
+        threeRadio.setSelected(true);
+        threeRadio.setOnAction(threeAction -> {
+            if (threeRadio.isSelected()) {
+                growable.setDisable(false);
+                growable.setSelected(false);
+                drawAllowed.setDisable(false);
+                sendOptions(3, growable.isSelected(), drawAllowed.isSelected());
+            }
+        });
+        fourRadio.setOnAction(fourAction -> {
+            if (fourRadio.isSelected()) {
+                growable.setSelected(true);
+                growable.setDisable(true);
+                drawAllowed.setSelected(false);
+                drawAllowed.setDisable(true);
+                sendOptions(4, growable.isSelected(), drawAllowed.isSelected());
+            }
+        });
+        fiveRadio.setOnAction(fiveAction -> {
+            if (fiveRadio.isSelected()) {
+                growable.setSelected(true);
+                growable.setDisable(true);
+                drawAllowed.setSelected(false);
+                drawAllowed.setDisable(true);
+                sendOptions(5, growable.isSelected(), drawAllowed.isSelected());
+            }
+        });
+        drawAllowed.setOnAction(drawAction -> {
+            growable.setDisable(drawAllowed.isSelected());
+            sendOptions(reqToWin, growable.isSelected(), drawAllowed.isSelected());
+        });
+        growable.setOnAction(growAction -> {
+            drawAllowed.setDisable(growable.isSelected());
+            sendOptions(reqToWin, growable.isSelected(), drawAllowed.isSelected());
+        });
 
-		VBox numberOptionsBox = new VBox();
-		numberOptionsBox.setSpacing(10);
-		numberOptionsBox.getChildren().addAll(threeRadio, fourRadio, fiveRadio);
+        HBox optionsBox = new HBox();
+        optionsBox.setAlignment(Pos.CENTER);
+        optionsBox.setSpacing(20);
 
-		VBox growOptionsBox = new VBox();
-		growOptionsBox.setSpacing(10);
-		growOptionsBox.getChildren().addAll(growable, drawAllowed);
+        VBox numberOptionsBox = new VBox();
+        numberOptionsBox.setSpacing(10);
+        numberOptionsBox.getChildren().addAll(threeRadio, fourRadio, fiveRadio);
 
-		optionsBox.getChildren().addAll(numberOptionsBox, growOptionsBox);
+        VBox growOptionsBox = new VBox();
+        growOptionsBox.setSpacing(10);
+        growOptionsBox.getChildren().addAll(growable, drawAllowed);
 
-		startBox.setSpacing(30);
-		startBox.getChildren().addAll(optionsBox, startButton);
-		connectPane.getChildren().add(startBox);
-		startBox.setVisible(false);
-	}
+        optionsBox.getChildren().addAll(numberOptionsBox, growOptionsBox);
 
-	public AnchorPane initLogoPane() {
-		AnchorPane anchPane = new AnchorPane();
-		Random random = new Random();
+        startBox.setSpacing(30);
+        startBox.getChildren().addAll(optionsBox, startButton);
+        connectPane.getChildren().add(startBox);
+        startBox.setVisible(false);
+    }
 
-		Image ticImg = new Image(getClass().getResourceAsStream("/tic.png"));
-		Image tacImg = new Image(getClass().getResourceAsStream("/tac.png"));
-		Image toeImg = new Image(getClass().getResourceAsStream("/toe.png"));
+    public AnchorPane initLogoPane() {
+        AnchorPane anchPane = new AnchorPane();
+        Random random = new Random();
 
-		ImageView tic = new ImageView(ticImg);
-		ImageView tac = new ImageView(tacImg);
-		ImageView toe = new ImageView(toeImg);
+        Image ticImg = new Image(getClass().getResourceAsStream("/tic.png"));
+        Image tacImg = new Image(getClass().getResourceAsStream("/tac.png"));
+        Image toeImg = new Image(getClass().getResourceAsStream("/toe.png"));
 
-		ImageView logoArray[] = { tic, tac, toe };
+        ImageView tic = new ImageView(ticImg);
+        ImageView tac = new ImageView(tacImg);
+        ImageView toe = new ImageView(toeImg);
 
-		tic.setFitWidth(180);
-		tac.setFitWidth(180);
-		toe.setFitWidth(180);
-		tic.setFitHeight(100);
-		tac.setFitHeight(100);
-		toe.setFitHeight(100);
+        ImageView logoArray[] = {tic, tac, toe};
 
-		tic.setX(10);
-		tic.setY(140);
+        tic.setFitWidth(180);
+        tac.setFitWidth(180);
+        toe.setFitWidth(180);
+        tic.setFitHeight(100);
+        tac.setFitHeight(100);
+        toe.setFitHeight(100);
 
-		tac.setX(200);
-		tac.setY(120);
+        tic.setX(10);
+        tic.setY(140);
 
-		toe.setX(390);
-		toe.setY(144);
+        tac.setX(200);
+        tac.setY(120);
 
-		anchPane.getChildren().addAll(tic, tac, toe);
+        toe.setX(390);
+        toe.setY(144);
 
-		Media ticSound = new Media(getClass().getResource("/tic.mp3").toString());
-		Media tacSound = new Media(getClass().getResource("/tac.mp3").toString());
-		Media toeSound = new Media(getClass().getResource("/toe.mp3").toString());
+        tic.setVisible(false);
+        tac.setVisible(false);
+        toe.setVisible(false);
 
-		SequentialTransition seqFirst = new SequentialTransition(zoomAnimFirst(tic, ticSound), zoomAnimFirst(tac, tacSound), zoomAnimFirst(toe, toeSound));
-		seqFirst.play();
+        anchPane.getChildren().addAll(tic, tac, toe);
 
-		Timeline repeatTl = new Timeline(new KeyFrame(Duration.millis(4000),ae -> {
-			int num = random.nextInt(2-0+1) + 0;
-			logoArray[num].toFront();
-			ScaleTransition currAnim = zoomAnim(logoArray[num]);
-			currAnim.play();
-		}));
-		repeatTl.setCycleCount(Animation.INDEFINITE);
-		repeatTl.play();
-
-		return anchPane;
-	}
+        Media ticSound = new Media(getClass().getResource("/tic.mp3").toString());
+        Media tacSound = new Media(getClass().getResource("/tac.mp3").toString());
+        Media toeSound = new Media(getClass().getResource("/toe.mp3").toString());
 
 
-	private ScaleTransition zoomAnimFirst(ImageView currImage, Media sound) {
-		mediaPlayer = new MediaPlayer(sound);
-		mediaPlayer.play();
-		ScaleTransition st = new ScaleTransition(Duration.millis(400), currImage);
-		st.setFromX(0.01f);
-		st.setFromY(0.01f);
-		st.setToX(1.0f);
-		st.setToY(1.0f);
-		st.setAutoReverse(true);
-		return st;
-	}
+        logoCounter = 0;
+        AnimationTimer logoTimer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                if (logoCounter > 60) {
+                    if (logoCounter == 120) {
+                        logoAnimation(tic, ticSound, false);
+                    } else if (logoCounter == 180) {
+                        logoAnimation(tac, tacSound, false);
+                    } else if (logoCounter == 240) {
+                        logoAnimation(toe, toeSound, true);
+                    }
+                }
+                logoCounter++;
+            }
+        };
 
-	private ScaleTransition zoomAnim(ImageView currImage) {
-		ScaleTransition st = new ScaleTransition(Duration.millis(600), currImage);
-		st.setFromX(1.0f);
-		st.setFromY(1.0f);
-		st.setToX(1.5f);
-		st.setToY(1.5f);
-		st.setCycleCount(2);
-		st.setAutoReverse(true);
-		return st;
-	}
+        logoTimer.start();
+
+        Timeline repeatTl = new Timeline(new KeyFrame(Duration.millis(4000), ae -> {
+            int num = random.nextInt(2 - 0 + 1) + 0;
+            logoArray[num].toFront();
+            ScaleTransition currAnim = zoomAnim(logoArray[num]);
+            currAnim.play();
+        }));
+        repeatTl.setCycleCount(Animation.INDEFINITE);
+        repeatTl.play();
+
+        return anchPane;
+    }
+
+    private void logoAnimation(ImageView image, Media sound, boolean stop ) {
+        ScaleTransition st = zoomAnimFirst(image, sound);
+
+        image.setScaleX(0.01f);
+        image.setScaleY(0.01f);
+        image.setVisible(true);
+        st.play();
+    }
 
 
-	public void sendOptions(int reqToWin, boolean growable, boolean draw) {
-		viewController.setRowsToWin(reqToWin);
-		viewController.setGrowable(growable);
-		viewController.setDrawable(draw);
-		controller.sendOptions(reqToWin, growable, draw);
-	}
+    private ScaleTransition zoomAnimFirst(ImageView currImage, Media sound) {
+        mediaPlayer = new MediaPlayer(sound);
+        mediaPlayer.play();
+        ScaleTransition st = new ScaleTransition(Duration.millis(400), currImage);
+        st.setFromX(0.01f);
+        st.setFromY(0.01f);
+        st.setToX(1.0f);
+        st.setToY(1.0f);
+        st.setAutoReverse(true);
+        return st;
+    }
 
-	public void setOptions(int reqToWin, boolean grow, boolean draw) {
-		switch (reqToWin) {
-			case 3:
-				threeRadio.setSelected(true);
-				growable.setDisable(false);
-				drawAllowed.setDisable(false);
-				break;
-			case 4:
-				fourRadio.setSelected(true);
-				growable.setDisable(true);
-				drawAllowed.setDisable(true);
-				growable.setSelected(true);
-				break;
-			case 5:
-				fiveRadio.setSelected(true);
-				growable.setDisable(true);
-				growable.setSelected(true);
-				drawAllowed.setDisable(true);
-				break;
-		}
-	}
+    private ScaleTransition zoomAnim(ImageView currImage) {
+        ScaleTransition st = new ScaleTransition(Duration.millis(600), currImage);
+        st.setFromX(1.0f);
+        st.setFromY(1.0f);
+        st.setToX(1.5f);
+        st.setToY(1.5f);
+        st.setCycleCount(2);
+        st.setAutoReverse(true);
+        return st;
+    }
 
-	public void connected() {
-		connectBox.setVisible(false);
-		startBox.setVisible(true);
-	}
 
-	public void disconnected() {
-		connectBox.setVisible(true);
-		startBox.setVisible(false);
-	}
+    public void sendOptions(int reqToWin, boolean growable, boolean draw) {
+        viewController.setRowsToWin(reqToWin);
+        viewController.setGrowable(growable);
+        viewController.setDrawable(draw);
+        controller.sendOptions(reqToWin, growable, draw);
+    }
+
+    public void setOptions(int reqToWin, boolean grow, boolean draw) {
+        switch (reqToWin) {
+            case 3:
+                threeRadio.setSelected(true);
+                growable.setDisable(false);
+                drawAllowed.setDisable(false);
+                break;
+            case 4:
+                fourRadio.setSelected(true);
+                growable.setDisable(true);
+                drawAllowed.setDisable(true);
+                growable.setSelected(true);
+                break;
+            case 5:
+                fiveRadio.setSelected(true);
+                growable.setDisable(true);
+                growable.setSelected(true);
+                drawAllowed.setDisable(true);
+                break;
+        }
+    }
+
+    public void connected() {
+        connectBox.setVisible(false);
+        startBox.setVisible(true);
+    }
+
+    public void disconnected() {
+        connectBox.setVisible(true);
+        startBox.setVisible(false);
+    }
 
 }
