@@ -249,10 +249,14 @@ public class GameBoardPanel extends BorderPane {
 	private void playSound(String url) {
 		winningRow = gameArray.getWinningRow();
 		if (viewController.getSound()) {
+			viewController.lowerMusic(true);
 			soundRes = getClass().getResource(url);
 			sound = new Media(soundRes.toString());
 			mediaPlayer = new MediaPlayer(sound);
 			mediaPlayer.play();
+			mediaPlayer.setOnEndOfMedia(() -> {
+				viewController.lowerMusic(false);
+			});
 		}
 		winningRow.forEach(coord -> {
 			playerMarkers.forEach(marker -> {

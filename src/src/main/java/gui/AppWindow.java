@@ -430,6 +430,18 @@ public class AppWindow {
         mPlayer.stop();
     }
 
+	/**
+	 * Lowers the volume of the music
+	 *
+	 * @param lower
+     */
+	public void lowerMusic(boolean lower) {
+		if (lower) {
+			mPlayer.setVolume(0.2);
+		} else {
+			mPlayer.setVolume(1);
+		}
+	}
     /**
      * Initializes a game from remote.
      *
