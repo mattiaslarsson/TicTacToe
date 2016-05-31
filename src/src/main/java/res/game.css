@@ -112,3 +112,14 @@
 #stats {
     -fx-background-color: #ffef84;
 }
+
+#msgText {
+    -fx-font-family: Roboto;
+}
+
+#msgRect {
+    -fx-background-color: gray;
+    -fx-opacity: 0.2;
+    -fx-border-radius: 50;
+}
+
