@@ -59,7 +59,7 @@ public class GameBoardPanel extends BorderPane {
 		this.controller = controller;
 		this.viewController = viewController;
 		myMove = new Media(getClass().getResource("/mySound.mp3").toString());
-		yourMove = new Media(getClass().getResource("/yourSound").toString());
+		yourMove = new Media(getClass().getResource("/yourSound.mp3").toString());
 	}
 
 	/**
