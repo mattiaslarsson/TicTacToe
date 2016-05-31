@@ -191,15 +191,15 @@ public class StartPanel extends BorderPane {
         AnimationTimer logoTimer = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                if (logoCounter > 60) {
-                    if (logoCounter == 120) {
-                        logoAnimation(tic, ticSound, false);
-                    } else if (logoCounter == 180) {
-                        logoAnimation(tac, tacSound, false);
-                    } else if (logoCounter == 240) {
-                        logoAnimation(toe, toeSound, true);
-                    }
+
+                if (logoCounter == 60) {
+                    logoAnimation(tic, ticSound, false);
+                } else if (logoCounter == 120) {
+                    logoAnimation(tac, tacSound, false);
+                } else if (logoCounter == 180) {
+                    logoAnimation(toe, toeSound, true);
                 }
+
                 logoCounter++;
             }
         };
@@ -218,7 +218,7 @@ public class StartPanel extends BorderPane {
         return anchPane;
     }
 
-    private void logoAnimation(ImageView image, Media sound, boolean stop ) {
+    private void logoAnimation(ImageView image, Media sound, boolean stop) {
         ScaleTransition st = zoomAnimFirst(image, sound);
 
         image.setScaleX(0.01f);

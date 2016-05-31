@@ -3,6 +3,7 @@ package gui;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -47,6 +48,7 @@ public class AppWindow {
     private HBox chatBox;
 
     private TextArea chatDisplayArea;
+	private HBox buttonPane;
 
     private Label lblOppName, lblPrevWins, lblPrevLoss, lblPrevDraws, lblTotPoints, lblTotPointsLoss, lblTotWins, lblTotDefeats, lblTotDraws, lblAvgPoints, lblAvgPointsLost, lblAvgMoves, lblAvgGrid;
     private Label lblOppNameText, lblPrevWinsText, lblPrevLossText, lblPrevDrawsText, lblTotPointsText, lblTotPointsLossText, lblTotWinsText, lblTotDefeatsText, lblTotDrawsText, lblAvgPointsText, lblAvgPointsLostText, lblAvgMovesText, lblAvgGridText;
@@ -184,8 +186,8 @@ public class AppWindow {
 
     private void displayPanels() {
         stage.setWidth(windowWidth + chatDisplayWidth);
-        stage.setHeight(windowHeight + (chatBox.getHeight()));
-        startPanel.setMinSize(windowWidth, windowHeight - (chatBox.getHeight()));
+        stage.setHeight(windowHeight + (chatBox.getLayoutBounds().getHeight()));
+        startPanel.setMinSize(windowWidth, windowHeight - (chatBox.getLayoutBounds().getHeight()));
         rootPane.setCenter(startPanel);
         rootPane.setBottom(chatBox);
         rootPane.setRight(chatDisplay);
@@ -216,9 +218,11 @@ public class AppWindow {
         chatBox.setStyle("-fx-background-image: url(\"/textured_paper.png\");-fx-background-size: 600, 600;-fx-background-repeat: no-repeat;");
         // Sizing
         chatBox.setPrefHeight(boxHeight);
-        chatBox.setPrefWidth(windowHeight);
+        chatBox.setPrefWidth(windowWidth-chatDisplayWidth);
         fieldChat.setPrefSize((windowWidth - 100), boxHeight);
         btnChat.setPrefSize(100, boxHeight);
+
+		buttonPane = createSoundButtons();
 
         fieldChat.setPromptText("Enter chat message");
         btnChat.setOnAction((e) -> {
@@ -230,7 +234,7 @@ public class AppWindow {
             }
         });
 
-        chatBox.getChildren().addAll(fieldChat, btnChat);
+        chatBox.getChildren().addAll(fieldChat, btnChat,buttonPane);
         return chatBox;
     }
 
@@ -244,11 +248,12 @@ public class AppWindow {
 
         chatDisplayArea = new TextArea();
         chatDisplayArea.setId("chatDisplay");
+		chatDisplayArea.setWrapText(true);
         chatDisplayArea.setPrefSize(chatDisplayWidth, windowHeight / 2);
         chatDisplayArea.setEditable(false);
 
         statsPanel = createStatsDisplay();
-        statsPanel.setPrefSize(chatDisplayWidth, windowHeight / 2);
+        statsPanel.setPrefSize(chatDisplayWidth, (windowHeight/2)-(chatBox.getLayoutBounds().getHeight()));
 
         contentPane.getChildren().addAll(chatDisplayArea, statsPanel);
 
@@ -257,35 +262,75 @@ public class AppWindow {
 
     private GridPane createStatsDisplay() {
         GridPane statsPane = new GridPane();
+		statsPane.setId("stats");
+		statsPane.setHgap(10);
         // Opponent
         lblOppName = new Label("Stats against:");
+		lblOppName.getStyleClass().add("statsinfo");
         lblOppNameText = new Label("");
-        lblPrevWins = new Label("Wins:");
+		lblOppNameText.getStyleClass().add("statstext");
+
+		lblPrevWins = new Label("Wins:");
+		lblPrevWins.getStyleClass().add("statsinfo");
         lblPrevWinsText = new Label("");
-        lblPrevLoss = new Label("Losses:");
+		lblPrevWinsText.getStyleClass().add("statstext");
+
+		lblPrevLoss = new Label("Losses:");
+		lblPrevLoss.getStyleClass().add("statsinfo");
         lblPrevLossText = new Label("");
-        lblPrevDraws = new Label("Draws:");
+		lblPrevLossText.getStyleClass().add("statstext");
+
+		lblPrevDraws = new Label("Draws:");
+		lblPrevDraws.getStyleClass().add("statsinfo");
         lblPrevDrawsText = new Label("");
-        // Totals
+		lblPrevDrawsText.getStyleClass().add("statstext");
+
+		// Totals
         lblTotPoints = new Label("Total points:");
-        lblTotPointsText = new Label("");
-        lblTotPointsLoss = new Label("Total points lost:");
+		lblTotPoints.getStyleClass().add("statsinfo");
+		lblTotPointsText = new Label("");
+		lblTotPointsText.getStyleClass().add("statstext");
+
+		lblTotPointsLoss = new Label("Total points lost:");
+		lblTotPointsLoss.getStyleClass().add("statsinfo");
         lblTotPointsLossText = new Label("");
-        lblTotWins = new Label("Total wins:");
+		lblTotPointsLossText.getStyleClass().add("statstext");
+
+		lblTotWins = new Label("Total wins:");
+		lblTotWins.getStyleClass().add("statsinfo");
         lblTotWinsText = new Label("");
-        lblTotDefeats = new Label("Total losses:");
+		lblTotWinsText.getStyleClass().add("statstext");
+
+		lblTotDefeats = new Label("Total losses:");
+		lblTotDefeats.getStyleClass().add("statsinfo");
         lblTotDefeatsText = new Label("");
-        lblTotDraws = new Label("Total draws:");
+		lblTotDefeatsText.getStyleClass().add("statstext");
+
+		lblTotDraws = new Label("Total draws:");
+		lblTotDraws.getStyleClass().add("statsinfo");
         lblTotDrawsText = new Label("");
-        // Average
+		lblTotDrawsText.getStyleClass().add("statstext");
+
+		// Average
         lblAvgPoints = new Label("Average points:");
+		lblAvgPoints.getStyleClass().add("statsinfo");
         lblAvgPointsText = new Label("");
-        lblAvgPointsLost = new Label("Average points lost:");
+		lblAvgPointsText.getStyleClass().add("statstext");
+
+		lblAvgPointsLost = new Label("Average points lost:");
+		lblAvgPointsLost.getStyleClass().add("statsinfo");
         lblAvgPointsLostText = new Label("");
-        lblAvgMoves = new Label("Average moves:");
+		lblAvgPointsLostText.getStyleClass().add("statstext");
+
+		lblAvgMoves = new Label("Average moves:");
+		lblAvgMoves.getStyleClass().add("statsinfo");
         lblAvgMovesText = new Label("");
-        lblAvgGrid = new Label("Average gridsize:");
+		lblAvgMovesText.getStyleClass().add("statstext");
+
+		lblAvgGrid = new Label("Average gridsize:");
+		lblAvgGrid.getStyleClass().add("statsinfo");
         lblAvgGridText = new Label("");
+		lblAvgGridText.getStyleClass().add("statstext");
 
         statsPane.add(lblOppName, 0, 0);
         statsPane.add(lblOppNameText, 1, 0);
@@ -314,7 +359,8 @@ public class AppWindow {
         statsPane.add(lblAvgGrid, 0, 12);
         statsPane.add(lblAvgGridText, 1, 12);
 
-        return statsPane;
+
+	   return statsPane;
     }
 
     private void fillStats() {
@@ -337,6 +383,32 @@ public class AppWindow {
             lblAvgGridText.setText(gs.getAvgGridSize());
         }
     }
+
+	private HBox createSoundButtons() {
+		HBox musicPane = new HBox();
+		musicPane.setId("musicpane");
+
+		Button btnMusic = new Button("Music");
+		btnMusic.setOnAction((e) ->{
+			if (music) {
+				music = !music;
+				stopMusic();
+			} else {
+				music = !music;
+				playMusic();
+			}
+		});
+
+		Button btnSounds = new Button("Sounds");
+		btnSounds.setOnAction((e) ->{
+			sound = !sound;
+		});
+
+		btnSounds.setPrefWidth(chatDisplayWidth/2);
+		btnMusic.setPrefWidth(chatDisplayWidth/2);
+		musicPane.getChildren().addAll(btnMusic, btnSounds);
+		return musicPane;
+	}
 
 
     /*******************************************************************************************************************
@@ -442,6 +514,9 @@ public class AppWindow {
 			mPlayer.setVolume(1);
 		}
 	}
+
+
+
     /**
      * Initializes a game from remote.
      *
@@ -494,5 +569,7 @@ public class AppWindow {
     public boolean getSound() {
         return sound;
     }
+
+
 
 }
