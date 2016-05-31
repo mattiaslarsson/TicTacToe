@@ -32,7 +32,6 @@
 
 
 .text-field {
-
     -fx-background-color: linear-gradient(to bottom, derive(-fx-text-box-border, -10%), -fx-text-box-border),
     linear-gradient(from 0px 0px to 0px 5px, derive(-fx-control-inner-background, -9%), -fx-control-inner-background);
     -fx-background-insets: 0, 1, 2, 3, 0;
@@ -57,25 +56,6 @@
     -fx-border-radius: 15px;
     -fx-padding: 4px;
 }
-
-/*
-.radio-button .radio:selected {
-    -fx-background-color: #F2BA44;
-    -fx-background-image: null;
-}
-.radio-button -radio:armed {
-    -fx-background-color: transparent;
-    -fx-background-image: null;
-}
-.radio-button -radio:determinate {
-    -fx-background-color: white;
-    -fx-background-image: null;
-}
-.radio-button -radio:indeterminate {
-    -fx-background-color: white;
-    -fx-background-image: null;
-}
-*/
 
 .radio-button > .text {
     -fx-text-fill: #330000;
@@ -103,10 +83,33 @@
 .text-area {
     -fx-text-fill: #330000;
     -fx-font-family: Roboto;
-    -fx-font-size: 14Px;
+    -fx-font-size: 12Px;
 }
 
 .text-area .content {
+    -fx-background-color: #ffef84;
+}
+
+#musicpane {
+    -fx-background-color: #ffef84;
+}
+
+.label.statstext {
+    -fx-font-family: Roboto;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #330000;
+    -fx-background-color: #ffef84;
+}
+
+.label.statsinfo {
+    -fx-font-family: Roboto;
+    -fx-font-size: 14px;
+    -fx-text-fill: #330000;
+    -fx-background-color: #ffef84;
+}
+
+#stats {
     -fx-background-color: #ffef84;
 }
 
