@@ -265,7 +265,7 @@ public class GameBoardPanel extends BorderPane {
 		sT.setAutoReverse(true);
 		sT.play();
 		sT.setOnFinished(event -> {
-			viewController.initStart();
+			viewController.initRestart();
 		});
 	}
 

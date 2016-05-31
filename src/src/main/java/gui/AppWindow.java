@@ -153,6 +153,13 @@ public class AppWindow {
 		}
 	}
 
+	public void initRestart() {
+		growable = false;
+		drawable = false;
+		rowsToWin = 3;
+		displayPanels();
+	}
+
 	private void displayPanels() {
 		stage.setWidth(windowWidth + chatDisplayWidth);
 		stage.setHeight(windowHeight+(chatBox.getHeight()));

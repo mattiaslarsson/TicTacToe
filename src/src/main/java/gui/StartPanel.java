@@ -82,6 +82,7 @@ public class StartPanel extends BorderPane {
 
 		int reqToWin = 3;
 
+		threeRadio.setSelected(true);
 		threeRadio.setOnAction(threeAction -> {
 			if (threeRadio.isSelected()) {
 				growable.setDisable(false);
@@ -225,17 +226,15 @@ public class StartPanel extends BorderPane {
 				fourRadio.setSelected(true);
 				growable.setDisable(true);
 				drawAllowed.setDisable(true);
+				growable.setSelected(true);
 				break;
 			case 5:
 				fiveRadio.setSelected(true);
 				growable.setDisable(true);
+				growable.setSelected(true);
 				drawAllowed.setDisable(true);
 				break;
 		}
-		drawAllowed.setDisable(grow);
-		drawAllowed.setSelected(draw);
-		growable.setSelected(grow);
-		growable.setDisable(draw);
 	}
 
 	public void connected() {
