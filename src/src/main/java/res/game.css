@@ -7,7 +7,7 @@
             linear-gradient(from 0% 0% to 15% 50%, rgba(255,255,255,0.9), rgba(255,255,255,0));
     -fx-background-radius: 10;
     -fx-background-insets: 0,1,2,3,0;
-    -fx-font-family: Robot;
+    -fx-font-family: Roboto;
     -fx-text-fill: #330000;
     -fx-font-weight: bold;
     -fx-font-size: 16px;
@@ -23,7 +23,7 @@
             linear-gradient(from 0% 0% to 15% 50%, rgba(255,255,255,0.9), rgba(255,255,255,0));
     -fx-background-radius: 10;
     -fx-background-insets: 0,1,2,3,0;
-    -fx-font-family: Robot;
+    -fx-font-family: Roboto;
     -fx-text-fill: #330000;
     -fx-font-weight: bold;
     -fx-font-size: 16px;
@@ -42,7 +42,7 @@
     -fx-border-radius: 10;
     -fx-background-radius: 10;
     -fx-background-insets: 0,1,2,3,0;
-    -fx-font-family: Robot;
+    -fx-font-family: Roboto;
     -fx-text-fill: #330000;
     -fx-font-weight: bold;
     -fx-font-size: 14px;
@@ -80,7 +80,7 @@
 .radio-button > .text {
     -fx-text-fill: #330000;
     -fx-font-weight: bold;
-    -fx-font-family: Robot;
+    -fx-font-family: Roboto;
     -fx-font-size: 20px;
 }
 
@@ -96,16 +96,27 @@
     -fx-color: #330000;
     -fx-text-fill: #330000;
     -fx-font-weight: bold;
-    -fx-font-family: Robot;
+    -fx-font-family: Roboto;
     -fx-font-size: 20px;
 }
 
 .text-area {
     -fx-text-fill: #330000;
-    -fx-font-family: Robot;
+    -fx-font-family: Roboto;
     -fx-font-size: 14Px;
 }
 
 .text-area .content {
     -fx-background-color: #ffef84;
 }
+
+#msgText {
+    -fx-font-family: Roboto;
+}
+
+#msgRect {
+    -fx-background-color: gray;
+    -fx-opacity: 0.2;
+    -fx-border-radius: 50;
+}
+
