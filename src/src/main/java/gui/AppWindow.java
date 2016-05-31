@@ -320,6 +320,7 @@ public class AppWindow {
 	 * Plays the cozy music
 	 */
 	public void playMusic() {
+		mPlayer.setCycleCount(MediaPlayer.INDEFINITE);
 		mPlayer.play();
 	}
 

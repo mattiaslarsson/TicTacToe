@@ -11,6 +11,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import logic.Controller;
@@ -35,6 +37,8 @@ public class StartPanel extends BorderPane {
 
 	private CheckBox growable;
 	private CheckBox drawAllowed;
+
+	private MediaPlayer mediaPlayer;
 
 	public StartPanel(Controller controller, AppWindow viewController) {
 		this.controller = controller;
@@ -170,7 +174,11 @@ public class StartPanel extends BorderPane {
 
 		anchPane.getChildren().addAll(tic, tac, toe);
 
-		SequentialTransition seqFirst = new SequentialTransition(zoomAnimFirst(tic), zoomAnimFirst(tac), zoomAnimFirst(toe));
+		Media ticSound = new Media(getClass().getResource("/tic.mp3").toString());
+		Media tacSound = new Media(getClass().getResource("/tac.mp3").toString());
+		Media toeSound = new Media(getClass().getResource("/toe.mp3").toString());
+
+		SequentialTransition seqFirst = new SequentialTransition(zoomAnimFirst(tic, ticSound), zoomAnimFirst(tac, tacSound), zoomAnimFirst(toe, toeSound));
 		seqFirst.play();
 
 		Timeline repeatTl = new Timeline(new KeyFrame(Duration.millis(4000),ae -> {
@@ -186,7 +194,9 @@ public class StartPanel extends BorderPane {
 	}
 
 
-	private ScaleTransition zoomAnimFirst(ImageView currImage) {
+	private ScaleTransition zoomAnimFirst(ImageView currImage, Media sound) {
+		mediaPlayer = new MediaPlayer(sound);
+		mediaPlayer.play();
 		ScaleTransition st = new ScaleTransition(Duration.millis(400), currImage);
 		st.setFromX(0.01f);
 		st.setFromY(0.01f);
