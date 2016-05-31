@@ -1,24 +1,28 @@
 package gui;
 
+import javafx.animation.FadeTransition;
+import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javafx.util.Duration;
 import logic.Controller;
 import models.GameStats;
 
@@ -89,7 +93,6 @@ public class AppWindow {
         if (music) {
             playMusic();
         }
-
         Font.loadFont(getClass().getResource("/Roboto-Regular.ttf").toExternalForm(), 12);
 
         stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -138,6 +141,7 @@ public class AppWindow {
         scene.getStylesheets().add
                 (getClass().getResource("/game.css").toExternalForm());
         stage.setScene(scene);
+		messageViewer("Starting up");
         stage.show();
     }
 
@@ -178,9 +182,6 @@ public class AppWindow {
 	public void initRestart() {
 		stage.setWidth(windowWidth + chatDisplayWidth);
 		stage.setHeight(windowHeight + (chatBox.getHeight()));
-//		growable = false;
-//		drawable = false;
-//		rowsToWin = 3;
 		displayPanels();
 	}
 
@@ -505,7 +506,7 @@ public class AppWindow {
 	/**
 	 * Lowers the volume of the music
 	 *
-	 * @param lower
+	 * @param lower boolean true for lower, false for normal
      */
 	public void lowerMusic(boolean lower) {
 		if (lower) {
@@ -527,6 +528,45 @@ public class AppWindow {
             initGame(start);
         });
     }
+
+	public void messageViewer(String message) {
+		Text msgText = new Text(message);
+		msgText.setFill(Color.WHITE);
+		msgText.setId("msgText");
+		Rectangle msgRect = new Rectangle();
+		msgRect.setId("msgRect");
+		msgText.setFont(Font.font(50));
+		msgRect.setWidth(msgText.getBoundsInLocal().getWidth()+20);
+		msgRect.setHeight(msgText.getBoundsInLocal().getHeight()+10);
+		StackPane msgStack = new StackPane();
+		msgStack.getChildren().addAll(msgRect, msgText);
+		Group msgGroup = new Group();
+		msgGroup.getChildren().add(msgStack);
+		msgGroup.setTranslateY(rootPane.getHeight()/2 - (msgGroup.getBoundsInLocal().getHeight()/2));
+		msgGroup.setTranslateX(rootPane.getWidth());
+
+		TranslateTransition tT = new TranslateTransition();
+		tT.setNode(msgGroup);
+		tT.setDuration(new Duration(2000));
+		tT.setFromX(msgGroup.getTranslateX());
+		tT.setToX((rootPane.getWidth()/2) - (msgGroup.getBoundsInLocal().getWidth()/2));
+		tT.setCycleCount(1);
+
+		FadeTransition fT = new FadeTransition();
+		fT.setDuration(new Duration(1500));
+		fT.setFromValue(1);
+		fT.setToValue(0);
+		fT.setCycleCount(1);
+		fT.setNode(msgGroup);
+		tT.setOnFinished(event -> {
+			fT.play();
+		});
+		tT.play();
+		fT.setOnFinished(fTFinished -> {
+			rootPane.getChildren().remove(msgGroup);
+		});
+		rootPane.getChildren().add(msgGroup);
+	}
 
 
     /*******************************************************************************************************************

@@ -46,6 +46,7 @@ public class GameArray {
     }
     public void setDrawable(boolean drawable) { this.drawable = drawable; }
     public boolean isGameOver() { return gameOver; }
+
     /**
      * Returns an array representing the gameboard
      * @return
@@ -89,9 +90,7 @@ public class GameArray {
             if (currX < 0 || currY < 0 || currX > gameGrid[0].length-1 || currY > gameGrid[0].length-1 || gameGrid[currX][currY] != player) {
                 continue;
             }
-            System.out.println("Kollar sameDir: " + currX + "," + currY);
             if (gameGrid[currX][currY] == player) {
-                System.out.println("Hittade en match i " + currX + "," + currY);
                 numInRow++;
                 winningRow.add(new Point2D(currX, currY));
                 if(numInRow >= reqToWin-1) {
@@ -108,9 +107,7 @@ public class GameArray {
                             continue outerLoop;
                         }
                         for (int k = 0; k < reqToWin-2; k++) {
-                            System.out.println("oppDir: " + oppositeX+"," + oppositeY);
                             if (gameGrid[oppositeX][oppositeY] == player) {
-                                System.out.println("Hittade en oppMatch i " + oppositeX + "," + oppositeY);
                                 numInRow++;
                                 winningRow.add(new Point2D(oppositeX, oppositeY));
                                 if(numInRow >= reqToWin-1) {
@@ -125,7 +122,6 @@ public class GameArray {
                             }
                         }
                     } else if(gameGrid[currX][currY] == player) {
-                        System.out.println("Hittade en match i " + currX + "," + currY);
                         numInRow++;
                         winningRow.add(new Point2D(currX, currY));
                         if(numInRow >= reqToWin-1) {
