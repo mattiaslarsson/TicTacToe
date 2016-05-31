@@ -85,6 +85,8 @@ public class GameBoardPanel extends BorderPane {
 		this.setCenter(gameBoard);
 		gameBoard.addEventHandler(MouseEvent.MOUSE_CLICKED, addMouseListener());
 		gameBoard.setStyle("-fx-background-image: url(\"/textured_paper.png\");-fx-background-size: 600, 600;-fx-background-repeat: no-repeat;");
+		if(player1Turn) { viewController.messageViewer("You start"); }
+		else { viewController.messageViewer("Opponent start"); }
 
 	}
 
@@ -101,14 +103,15 @@ public class GameBoardPanel extends BorderPane {
 				controller.makeMove(col, row);
 			}
 			player1Turn = !player1Turn;
+			if(player1Turn) { viewController.messageViewer("Your turn"); }
 			if (isFull() && !viewController.isDrawable()) {
 				playerMarkers.forEach(marker -> {
 					marker.fitHeightProperty().bind(gameBoard.getCellSizeProperty().divide(2));
 					marker.fitWidthProperty().bind(gameBoard.getCellSizeProperty().divide(2));
 				});
 				gameBoard.addEventHandler(MouseEvent.MOUSE_CLICKED, addMouseListener());
-			} else if (isFull() && viewController.isDrawable()){
-				this.draw = true;
+			} else if (isFull() && gameArray.isGameOver()) {
+				winner(0,0,numMyMarkers);
 			}
 		}
 	}
@@ -119,9 +122,6 @@ public class GameBoardPanel extends BorderPane {
 	 * @return boolean
 	 */
 	private boolean isFull() throws IOException {
-		if (gameArray.isGameOver()) {
-			winner(0,0,numMyMarkers);
-		}
 		if (playerMarkers.size() == (gameBoard.getRows() * gameBoard.getRows())) {
 			// Increase the gameboard's size
 			gameBoard.incGameBoard();
@@ -232,15 +232,15 @@ public class GameBoardPanel extends BorderPane {
 	 * @param numMarkers int
 	 */
 	private void winner(int myPoints, int oppPoints, int numMarkers) {
-
-		System.out.println("myPoints: " + myPoints + ", oppPoints: " + oppPoints);
-		//TODO DISPLAY WINNER IN FANCY STYLE
 		if (myPoints > oppPoints) {
 			playSound("/applause.mp3");
+			viewController.messageViewer("YOU WIN");
 		} else if (oppPoints > myPoints){
 			playSound("/boo.mp3");
+			viewController.messageViewer("YOU LOOSE");
 		} else {
 			playSound("/sigh.mp3");
+			viewController.messageViewer("IT'S A DRAW");
 		}
 		timeEnd = System.currentTimeMillis() / 1000L;
 		controller.winning(myPoints, oppPoints, timeStart, timeEnd, gameArray.getGridSize(), numMarkers);

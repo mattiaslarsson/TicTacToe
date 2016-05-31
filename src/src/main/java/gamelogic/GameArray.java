@@ -71,7 +71,7 @@ public class GameArray {
     }
 
     /**
-     * Checks if the player has 3 markers in a row
+     * Checks if the player has required markers in a row
      *
      * @param x x-coordinate to start from
      * @param y y-coordinate to start from
@@ -104,6 +104,7 @@ public class GameArray {
                         int oppositeY = i > 3 ? y+checkPattern[i-4].getY() : y+checkPattern[i+4].getY();
                         if (oppositeX < 0 || oppositeY < 0 || oppositeX > gameGrid[0].length-1 || oppositeY > gameGrid[0].length-1 || gameGrid[oppositeX][oppositeY] != player) {
                             numInRow = 0;
+                            winningRow.clear();
                             continue outerLoop;
                         }
                         for (int k = 0; k < reqToWin-2; k++) {
@@ -117,6 +118,7 @@ public class GameArray {
                                 oppositeY += i > 3 ? y+checkPattern[i-4].getY() : y+checkPattern[i+4].getY();
                                 if (oppositeX < 0 || oppositeY < 0 || oppositeX > gameGrid[0].length-1 || oppositeY > gameGrid[0].length-1 || gameGrid[oppositeX][oppositeY] != player) {
                                     numInRow = 0;
+                                    winningRow.clear();
                                     continue outerLoop;
                                 }
                             }
@@ -133,6 +135,7 @@ public class GameArray {
                     }
                 }
                 numInRow = 0;
+                winningRow.clear();
             }
         }
         return false;

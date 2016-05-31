@@ -5,7 +5,6 @@ import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -542,14 +541,14 @@ public class AppWindow {
 		msgStack.getChildren().addAll(msgRect, msgText);
 		Group msgGroup = new Group();
 		msgGroup.getChildren().add(msgStack);
-		msgGroup.setTranslateY(rootPane.getHeight()/2 - (msgGroup.getBoundsInLocal().getHeight()/2));
-		msgGroup.setTranslateX(rootPane.getWidth());
+		msgGroup.setTranslateY(stage.getHeight()/2 - (msgGroup.getBoundsInLocal().getHeight()/2));
+		msgGroup.setTranslateX(stage.getWidth());
 
 		TranslateTransition tT = new TranslateTransition();
 		tT.setNode(msgGroup);
 		tT.setDuration(new Duration(2000));
 		tT.setFromX(msgGroup.getTranslateX());
-		tT.setToX((rootPane.getWidth()/2) - (msgGroup.getBoundsInLocal().getWidth()/2));
+		tT.setToX((stage.getWidth()/2) - (msgGroup.getBoundsInLocal().getWidth()/2));
 		tT.setCycleCount(1);
 
 		FadeTransition fT = new FadeTransition();
@@ -566,6 +565,7 @@ public class AppWindow {
 			rootPane.getChildren().remove(msgGroup);
 		});
 		rootPane.getChildren().add(msgGroup);
+        msgGroup.toFront();
 	}
 
 
