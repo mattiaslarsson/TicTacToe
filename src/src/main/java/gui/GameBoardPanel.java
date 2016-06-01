@@ -232,6 +232,8 @@ public class GameBoardPanel extends BorderPane {
 	 * @param numMarkers int
 	 */
 	private void winner(int myPoints, int oppPoints, int numMarkers) {
+		System.out.println("myPoints: " + myPoints + ", oppPoints: " + oppPoints);
+
 		if (myPoints > oppPoints) {
 			playSound("/applause.mp3");
 			viewController.messageViewer("You won!");
