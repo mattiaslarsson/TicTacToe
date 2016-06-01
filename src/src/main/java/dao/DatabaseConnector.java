@@ -32,7 +32,6 @@ public class DatabaseConnector {
 		// create a connection to the database
 		try {
 			conn = DriverManager.getConnection(url);
-			System.out.println("Database connection established.");
 		} catch (SQLException e) {
 			System.out.println("Error connecting to database: " + e.getStackTrace());
 		}
@@ -44,7 +43,6 @@ public class DatabaseConnector {
 	public void closeConnection() {
 		try {
 			conn.close();
-			System.out.println("Database connection closed.");
 		} catch (SQLException e) {
 			System.out.println("Error closing database connection: " + e.getStackTrace());
 		}
@@ -301,7 +299,6 @@ public class DatabaseConnector {
 		ArrayList result = executeSQLQuery(sql);
 		HashMap currMap = (HashMap) result.get(0);
 		double value = (double) currMap.get("TOTAL");
-		System.out.println("Get float return: "+value);
 		return value;
 	}
 
@@ -409,6 +406,12 @@ public class DatabaseConnector {
 		return totGames;
 	}
 
+	/**
+	 * Compiles stats object for display in view.
+	 *
+	 * @param playerId long
+	 * @return GameStats
+	 */
 	public GameStats getStats(long playerId) {
 
 		GameStats gs = new GameStats();
@@ -435,5 +438,4 @@ public class DatabaseConnector {
 
 		return gs;
 	}
-
 }

@@ -31,9 +31,10 @@ import java.util.List;
 
 /**
  * GUI controller class. Handles window and switches the content depending on what state the application is in.
- * <p>
+ *
  * Created by Johan Lindström (jolindse@hotmail.com) on 2016-05-27.
  */
+
 public class AppWindow {
 
     // Class variables
@@ -62,7 +63,7 @@ public class AppWindow {
     private String versionString = "TicTacToe v0.8a";
     private SimpleStringProperty titleProp;
 
-    private double windowHeight = 620;
+    private double windowHeight = 600;
     private double windowWidth = 600;
     private double chatDisplayWidth = 300;
     private double panelHeight;
@@ -78,7 +79,6 @@ public class AppWindow {
     private boolean music = true;
 
     private GameStats gs;
-
     private MediaPlayer mPlayer;
 
     public AppWindow(Stage stage, Controller controller) {
@@ -87,11 +87,14 @@ public class AppWindow {
 
         chatMessages = new ArrayList<String>();
 
+		// Catchy tune
         Media bossa = new Media(getClass().getResource("/bossa.mp3").toString());
         mPlayer = new MediaPlayer(bossa);
         if (music) {
             playMusic();
         }
+
+		// Register font with application.
         Font.loadFont(getClass().getResource("/Roboto-Regular.ttf").toExternalForm(), 12);
 
         stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -106,13 +109,17 @@ public class AppWindow {
         init();
     }
 
+	/**
+	 * Adds a message (either local or from remote) to chatdisplay.
+	 *
+	 * @param currMessage String
+	 */
     private void addMessage(String currMessage) {
         chatMessages.add(currMessage);
         String currDisplay = "";
         for (int i = chatMessages.size() - 1; i >= 0; i--) {
             currDisplay += chatMessages.get(i) + "\n";
         }
-        System.out.println(currDisplay);
         chatDisplayArea.setText(currDisplay);
     }
 
@@ -124,7 +131,7 @@ public class AppWindow {
      * Initializes the view when first ran. Checks if its a first time user.
      */
     private void init() {
-        panelHeight = 600;
+        panelHeight = windowHeight;
         panelWidth = windowWidth;
         rootPane = new BorderPane();
         titleProp = new SimpleStringProperty(versionString);
@@ -140,7 +147,6 @@ public class AppWindow {
         scene.getStylesheets().add
                 (getClass().getResource("/game.css").toExternalForm());
         stage.setScene(scene);
-		messageViewer("Starting up");
         stage.show();
     }
 
@@ -150,10 +156,17 @@ public class AppWindow {
      * @param myStart boolean
      */
     public void initGame(boolean myStart) {
-        stage.setWidth(windowWidth + chatDisplayWidth);
+		stage.setWidth(windowWidth+chatDisplayWidth);
+		stage.setHeight(windowHeight+chatBox.getLayoutBounds().getHeight());
+		panelWidth = windowWidth;
+		panelHeight = windowHeight-chatBox.getLayoutBounds().getHeight();
         gameBoardPanel = new GameBoardPanel(controller, this);
+		gameBoardPanel.setMaxHeight(windowHeight);
+		gameBoardPanel.setMaxWidth(windowWidth);
         gameBoardPanel.startGame(myStart);
         rootPane.setCenter(gameBoardPanel);
+		rootPane.setBottom(chatBox);
+		rootPane.setRight(chatDisplay);
         inGame = true;
     }
 
@@ -178,12 +191,16 @@ public class AppWindow {
         }
     }
 
+	/**
+	 * Restart method ran after a finished game.
+	 */
 	public void initRestart() {
-		stage.setWidth(windowWidth + chatDisplayWidth);
-		stage.setHeight(windowHeight + (chatBox.getHeight()));
 		displayPanels();
 	}
 
+	/**
+	 * Sets scene to display all panels when user is connected.
+	 */
     private void displayPanels() {
         stage.setWidth(windowWidth + chatDisplayWidth);
         stage.setHeight(windowHeight + (chatBox.getLayoutBounds().getHeight()));
@@ -194,8 +211,10 @@ public class AppWindow {
         fillStats();
     }
 
+	/**
+	 * Hides extra panels and only shows the start screen.
+	 */
     private void hidePanels() {
-        System.out.println("In hidepanels windowWidth: " + windowWidth);
         stage.setWidth(windowWidth);
         stage.setHeight(windowHeight);
         rootPane.setRight(null);
@@ -206,10 +225,9 @@ public class AppWindow {
     /**
      * Create chat box.
      *
-     * @return VBox
+     * @return HBox
      */
     private HBox createChatbox() {
-        double boxHeight = 20;
 
         HBox chatBox = new HBox();
         Button btnChat = new Button("Send");
@@ -217,10 +235,9 @@ public class AppWindow {
 
         chatBox.setStyle("-fx-background-image: url(\"/textured_paper.png\");-fx-background-size: 600, 600;-fx-background-repeat: no-repeat;");
         // Sizing
-        chatBox.setPrefHeight(boxHeight);
         chatBox.setPrefWidth(windowWidth-chatDisplayWidth);
-        fieldChat.setPrefSize((windowWidth - 100), boxHeight);
-        btnChat.setPrefSize(100, boxHeight);
+        fieldChat.setPrefSize((windowWidth - 100), chatBox.getLayoutBounds().getHeight());
+        btnChat.setPrefSize(100, chatBox.getLayoutBounds().getHeight());
 
 		buttonPane = createSoundButtons();
 
@@ -229,7 +246,7 @@ public class AppWindow {
             if (connected) {
                 String chatString = fieldChat.getText();
                 controller.chatMessage(chatString);
-                addMessage(chatString);
+                addMessage("Me: "+chatString);
                 fieldChat.setText("");
             }
         });
@@ -241,7 +258,7 @@ public class AppWindow {
     /**
      * Create chat display area.
      *
-     * @return HBox
+     * @return VBox
      */
     private VBox createChatDisplay() {
         VBox contentPane = new VBox();
@@ -260,6 +277,11 @@ public class AppWindow {
         return contentPane;
     }
 
+	/**
+	 * Creates the statsdisplay panel.
+	 *
+	 * @return GridPane
+	 */
     private GridPane createStatsDisplay() {
         GridPane statsPane = new GridPane();
 		statsPane.setId("stats");
@@ -358,16 +380,15 @@ public class AppWindow {
         statsPane.add(lblAvgMovesText, 1, 11);
         statsPane.add(lblAvgGrid, 0, 12);
         statsPane.add(lblAvgGridText, 1, 12);
-
-
 	   return statsPane;
     }
 
+	/**
+	 * Fills the stats display with information from database.
+	 */
     private void fillStats() {
         GameStats gs = controller.getCurrStats();
-        System.out.println("In appwindow - fillstats");
         if (gs != null) {
-            System.out.println("appwindow should fill stats");
             lblOppNameText.setText(gs.getOppName() + " " + gs.getOppSurname());
             lblPrevWinsText.setText(gs.getPrevWins());
             lblPrevLossText.setText(gs.getPrevDefeats());
@@ -384,6 +405,11 @@ public class AppWindow {
         }
     }
 
+	/**
+	 * Creates the music and sound effects toggle buttons.
+	 *
+	 * @return HBox
+	 */
 	private HBox createSoundButtons() {
 		HBox musicPane = new HBox();
 		musicPane.setId("musicpane");
@@ -515,8 +541,6 @@ public class AppWindow {
 		}
 	}
 
-
-
     /**
      * Initializes a game from remote.
      *
@@ -528,6 +552,11 @@ public class AppWindow {
         });
     }
 
+	/**
+	 * Displays a message in overlay.
+	 *
+	 * @param message String
+	 */
 	public void messageViewer(String message) {
 		Text msgText = new Text(message);
 		msgText.setFill(Color.WHITE);
@@ -567,7 +596,6 @@ public class AppWindow {
 		rootPane.getChildren().add(msgGroup);
         msgGroup.toFront();
 	}
-
 
     /*******************************************************************************************************************
      * GETTERS & SETTERS
@@ -609,7 +637,4 @@ public class AppWindow {
     public boolean getSound() {
         return sound;
     }
-
-
-
 }

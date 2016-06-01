@@ -5,11 +5,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import logic.Controller;
 
 /**
+ * Runs if it's the first time application runs to create own player.
+ *
  * Created by Johan Lindström (jolindse@hotmail.com) on 2016-05-29.
  */
 public class FirstRunPane extends BorderPane {
@@ -28,8 +29,8 @@ public class FirstRunPane extends BorderPane {
 		fieldName.setAlignment(Pos.BASELINE_LEFT);
 		TextField fieldSurName = new TextField();
 		fieldSurName.setAlignment(Pos.BASELINE_LEFT);
-		fieldName.setPrefColumnCount(50);
-		fieldSurName.setPrefColumnCount(50);
+		fieldName.setPrefColumnCount(30);
+		fieldSurName.setPrefColumnCount(30);
 
 		Button btnPost = new Button("Save");
 		btnPost.setAlignment(Pos.BASELINE_RIGHT);

@@ -17,7 +17,6 @@ public class NetworkHandler implements Runnable {
 	private Controller controller;
 	private Socket connection;
 	private ServerSocket listener;
-	private boolean connected;
 	private boolean appRunning = true;
 
 
@@ -27,7 +26,6 @@ public class NetworkHandler implements Runnable {
 	 * @param controller Controller
 	 */
 	public NetworkHandler(Controller controller){
-		connected = false;
 		this.controller = controller;
 		try {
 			listener = new ServerSocket(33000);
@@ -53,7 +51,6 @@ public class NetworkHandler implements Runnable {
 			}
 		}
 	}
-
 
 	/**
 	 * Disconnect method to handle graceful exits.

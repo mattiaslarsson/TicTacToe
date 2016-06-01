@@ -113,7 +113,7 @@ public class Controller {
 	}
 
 	/**
-	 * Runs every time a game ends with a winner or draw. Updates data in database and calculates rank for own
+	 * Runs every time a game ends with a winner or draw. Updates data in database.
 	 * player.
 	 *
 	 * @param points int
@@ -125,7 +125,30 @@ public class Controller {
 	 */
 	public void winning(int points, int opppoints, long startTime, long endTime, int gridSize, int numMoves){
 		dbconn.addMatch(remotePlayer,points,opppoints,startTime,endTime,gridSize,numMoves);
-		//TODO RANK CALCULATIONS
+	}
+
+	/**
+	 * Gets stats from database.
+	 *
+	 * @return GameStats
+	 */
+	public GameStats getCurrStats() {
+		GameStats gs = null;
+		if (connected && remotePlayer != null) {
+			gs = dbconn.getStats(remotePlayer.getId());
+			gs.setOppName(remotePlayer.getFirstName());
+			gs.setOppSurname(remotePlayer.getSurName());
+		}
+		return gs;
+	}
+
+	/**
+	 * Displays a message in view.
+	 *
+	 * @param message
+	 */
+	public void displayMessage(String message) {
+		view.messageViewer(message);
 	}
 
 /***********************************************************************************************************************
@@ -161,7 +184,7 @@ public class Controller {
 	 * @param chatMessage String
 	 */
 	public void remoteChatMessage(String chatMessage) {
-		view.chatMessage(remotePlayer.getFirstName()+" "+remotePlayer.getSurName()+":"+chatMessage);
+		view.chatMessage(remotePlayer.getFirstName()+" "+remotePlayer.getSurName()+": "+chatMessage);
 	}
 
 	/**
@@ -262,6 +285,9 @@ public class Controller {
 		cmdhandler.sendMessage(currMessage);
 	}
 
+	/**
+	 * Sends busy message when already connected.
+	 */
 	public void sendBusy(){
 		currMessage = new Message("busy");
 		if (cmdhandler != null) {
@@ -289,21 +315,5 @@ public class Controller {
 
 	public boolean getConnected() {
 		return connected;
-	}
-
-	public GameStats getCurrStats() {
-		GameStats gs = null;
-
-		System.out.println("In controller, get currStats "+remotePlayer+" "+connected);
-
-		if (connected && remotePlayer != null) {
-			System.out.println("Should get stats");
-			gs = dbconn.getStats(remotePlayer.getId());
-			gs.setOppName(remotePlayer.getFirstName());
-			gs.setOppSurname(remotePlayer.getSurName());
-			System.out.println(gs.toString());
-		}
-
-		return gs;
 	}
 }

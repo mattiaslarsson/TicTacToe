@@ -21,6 +21,8 @@ import logic.Controller;
 import java.util.Random;
 
 /**
+ * Intro screen and game configuration screen.
+ *
  * Created by Johan Lindström (jolindse@hotmail.com) on 2016-05-27.
  */
 public class StartPanel extends BorderPane {
@@ -51,6 +53,9 @@ public class StartPanel extends BorderPane {
         initStartScreen();
     }
 
+	/**
+	 * Initializes the start screen.
+	 */
     private void initStartScreen() {
         TextField ip = new TextField();
         ip.setPromptText("Enter IP");
@@ -78,7 +83,6 @@ public class StartPanel extends BorderPane {
             viewController.initGame(controller.startGame());
         });
 
-        //Text playOptionsText = new Text("OPTIONS");
         threeRadio = new RadioButton("3-in-a-row");
         fourRadio = new RadioButton("4-in-a-row");
         fiveRadio = new RadioButton("5-in-a-row");
@@ -146,6 +150,11 @@ public class StartPanel extends BorderPane {
         startBox.setVisible(false);
     }
 
+	/**
+	 * Initializes the pane containing the logo (with animation)
+	 *
+	 * @return AnchorPane
+	 */
     public AnchorPane initLogoPane() {
         AnchorPane anchPane = new AnchorPane();
         Random random = new Random();
@@ -193,11 +202,11 @@ public class StartPanel extends BorderPane {
             public void handle(long now) {
 
                 if (logoCounter == 60) {
-                    logoAnimation(tic, ticSound, false);
+                    logoAnimation(tic, ticSound);
                 } else if (logoCounter == 120) {
-                    logoAnimation(tac, tacSound, false);
+                    logoAnimation(tac, tacSound);
                 } else if (logoCounter == 180) {
-                    logoAnimation(toe, toeSound, true);
+                    logoAnimation(toe, toeSound);
                 }
 
                 logoCounter++;
@@ -218,7 +227,13 @@ public class StartPanel extends BorderPane {
         return anchPane;
     }
 
-    private void logoAnimation(ImageView image, Media sound, boolean stop) {
+	/**
+	 * Method to animate the different elements of the logo.
+	 *
+	 * @param image ImageView
+	 * @param sound Media
+	 */
+    private void logoAnimation(ImageView image, Media sound) {
         ScaleTransition st = zoomAnimFirst(image, sound);
 
         image.setScaleX(0.01f);
@@ -227,7 +242,13 @@ public class StartPanel extends BorderPane {
         st.play();
     }
 
-
+	/**
+	 * The logo animation routine.
+	 *
+	 * @param currImage ImageView
+	 * @param sound Media
+	 * @return ScaleTransition
+	 */
     private ScaleTransition zoomAnimFirst(ImageView currImage, Media sound) {
         mediaPlayer = new MediaPlayer(sound);
         mediaPlayer.play();
@@ -240,6 +261,12 @@ public class StartPanel extends BorderPane {
         return st;
     }
 
+	/**
+	 * The running logo animation.
+	 *
+	 * @param currImage
+	 * @return ScaleTransition
+	 */
     private ScaleTransition zoomAnim(ImageView currImage) {
         ScaleTransition st = new ScaleTransition(Duration.millis(600), currImage);
         st.setFromX(1.0f);
@@ -251,7 +278,13 @@ public class StartPanel extends BorderPane {
         return st;
     }
 
-
+	/**
+	 * Sends the game options to the remote client.
+	 *
+	 * @param reqToWin int
+	 * @param growable boolean
+	 * @param draw boolean
+	 */
     public void sendOptions(int reqToWin, boolean growable, boolean draw) {
         viewController.setRowsToWin(reqToWin);
         viewController.setGrowable(growable);
@@ -259,6 +292,13 @@ public class StartPanel extends BorderPane {
         controller.sendOptions(reqToWin, growable, draw);
     }
 
+	/**
+	 * Sets the game options from remote.
+	 *
+	 * @param reqToWin int
+	 * @param grow boolean
+	 * @param draw boolean
+	 */
     public void setOptions(int reqToWin, boolean grow, boolean draw) {
         switch (reqToWin) {
             case 3:
@@ -281,14 +321,19 @@ public class StartPanel extends BorderPane {
         }
     }
 
+	/**
+	 * Switches the view to connected state.
+	 */
     public void connected() {
         connectBox.setVisible(false);
         startBox.setVisible(true);
     }
 
+	/**
+	 * Switches the view to disconnected state.
+	 */
     public void disconnected() {
         connectBox.setVisible(true);
         startBox.setVisible(false);
     }
-
 }

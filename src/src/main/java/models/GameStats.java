@@ -1,15 +1,15 @@
 package models;
 
 /**
+ * Statistics bean.
+ *
  * Created by Johan Lindström (jolindse@hotmail.com) on 2016-05-31.
  */
 public class GameStats {
 
     private String prevWins, prevDefeats, prevDraws, avgPoints, avgPointsGiven, avgMoves, avgGridSize, totPoints, totPointsGiven, totWins, totDefeats, totDraws, oppName, oppSurname;
 
-    public GameStats() {
-
-    }
+    public GameStats() {}
 
     public String getPrevWins() {
         return prevWins;
