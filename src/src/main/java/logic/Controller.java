@@ -148,7 +148,7 @@ public class Controller {
 	 * @param message
 	 */
 	public void displayMessage(String message) {
-		view.messageViewer(message);
+		view.messageViewer(view.getPane(), message);
 	}
 
 /***********************************************************************************************************************

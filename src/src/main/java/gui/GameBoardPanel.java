@@ -51,7 +51,6 @@ public class GameBoardPanel extends BorderPane {
 
 	private boolean player1Turn = false;
 	private List<ImageView> playerMarkers = new ArrayList<>();
-	private boolean draw = false;
 	private boolean winner = false;
 
 	public GameBoardPanel(Controller controller, AppWindow viewController) {
@@ -71,11 +70,6 @@ public class GameBoardPanel extends BorderPane {
 		numMyMarkers = 0;
 		numOppMarkers = 0;
 		initGameBoard();
-		if (startPlayer) {
-			viewController.messageViewer("You start!");
-		} else {
-			viewController.messageViewer("Opponent start!");
-		}
 	}
 
 	/**
@@ -89,8 +83,8 @@ public class GameBoardPanel extends BorderPane {
 		this.setCenter(gameBoard);
 		gameBoard.addEventHandler(MouseEvent.MOUSE_CLICKED, addMouseListener());
 		gameBoard.setStyle("-fx-background-image: url(\"/textured_paper.png\");-fx-background-size: 600, 600;-fx-background-repeat: no-repeat;");
-		if(player1Turn) { viewController.messageViewer("You start"); }
-		else { viewController.messageViewer("Opponent start"); }
+		if(player1Turn) { viewController.messageViewer(this, "You start"); }
+		else { viewController.messageViewer(this, "Opponent start"); }
 
 	}
 
@@ -107,14 +101,14 @@ public class GameBoardPanel extends BorderPane {
 				controller.makeMove(col, row);
 			}
 			player1Turn = !player1Turn;
-			if(player1Turn) { viewController.messageViewer("Your turn"); }
-			if (isFull() && !viewController.isDrawable()) {
+			if(player1Turn && !gameArray.isGameOver()) { viewController.messageViewer(this, "Your turn"); }
+			if (isFull() && !gameArray.isDraw()) {
 				playerMarkers.forEach(marker -> {
 					marker.fitHeightProperty().bind(gameBoard.getCellSizeProperty().divide(2));
 					marker.fitWidthProperty().bind(gameBoard.getCellSizeProperty().divide(2));
 				});
 				gameBoard.addEventHandler(MouseEvent.MOUSE_CLICKED, addMouseListener());
-			} else if (isFull() && gameArray.isGameOver()) {
+			} else if (isFull() && gameArray.isDraw()) {
 				winner(0,0,numMyMarkers);
 			}
 		}
@@ -126,32 +120,34 @@ public class GameBoardPanel extends BorderPane {
 	 * @return boolean
 	 */
 	private boolean isFull() throws IOException {
-		if (gameArray.isGameOver()) {
+		if (gameArray.isDraw()) {
 			winner(0, 0, numMyMarkers);
 		}
 		if (playerMarkers.size() == (gameBoard.getRows() * gameBoard.getRows())) {
 			// Increase the gameboard's size
-			gameBoard.incGameBoard();
-			gameArray.growBoard(GridPane.getColumnIndex(playerMarkers.get(playerMarkers.size() - 1)),
-					GridPane.getRowIndex(playerMarkers.get(playerMarkers.size() - 1)));
+			if(viewController.isGrowable()) {
+				gameBoard.incGameBoard();
+				gameArray.growBoard(GridPane.getColumnIndex(playerMarkers.get(playerMarkers.size() - 1)),
+						GridPane.getRowIndex(playerMarkers.get(playerMarkers.size() - 1)));
 
-			int[][] tempGrid = gameArray.getGameGrid();
-			playerMarkers.clear();
-			gameBoard = new GameBoard(viewController.getPanelWidth(), viewController.getPanelHeight(), tempGrid[0].length);
-			gameBoard.setStyle("-fx-background-image: url(\"/textured_paper.png\");-fx-background-size: 600, 600;-fx-background-repeat: no-repeat;");
-			this.setCenter(gameBoard);
-			for (int x = 0; x < tempGrid.length; x++) {
-				for (int y = 0; y < tempGrid[x].length; y++) {
-					if (tempGrid[x][y] == 1) {
-						ImageView playerMarker = new ImageView(new PlayerMarker().placeMarker(1));
-						gameBoard.add(playerMarker, x, y);
-						GridPane.setHalignment(playerMarker, HPos.CENTER);
-						playerMarkers.add(playerMarker);
-					} else if (tempGrid[x][y] == 2) {
-						ImageView playerMarker = new ImageView(new PlayerMarker().placeMarker(2));
-						gameBoard.add(playerMarker, x, y);
-						GridPane.setHalignment(playerMarker, HPos.CENTER);
-						playerMarkers.add(playerMarker);
+				int[][] tempGrid = gameArray.getGameGrid();
+				playerMarkers.clear();
+				gameBoard = new GameBoard(viewController.getPanelWidth(), viewController.getPanelHeight(), tempGrid[0].length);
+				gameBoard.setStyle("-fx-background-image: url(\"/textured_paper.png\");-fx-background-size: 600, 600;-fx-background-repeat: no-repeat;");
+				this.setCenter(gameBoard);
+				for (int x = 0; x < tempGrid.length; x++) {
+					for (int y = 0; y < tempGrid[x].length; y++) {
+						if (tempGrid[x][y] == 1) {
+							ImageView playerMarker = new ImageView(new PlayerMarker().placeMarker(1));
+							gameBoard.add(playerMarker, x, y);
+							GridPane.setHalignment(playerMarker, HPos.CENTER);
+							playerMarkers.add(playerMarker);
+						} else if (tempGrid[x][y] == 2) {
+							ImageView playerMarker = new ImageView(new PlayerMarker().placeMarker(2));
+							gameBoard.add(playerMarker, x, y);
+							GridPane.setHalignment(playerMarker, HPos.CENTER);
+							playerMarkers.add(playerMarker);
+						}
 					}
 				}
 			}
@@ -232,17 +228,15 @@ public class GameBoardPanel extends BorderPane {
 	 * @param numMarkers int
 	 */
 	private void winner(int myPoints, int oppPoints, int numMarkers) {
-		System.out.println("myPoints: " + myPoints + ", oppPoints: " + oppPoints);
-
 		if (myPoints > oppPoints) {
 			playSound("/applause.mp3");
-			viewController.messageViewer("You won!");
+			viewController.messageViewer(this, "You won!");
 		} else if (oppPoints > myPoints) {
 			playSound("/boo.mp3");
-			viewController.messageViewer("You lost!");
+			viewController.messageViewer(this, "You lost!");
 		} else {
 			playSound("/sigh.mp3");
-			viewController.messageViewer("It's a draw!");
+			viewController.messageViewer(this, "It's a draw!");
 		}
 		timeEnd = System.currentTimeMillis() / 1000L;
 		controller.winning(myPoints, oppPoints, timeStart, timeEnd, gameArray.getGridSize(), numMarkers);
@@ -273,7 +267,6 @@ public class GameBoardPanel extends BorderPane {
 				}
 			});
 		});
-
 	}
 
 	/**

@@ -1,12 +1,12 @@
 package gui;
 
 import javafx.animation.FadeTransition;
-import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -423,11 +423,13 @@ public class AppWindow {
 				music = !music;
 				playMusic();
 			}
+            messageViewer(rootPane, music ? "Music on" : "Music off");
 		});
 
 		Button btnSounds = new Button("Sounds");
 		btnSounds.setOnAction((e) ->{
 			sound = !sound;
+            messageViewer(rootPane, sound ? "Sound-FX on" : "Sound-FX off");
 		});
 
 		btnSounds.setPrefWidth(chatDisplayWidth/2);
@@ -557,7 +559,7 @@ public class AppWindow {
 	 *
 	 * @param message String
 	 */
-	public void messageViewer(String message) {
+	public void messageViewer(BorderPane parent, String message) {
 		Text msgText = new Text(message);
 		msgText.setFill(Color.WHITE);
 		msgText.setId("msgText");
@@ -571,30 +573,23 @@ public class AppWindow {
 		Group msgGroup = new Group();
 		msgGroup.getChildren().add(msgStack);
 		msgGroup.setTranslateY(stage.getHeight()/2 - (msgGroup.getBoundsInLocal().getHeight()/2));
-		msgGroup.setTranslateX(stage.getWidth());
+		msgGroup.setTranslateX(stage.getWidth()/2 - (msgGroup.getBoundsInLocal().getWidth()/2));
 
-		TranslateTransition tT = new TranslateTransition();
-		tT.setNode(msgGroup);
-		tT.setDuration(new Duration(2000));
-		tT.setFromX(msgGroup.getTranslateX());
-		tT.setToX((stage.getWidth()/2) - (msgGroup.getBoundsInLocal().getWidth()/2));
-		tT.setCycleCount(1);
-
+        // The fade effect
 		FadeTransition fT = new FadeTransition();
 		fT.setDuration(new Duration(1500));
-		fT.setFromValue(1);
-		fT.setToValue(0);
+		fT.setFromValue(0);
+		fT.setToValue(1);
 		fT.setCycleCount(1);
+        fT.setAutoReverse(true);
 		fT.setNode(msgGroup);
-		tT.setOnFinished(event -> {
-			fT.play();
+        fT.play();
+        fT.setOnFinished(fTFinished -> {
+			parent.getChildren().remove(msgGroup);
 		});
-		tT.play();
-		fT.setOnFinished(fTFinished -> {
-			rootPane.getChildren().remove(msgGroup);
-		});
-		rootPane.getChildren().add(msgGroup);
+		parent.getChildren().add(msgGroup);
         msgGroup.toFront();
+
 	}
 
     /*******************************************************************************************************************
@@ -622,9 +617,7 @@ public class AppWindow {
         return growable;
     }
 
-    public void setGrowable(boolean growable) {
-        this.growable = growable;
-    }
+    public void setGrowable(boolean growable) { this.growable = growable; }
 
     public double getPanelHeight() {
         return panelHeight;
@@ -637,4 +630,6 @@ public class AppWindow {
     public boolean getSound() {
         return sound;
     }
+
+    public BorderPane getPane() { return rootPane; }
 }

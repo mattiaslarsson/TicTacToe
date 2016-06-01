@@ -14,9 +14,10 @@ import java.util.List;
 public class GameArray {
     private int[][] gameGrid;
 
-    /* Array with coordinates relative to each cell
-     These are used for checking for a marker with the same color
-     as the one last played
+    /*
+      Array with coordinates relative to each cell
+      These are used for checking for a marker of the same kind
+      as the one last played
     */
     private IntPair[] checkPattern = {
             new IntPair(0,-1),
@@ -33,6 +34,7 @@ public class GameArray {
     private boolean growable;
     private boolean drawable;
     private boolean gameOver = false;
+    private boolean draw = false;
     private List<Point2D> winningRow;
 
     public GameArray(int gS) {
@@ -41,9 +43,7 @@ public class GameArray {
         winningRow = new ArrayList<>();
     }
 
-    public void setGrowable(boolean growable) {
-        this.growable = growable;
-    }
+    public void setGrowable(boolean growable) { this.growable = growable; }
     public void setDrawable(boolean drawable) { this.drawable = drawable; }
     public boolean isGameOver() { return gameOver; }
 
@@ -80,6 +80,7 @@ public class GameArray {
      */
     private boolean checkWinner(int x, int y, int player, int reqToWin) {
         winningRow.clear();
+        // Add the last marker played to a list
         winningRow.add(new Point2D(x, y));
         int numInRow = 0;
         // Loop through the array with relative coordinates
@@ -87,35 +88,46 @@ public class GameArray {
         for (int i = 0; i < checkPattern.length; i++) {
             int currX = x + checkPattern[i].getX();
             int currY = y + checkPattern[i].getY();
+            // Is the coordinate out of bounds?
             if (currX < 0 || currY < 0 || currX > gameGrid[0].length-1 || currY > gameGrid[0].length-1 || gameGrid[currX][currY] != player) {
                 continue;
             }
+            // Is the marker checked of the same kind as the one last played
             if (gameGrid[currX][currY] == player) {
                 numInRow++;
                 winningRow.add(new Point2D(currX, currY));
                 if(numInRow >= reqToWin-1) {
+                    gameOver = true;
                     return true;
                 }
+                // Check the next marker in the same direction
                 for (int j = 0; j<reqToWin-2; j++) {
                     currX += checkPattern[i].getX();
                     currY += checkPattern[i].getY();
+                    // If the coordinate is out of bounds, check the opposite direction
                     if (currX < 0 || currY < 0 || currX > gameGrid[0].length-1 || currY > gameGrid[0].length-1 || gameGrid[currX][currY] != player) {
                         int oppositeX = i > 3 ? x+checkPattern[i-4].getX() : x+checkPattern[i+4].getX();
                         int oppositeY = i > 3 ? y+checkPattern[i-4].getY() : y+checkPattern[i+4].getY();
+                        // If the opposite coord is out of bounds, we have no winner in that direction
                         if (oppositeX < 0 || oppositeY < 0 || oppositeX > gameGrid[0].length-1 || oppositeY > gameGrid[0].length-1 || gameGrid[oppositeX][oppositeY] != player) {
                             numInRow = 0;
                             winningRow.clear();
+                            // Continue on next relative coord
                             continue outerLoop;
                         }
                         for (int k = 0; k < reqToWin-2; k++) {
                             if (gameGrid[oppositeX][oppositeY] == player) {
+                                // We have a match in the opposite direction
                                 numInRow++;
                                 winningRow.add(new Point2D(oppositeX, oppositeY));
                                 if(numInRow >= reqToWin-1) {
+                                    gameOver = true;
                                     return true;
                                 }
+                                // Continue the check in the current direction
                                 oppositeX += i > 3 ? x+checkPattern[i-4].getX() : x+checkPattern[i+4].getX();
                                 oppositeY += i > 3 ? y+checkPattern[i-4].getY() : y+checkPattern[i+4].getY();
+                                // If the coord is out of bounds we have no winner, check the next relative coord
                                 if (oppositeX < 0 || oppositeY < 0 || oppositeX > gameGrid[0].length-1 || oppositeY > gameGrid[0].length-1 || gameGrid[oppositeX][oppositeY] != player) {
                                     numInRow = 0;
                                     winningRow.clear();
@@ -124,13 +136,16 @@ public class GameArray {
                             }
                         }
                     } else if(gameGrid[currX][currY] == player) {
+                        // The coord is in the grid and a match
                         numInRow++;
                         winningRow.add(new Point2D(currX, currY));
                         if(numInRow >= reqToWin-1) {
+                            gameOver = true;
                             return true;
                         }
                     }
                     if (numInRow >= reqToWin-1) {
+                        gameOver = true;
                         return true;
                     }
                 }
@@ -175,7 +190,7 @@ public class GameArray {
             }
             gameGrid = tempGrid;
         } else {
-            gameOver = true;
+            draw = true;
         }
 
     }
@@ -185,6 +200,8 @@ public class GameArray {
     }
 
     public List<Point2D> getWinningRow() { return winningRow; }
+
+    public boolean isDraw() { return draw; }
 }
 
 /**
