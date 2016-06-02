@@ -60,7 +60,7 @@ public class AppWindow {
     // App configuration
     private boolean connected = false;
     private boolean inGame = false;
-    private String versionString = "TicTacToe v0.8a";
+    private String versionString = "TicTacToe v1.0";
     private SimpleStringProperty titleProp;
 
     private double windowHeight = 600;
