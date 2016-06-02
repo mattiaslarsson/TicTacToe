@@ -249,6 +249,7 @@ public class GameBoardPanel extends BorderPane {
 	 */
 	private void playSound(String url) {
 		winningRow = gameArray.getWinningRow();
+		System.out.println(winningRow.toString());
 		if (viewController.getSound()) {
 			viewController.lowerMusic(true);
 			soundRes = getClass().getResource(url);
