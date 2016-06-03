@@ -26,9 +26,11 @@ public class DatabaseConnector {
     /**
      * Initializes database connection.
      */
+
     public DatabaseConnector() {
+        String path = "game.db";
         // db parameters
-        String url = "jdbc:sqlite:game.db";
+        String url = "jdbc:sqlite:"+path;
         // create a connection to the database
         try {
             conn = DriverManager.getConnection(url);
