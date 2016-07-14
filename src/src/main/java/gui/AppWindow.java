@@ -27,6 +27,7 @@ import models.GameStats;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.prefs.Preferences;
 
 /**
  * GUI controller class. Handles window and switches the content depending on what state the application is in.
@@ -71,11 +72,12 @@ public class AppWindow {
     private List<String> chatMessages;
 
     // Game configuration
+    private Preferences prefs = Preferences.userRoot().node("TicTacToe");
     private boolean growable = false;
     private boolean drawable = false;
     private int rowsToWin = 3;
-    private boolean sound = true;
-    private boolean music = true;
+    private boolean sound = prefs.getBoolean("sound", true);
+    private boolean music = prefs.getBoolean("music", true);
 
     private GameStats gs;
     private MediaPlayer mPlayer;
@@ -429,6 +431,10 @@ public class AppWindow {
 		btnSounds.setOnAction((e) ->{
 			sound = !sound;
             messageViewer(rootPane, sound ? "Sound-FX on" : "Sound-FX off");
+            if(sound)
+                prefs.putBoolean("sound", true);
+            else
+                prefs.putBoolean("sound", false);
 		});
 
 		btnSounds.setPrefWidth(chatDisplayWidth/2);
@@ -520,6 +526,7 @@ public class AppWindow {
 	public void playMusic() {
 		mPlayer.setCycleCount(MediaPlayer.INDEFINITE);
 		mPlayer.play();
+        prefs.putBoolean("music", true);
 	}
 
     /**
@@ -527,6 +534,7 @@ public class AppWindow {
      */
     public void stopMusic() {
         mPlayer.stop();
+        prefs.putBoolean("music", false);
     }
 
 	/**
